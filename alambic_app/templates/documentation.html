@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | Documentation </title>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/documentation.css' %}"/>
+{% endblock %}
+
+{% block navbar %}
+    {{ block.super }}
+    <div class="navbar-collapse collapse dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#summary">Summary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#annot">Annotation</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#models">Available models</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#activelearning">Active learning</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#tutorials">Tutorials</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#faq">FAQ</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block primary %}
+
+    <div class="container-fluid" itemtype="http://schema.org/QAPage">
+
+        <!--The navigation bar on the left side of the page-->
+        <div class="row flex-xl-nowrap">
+            <div class="d-none d-xl-block col-xl-3 bd-toc">
+                <ul class="section-nav">
+                    <li class="toc-entry toc-h2"><a href="#summary"><b>Summary</b></a></li>
+                    <li class="toc-entry toc-h2"><a href="#annot"><b>Annotation</b></a>
+                    </li>
+                    <li class="toc-entry toc-h2"><a href="#models"><b>Available models</b></a>
+                    </li>
+                    <li class="toc-entry toc-h2"><a href="#activelearning"><b>Active learning</b></a>
+                        <ul>
+                            <li class="toc-entry toc-h3"><a href="#querystrat">Query Strategies</a></li>
+                            <li class="toc-entry toc-h3"><a href="#training">Training after user labelling</a></li>
+                        </ul>
+                    </li>
+                    <li class="toc-entry toc-h2"><a href="#tutorials"><b>Tutorials</b></a>
+                    </li>
+                    <li class="toc-entry toc-h2"><a href="#faq"><b>Frequently Asked Questions</b></a>
+                </ul>
+            </div>
+
+            <!--The main text-->
+            <div role="main" class="col-12 col-md-9 col-xl-9 py-md-2 pl-md-5 bd-content">
+
+
+                <div class="pt-4 container-fluid h-50 d-inline-block mt-2">
+                    <div class="row">
+                        <div class="col-sm-4 border-right">
+                            <i class="fas fa-hand-point-up fa-2x"></i>
+                            <p class="dtf pt-3"> Click on a header on the <b>header panel</b> above to get directed to
+                                the main sections of this documentation </p>
+
+                        </div>
+
+
+                        <div class="col-sm-4 border-right">
+                            <i class="fas fa-hand-point-right fa-2x"></i>
+                            <p class="dtf pt-3"> To navigate through more <b>specific sections</b> of this
+                                documentation, scroll through the <b>grey navigation panel</b> present at the right side
+                                of this page and click on a header. </p>
+                        </div>
+
+
+                        <div class="col-sm-3">
+                            <i class="fas fa-book-open fa-2x"></i>
+                            <p class="dtf pt-3"> To get a quick idea of how you can select the most relevant results
+                                from ALAMBIC, click on the <b>Tutorials</b> header above. </p>
+                        </div>
+                    </div>
+
+                    <div id="summary">
+                        <h1 class="display-4 ttf mt-4">Summary</h1>
+                        <p class="dtf mt-4" itemprop="about">
+                            TBA
+                        </p>
+
+                        <h3 class="display-4 ssttf text-center mt-5">What can you do with ALAMBIC ?</h3>
+
+                        <div class="container-fluid h-50 d-inline-block mt-4">
+                            <div class="row">
+                                <div class="col-sm-3 border-right">
+                                    <p class="dtf pt-3 color-black"> ANNOTATE YOUR DATA </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="dtf pt-3">
+                                        TBA.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-4">
+                            <div class="row">
+                                <div class="col-sm-3 border-right">
+                                    <p class="dtf pt-3 color-black"> TRAIN A MODEL WITH ACTIVE LEARNING</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="dtf pt-3">
+                                        TBA.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-4">
+                            <div class="row">
+                                <div class="col-sm-3 border-right">
+                                    <p class="dtf pt-3 color-black"> EXPLORE THE PERFORMANCE OF THE FRAMEWORK </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="dtf pt-3">
+                                        TBA.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    <div id="annot">
+
+                        <h1 class="display-4 ttf mt-5">Annotation</h1>
+                        <br>
+
+                        <p class="dtf">
+                            TBA
+                        </p>
+
+                    </div>
+
+                    <hr/>
+
+                    <div id="models">
+
+                        <h1 class="display-4 ttf mt-5">Available models </h1>
+                        <p class="dtf mt-4">
+                            TBA.
+                        </p>
+
+                    </div>
+
+                    <hr/>
+
+
+                    <div id="activelearning">
+                        <h1 class="display-4 ttf mt-5">Active learning</h1>
+                        <p class="dtf mt-4">
+                            TBA.
+                        </p>
+
+                        <h2 id="querystrat" class="display-4 sttf mt-5">Query strategies</h2>
+                        <p class="dtf mt-4">
+                            TBA.
+                        </p>
+
+                        <h2 id="training" class="display-4 sttf mt-5">Training after the user labelling</h2>
+                        <p class="dtf mt-4">
+                            TBA.
+                        </p>
+
+
+                    </div>
+
+                    <hr/>
+
+                    <div id="tutorials">
+
+                        <h1 class="display-4 ttf mt-5">Tutorials</h1>
+
+                        <p class="dtf mt-4">
+                            TBA.
+                        </p>
+
+                    </div>
+
+                    <hr/>
+
+                    <div id="faq">
+                        <h1 class="display-4 ttf mt-5">Frequently Asked Questions</h1>
+
+
+                        <p class="dtf mt-5">
+                            If answers to your questions are not provided in this section
+                            and no information about your question is mentioned in the Documentation page, you can
+                            <a href="{% url 'about' %}#contact" target="_blank"><span class="ltf">contact us</span></a>.
+
+                        </p>
+
+
+                        <div class="container-fluid h-50 d-inline-block mt-5">
+                            <div class="row">
+                                <div class="col-12 border-left border-bottom">
+                                    <span class="dtf pt-3"><b class="color-black"><i
+                                            class="fas fa-question-circle fa-pl-2"></i> Question?</b><br>
+                                        Answer<br><br>
+                                    </span>
+                                    <p class="dtf">
+                                        Other part of answer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-5">
+                            <div class="row">
+                                <div class="col-12 border-left border-bottom">
+                                    <span class="dtf pt-3"><b class="color-black"><i
+                                            class="fas fa-question-circle fa-pl-2"></i> Question?</b><br>
+                                        Answer<br><br>
+                                    </span>
+                                    <p class="dtf">
+                                        Other part of answer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-5">
+                            <div class="row">
+                                <div class="col-12 border-left border-bottom">
+                                    <span class="dtf pt-3"><b class="color-black"><i
+                                            class="fas fa-question-circle fa-pl-2"></i> Question?</b><br>
+                                        Answer<br><br>
+                                    </span>
+                                    <p class="dtf">
+                                        Other part of answer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-5">
+                            <div class="row">
+                                <div class="col-12 border-left border-bottom">
+                                    <span class="dtf pt-3"><b class="color-black"><i
+                                            class="fas fa-question-circle fa-pl-2"></i> Question?</b><br>
+                                        Answer<br><br>
+                                    </span>
+                                    <p class="dtf">
+                                        Other part of answer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-5">
+                            <div class="row">
+                                <div class="col-12 border-left border-bottom">
+                                    <span class="dtf pt-3"><b class="color-black"><i
+                                            class="fas fa-question-circle fa-pl-2"></i> Question?</b><br>
+                                        Answer<br><br>
+                                    </span>
+                                    <p class="dtf">
+                                        Other part of answer
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

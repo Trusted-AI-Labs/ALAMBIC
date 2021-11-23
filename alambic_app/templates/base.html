@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description"
+          content="ALAMBIC - Active Learning Automation with Methods to Battle Insufficient Curation"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}"/>
+    {% comment %}
+    <link href="https://creativecommons.org/licenses/by-nc/4.0/" rel="license">
+    {% endcomment %}
+
+    {% block meta %}
+    {% endblock %}
+
+    {% block title %}
+    {% endblock %}
+
+    <!-- CSS -->
+    {% block css %}
+        <link rel="stylesheet" href="{% static "libs/bootstrap-4/css/bootstrap.min.css" %}">
+        <link rel="stylesheet" href="{% static 'libs/node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static "css/base.css" %}">
+    {% endblock %}
+
+    <!-- JavaScript -->
+    {% block javascripts %}
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static "libs/node_modules/popper.js/dist/umd/popper.js" %}"></script>
+        <script src="{% static "libs/bootstrap-4/js/bootstrap.bundle.min.js" %}"></script>
+        <script src="{% static "libs/html2canvas/html2canvas.min.js" %}"></script>
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    {% endblock %}
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="200">
+
+{% block navbar %}
+    {#        {{ disableTargetBlankLinks|default:"target='_blank'" }}#}
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand f25" href="{% url 'index' %}"><img src="{% static 'logos/alambic.png' %}" alt="alambic_logo"
+                                                              width="30"><span class="pl-2 align-middle">ALAMBIC</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+{% endblock %}
+<div class="navbar-collapse collapse dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link f16" href="{% url 'documentation' %}" target="_blank">Documentation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link f16" href="{% url 'about' %}" target="_blank">About</a>
+        </li>
+
+    </ul>
+</div>
+</nav>
+
+{% block primary %}
+{% endblock %}
+{% block footer %}
+    <footer>
+        <hr class="mt-5"/>
+        <div class="text-center py-3">© 2021-{% now "Y" %}
+            <a class='hiddenLink px-1' href="https://ibsquare.be" target="_blank">The Interuniversity Institute of
+                Bioinformatics in Brussels</a> | <a class="hiddenLink px-1" href="{% url 'about' %}#contact"
+                                                    target="_blank">Contact </a> | <a class="hiddenLink px-1"
+                                                                                      href="{% url 'about' %}#cite"
+                                                                                      target="_blank">Cite us </a> | <a
+                    class="hiddenLink px-1" href="{% url 'about' %}#disclaimer" target="_blank">License & disclaimer</a>
+        </div>
+    </footer>
+{% endblock %}
+</body>
+</html>

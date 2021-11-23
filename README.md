@@ -5,7 +5,7 @@ Django framework for active learning tasks, inspiration from [iepy](https://gith
 - alambic_app for interface and views control
 - machine_learning for the machine learning models implementation (training and prediction)
   - features extraction (?)
-  - models (classifier, NN, etc.)
+  - models (separate them according to task ? i.e. classification, regression, NN, etc. ?)
 - active_learning for the query strategies and user inquiry (and eventually the strategy for the model retraining/correction ?)
 - annotations for importing the data, the user annotation/labelling part, all the different tasks (classification, image labelling, text annotation, etc.)
   - text-mining (relationship extraction, NER)

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | Error </title>
+{% endblock %}
+
+{% block navbar %}
+    {{ block.super }}
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link f16" href="{% url 'input' %}" target="_blank">Submit New Job</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block primary %}
+    <h3 class="text-center py-5">Error 500: Internal server error.</h3>
+{% endblock %}

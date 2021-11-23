@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>ALAMBIC: Active Learning Automation with Methods to Battle Insufficient Curation</title>
+{% endblock %}
+
+{% block navbar %}
+    {{ block.super }}
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link f16" href="{% url 'distillate' %}">Download Data</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block primary %}
+
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        <div class="jumbotron pb-4 pt-5">
+
+            <div class="container-fluid text-center">
+                <div class="row">
+                    <div class="col-md-3 vertical-align">
+                        <div class="text-left">
+                            <img itemprop="logo" src="{% static 'logos/alambic_transparent.png' %}" alt="ALAMBIC Logo"
+                                 width="250">
+                        </div>
+                    </div>
+                    <div class="col-md-8 vertical-align">
+                        <h1 class="display-3"><strong>ALAMBIC</strong>: <strong>A</strong>ctive <strong>L</strong>earning
+                            <strong>A</strong>utomation with <strong>M</strong>ethods to <strong>B</strong>attle
+                            <strong>I</strong>nsufficient <strong>C</strong>uration</h1>
+                    </div>
+                </div>
+                <p></p>
+                <h5 class="pt-3">A platform for the use of active learning</h5>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p class="pt-4">
+                    <a class="btn btn-success btn-lg mr-2" href="{% url 'distillate' %}" role="button">Run it!</a>
+                    <a class="btn btn-primary btn-lg" href="{% url 'documentation' %}" role="button">Learn more
+                        &raquo;</a>
+                </p>
+            </div>
+        </div>
+
+
+        <div class="container">
+
+            <div class="row pb-5">
+                <div class="col-md-4 text-center">
+                    <img src="{% static 'logos/input_logo.png' %}" alt="input_logo" width="140" height="140"
+                         class="mb-3">
+                    <h3 class="text-center">TBA</h3>
+                    <p class="text-justify htf lead pt-3">TBA</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="{% static 'logos/predict_logo.png' %}" alt="predict_logo" width="140" height="140"
+                         class="mb-3">
+                    <h3 class="text-center">TBA</h3>
+                    <p class='text-justify htf lead pt-3'>TBA</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="{% static 'logos/network_logo.png' %}" alt="network_logo" width="140" height="140"
+                         class="mb-3">
+                    <h3 class="text-center">TBA</h3>
+                    <p class="text-justify htf lead pt-3">TBA</p>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+{% endblock %}
+
+
+
+{% block footer %}
+    <footer class="container text-center pt-2 pb-0 h-30">
+
+
+        <hr/>
+
+
+        <a href="http://ulb.ac.be" target="_blank"><img class="alignnone wp-image-111 size-full"
+                                                        src="/static/logos/ULB.svg" style="margin-bottom: -15px;"
+                                                        alt="ULB_equalsize.001 kopie 2" width="110" height="auto"></a>&nbsp;
+
+        <a href="http://ibsquare.be" target="_blank"><img class="alignnone wp-image-74" src="/static/logos/IB2alt.svg"
+                                                          style="margin-left: 2px; padding:3px; margin-bottom: -35px;"
+                                                          alt="(IB)2" width="120" height="auto"></a>&nbsp;
+
+        <a href="http://www.federation-wallonie-bruxelles.be/" target="_blank"><img class="alignnone wp-image-422"
+                                                                                    src="/static/logos/wallonia_logo.png"
+                                                                                    width="120"
+                                                                                    style="margin-bottom: -15px"
+                                                                                    height="auto"></a>
+
+
+    </footer>
+
+
+    {{ block.super }}
+{% endblock %}

@@ -73,7 +73,7 @@ ROOT_URLCONF = 'alambic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['alambic_app/templares'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'alambic.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -99,6 +98,24 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'alambic_cache',
+    }
+}
+
+# ORM export from django-extensions
+GRAPH_MODELS = {
+    'all_applications': False,
+    'group_models': True,
+}
+
+# django-crispy-forms
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# django-select2
+SELECT2_CACHE_BACKEND = 'select2'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

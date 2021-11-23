@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | About </title>
+{% endblock %}
+
+{% block navbar %}
+    {{ block.super }}
+    <div class="navbar-collapse collapse dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#aboutus">About us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#contact">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#cite">Cite us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#disclaimer">Disclaimer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#license">Licence</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link scroll-link f16" href="#collaborators">Supports</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block primary %}
+    <main role="main" class="container-fluid maxWidth90">
+
+
+        <div id="aboutus" class="pb-3" itemtype="http://schema.org/AboutPage">
+            <h1 class="pt-2 display-4 ttf">About us</h1>
+
+            <p class="dtf pt-4" itemprop="about"> This project was realised at the <a href="http://ibsquare.be"
+                                                                                      target="_blank"><span class="ltf">Interuniversity Institute of Bioinformatics in Brussels</span></a>,
+                a collaborative
+                bioinformatics research initiative between Université Libre de Bruxelles (ULB) and Vrije Universiteit
+                Brussel (VUB).</p>
+            <p class="dtf">It is currently developed by <span class="author">
+                <span class="color-black">Charlotte Nachtegael</span> and <span
+                    class="color-black">Tom Lenaerts</span></span>.
+            </p>
+        </div>
+
+        <hr/>
+
+        <div id="contact" class="pb-3">
+            <h1 class="display-4 ttf">Contact us at:</h1>
+
+            <p class="f25 pt-2"><a href="mailto:Charlotte.Nachtegael@ulb.be"><span class="ltf">Charlotte.Nachtegael@ulb.be</span></a>
+            </p>
+            <p class="dtf pt-4"> For any question, troubleshooting or remark we will come back to you as soon as
+                possible.</p>
+            <p class="dtf">If you have questions or if you are experiencing technical
+                issues with ALAMBIC, please consult first our
+                <a href="{% url 'documentation' %}" target="_blank"><span class="ltf">Documentation</span></a> page or
+                the
+                <a href="{% url 'documentation' %}#faq" target="_blank"><span
+                        class="ltf">Frequently Asked Questions</span></a> section,
+                where you may find the solution to your problem. </p>
+            {% comment %}
+            Maybe add later the github folder ?
+            {% endcomment %}
+        </div>
+
+        <hr/>
+
+        <div id="cite" class="pb-3">
+            <h1 class="display-4 ttf">Cite us</h1>
+
+            <p class="dtf pt-2"> If you are using ALAMBIC for your analysis, you can cite the tool as followed: </p>
+
+            <div class="row">
+
+                <div class="col-md-11">
+
+                    <div itemscope itemtype="http://schema.org/ScholarlyArticle">
+                        <ul>
+                            <li> TBA
+                                {% comment %}
+                                <p><span class="dtf"><span itemprop="author" class="color-black">Authors</span> <span
+                                        itemprop="name">Title </span><em>Journal</em>. <b>Volume</b>:Pages DOI: <a
+                                        itemprop="sameAs" href="https://doi.org/10.1093/nar/gkz437"
+                                        target="_blank"><span class="ltf">Link</span></a></span>
+                                </p>
+                                {% endcomment %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div id="disclaimer" class="pb-3">
+            <h1 class="pt-2 display-4 ttf">Disclaimer</h1>
+            <p class="dtf pt-4">TBA</p>
+        </div>
+
+        <hr/>
+
+        <div id="license" class="pb-3">
+            <h1 class="pt-2 display-4 ttf">License</h1>
+            <div class="text-center">
+                <p>TBA</p>
+                {% comment %}
+                <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img
+                        alt="Creative Commons License" style="border-width:0"
+                        src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" class="pb-3"/></a>
+                <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><span
+                        class="ltf">Creative Commons Attribution-NonCommercial 4.0 International License</span></a>.</p>
+                <p>Copyright © 2021 - {% now "Y" %}, Interuniversity Institute of Bioinformatics in Brussels</p>
+                {% endcomment %}
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="container text-center">
+            <h1 class="display-4 ttf" id="collaborators">Supported by:</h1>
+
+            <a href="http://ulb.ac.be" target="_blank"><img class="alignnone wp-image-111 size-full"
+                                                            src="/static/logos/ULB.svg" style="margin-bottom: -11px;"
+                                                            alt="ULB_equalsize.001 kopie 2" width="250"
+                                                            height="auto"></a>&nbsp;
+
+            <a href="http://ibsquare.be" target="_blank"><img class="alignnone wp-image-74"
+                                                              src="/static/logos/IB2alt.svg"
+                                                              style="margin-left: 2px; margin-bottom: -45px;"
+                                                              alt="(IB)2" width="250" height="auto"></a>&nbsp;
+
+
+            <a href="http://www.federation-wallonie-bruxelles.be/" target="_blank"><img class="alignnone wp-image-422"
+                                                                                        src="/static/logos/wallonia_logo.png"
+                                                                                        style="margin-bottom: -15px"
+                                                                                        width="290" height="auto"></a>
+
+
+        </div>
+
+    </main>
+
+
+{% endblock %}
