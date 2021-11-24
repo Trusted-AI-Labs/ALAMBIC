@@ -18,5 +18,21 @@ See [here](https://docs.docker.com/samples/django/)
 
 ---
 ## Choices to make
-- Celery or redis (celery would keep track of jobs, etc.)
-- apps or modules ?
+- Celery or redis (celery would keep track of jobs, help for parallelization, etc.)
+- apps or modules ? *modules*
+- Upload included or separated from the pipeline ? *Separated*
+- Upload :
+  - Separate labeled and unlabeled data ? *Separated*
+  - Abstract Model for Data Point (x,y)
+    - Model for features (x) and for output (y)
+    - Specialize according to input (inheritance) or specify in a field of the model ?
+      - text
+      - image
+      - vector (already, the St Graal)
+    - Specialize for output :
+      - general :
+        - classification
+        - regression
+      - text-specific :
+        - NER (class + word position)
+        - RE (set words position)
