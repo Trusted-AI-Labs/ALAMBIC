@@ -43,7 +43,6 @@ dependencies:
     - django-polymorphic==2.0.3
     - django-recaptcha==2.0.6
     - django-redis==4.10.0
-    - django-rest-polymorphic==0.1.8
     - django-select2==7.0.5
     - fake-useragent==0.1.11
     - fuzzywuzzy==0.17.0
