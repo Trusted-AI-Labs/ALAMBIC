@@ -33,10 +33,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.getenv('LOCAL') == 'True':
     print("LOCAL=True : The app is launched in development mode for your local machine")
+    HOST = 'localhost'
     DEBUG = True
 else:
     print("LOCAL=False : The app is using production settings! Ensure it is properly configured")
-    DEBUG = False
+    HOST = 'postgres'
+    DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
@@ -51,11 +53,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'alambic_app',
+    # django apps
     'django_extensions',
+    'polymorphic',
     'crispy_forms',
     'django_select2',
     'formtools',
+    # apps
+    'alambic_app',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +78,7 @@ ROOT_URLCONF = 'alambic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['alambic_app/templares'],
+        'DIRS': ['alambic_app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,15 +98,30 @@ WSGI_APPLICATION = 'alambic.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': HOST,
+        'PORT': 5432,
     }
 }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'alambic_cache',
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    'select2': {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "TIMEOUT": "1800",  # ttl for cached widgets is 30 minutes
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
 
