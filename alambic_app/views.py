@@ -21,5 +21,9 @@ def index(request):
     return render(request, 'home.html')
 
 
+def upload(request):
+    return render(request, 'upload_data.html')
+
+
 def distillate(request):
     return render(request, 'distillate.html')

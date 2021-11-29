@@ -3,6 +3,7 @@ from alambic_app.views import *
 
 urlpatterns = [
     path('', index, name='index'),
+    path('upload', upload, name='upload'),
     path('distillate', distillate, name='distillate'),
     path('about', about, name='about'),
     path('documentation', documentation, name='documentation'),
