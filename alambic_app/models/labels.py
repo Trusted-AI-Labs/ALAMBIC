@@ -2,21 +2,26 @@
 # To coordinate with the annotation
 
 from django.db import models
+from polymorphic.models import PolymorphicModel
+from alambic_app.models.managers import LabelClassificationManager, LabelRegressionManager
 
 
-class Label(models.Model):
+class Label(PolymorphicModel):
     TASKS_CHOICES = (
         ('C', 'Classification'),  # also NER and RE
         ('R', 'Regression'),
     )
     type = models.CharField(max_length=1, choices=TASKS_CHOICES)
-    value = models.TextField(null=True, blank=False)
 
-    def get_value(self):
-        """
-        Convert the value into the desired format according to the type of task
-        :return: value in the desired format
-        """
-        if self.type == 'R':
-            return float(self.value)
-        return self.value
+
+class ClassificationLabel(Label):
+    class_id = models.IntegerField()
+    value = models.CharField(max_length=50)
+
+    objects = LabelClassificationManager()
+
+
+class RegressionLabel(Label):
+    value = models.FloatField()
+
+    objects = LabelRegressionManager()

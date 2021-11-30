@@ -4,14 +4,13 @@
 
 from django.db import models
 from polymorphic.models import PolymorphicModel
+from django.contrib.postgres.fields import ArrayField
 
-from managers import DataManager
-from labels import Label
+from alambic_app.models.managers import TextManager, ImageManager
 
 
 class Data(PolymorphicModel):
     filename = models.FilePathField()  # unique for vector data, different for images and text
-    objects = DataManager()
 
     @property
     def name(self):
@@ -24,9 +23,25 @@ class Data(PolymorphicModel):
 
 class Text(Data):
     content = models.TextField()
+    objects = TextManager()
+
+    class Meta:
+        db_table = 'text_data'
+
+
+class Image(Data):
+    content = ArrayField(ArrayField(models.FloatField()))
+    objects = ImageManager()
+
+    class Meta:
+        db_table = 'image_data'
 
 
 class Output(models.Model):
     data = models.ForeignKey('Data', on_delete=models.CASCADE, related_name='y')
-    label = models.ForeignKey('Label', on_delete=models.CASCADE)
+    label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
     annotated_by_human = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'output'
+        unique_together = ['data', 'label', 'annotated_by_human']

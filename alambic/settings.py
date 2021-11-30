@@ -34,15 +34,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 if os.getenv('LOCAL') == 'True':
     print("LOCAL=True : The app is launched in development mode for your local machine")
     HOST = 'localhost'
-    DEBUG = True
 else:
     print("LOCAL=False : The app is using production settings! Ensure it is properly configured")
     HOST = 'postgres'
-    DEBUG = True
 
+DEBUG = eval(os.getenv('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 

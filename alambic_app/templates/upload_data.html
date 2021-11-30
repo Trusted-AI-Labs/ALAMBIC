@@ -1,16 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
 {% block title %}
     <title> ALAMBIC | Upload data</title>
 {% endblock %}
 
 {% block primary %}
 
-    <main id="home" role="main" class="container-fluid maxWidth90">
-        <p>
-            TBA.
-        </p>
+    <main id="Input" role="main" class="container-fluid maxWidth90">
+        <form action="" method="post">
+            <div class="col-md-10">
+                <div class="card" style="height:380px">
+                    <div class="card-body form-panel">
+                        <div class="col-12 px-0"></div>
+                        {% csrf_token %}
+                        {{ form.as_ul }}
+                        <input type="submit" value="Submit">
+                        <hr/>
+                    </div>
+                </div>
+            </div>
+        </form>
     </main>
 
 {% endblock %}
