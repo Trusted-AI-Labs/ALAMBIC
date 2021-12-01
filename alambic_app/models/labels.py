@@ -11,17 +11,17 @@ class Label(PolymorphicModel):
         ('C', 'Classification'),  # also NER and RE
         ('R', 'Regression'),
     )
-    type = models.CharField(max_length=1, choices=TASKS_CHOICES)
+    type = models.CharField(max_length=3, choices=TASKS_CHOICES)
 
 
 class ClassificationLabel(Label):
-    class_id = models.IntegerField()
-    value = models.CharField(max_length=50)
+    class_id = models.IntegerField(unique=True)
+    value = models.CharField(max_length=50, unique=True)
 
     objects = LabelClassificationManager()
 
 
 class RegressionLabel(Label):
-    value = models.FloatField()
+    value = models.FloatField(unique=True)
 
     objects = LabelRegressionManager()

@@ -27,7 +27,8 @@ def upload(request):
     if request.method == 'POST':
         form = GeneralInfoInputForm(request.POST, request.FILES)
         if form.is_valid():
-            upload_form_data(filename=form.input_file, model=form.model, task=form.task)
+            upload_form_data(filename=form.cleaned_data['input_file'], model=form.cleaned_data['model'],
+                             task=form.cleaned_data['task'])
             return HttpResponseRedirect('/success')
         else:
             form = GeneralInfoInputForm()
