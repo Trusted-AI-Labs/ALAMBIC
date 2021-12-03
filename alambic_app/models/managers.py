@@ -18,7 +18,7 @@ class TextManager(PolymorphicManager):
 class ImageManager(PolymorphicManager):
 
     def create_instance(self, **kwargs):
-        kwargs['content'] = asarray(Image.open(kwargs['filename']))  # convert in numpy array
+        kwargs['content'] = asarray(Image.open(kwargs['filename'])).tolist()  # convert in numpy array
 
         return self.create(**kwargs)
 
@@ -55,6 +55,16 @@ class LabelClassificationManager(LabelManager):
         last_id = self.get_queryset().order_by('class_id').last().class_id if len(self.get_queryset()) > 0 else -1
         return last_id + 1
 
+    def create_instance(self, **kwargs):
+        kwargs['class_id'] = self.get_id(kwargs['value'])
+
+        return super().create_instance(**kwargs)
+
 
 class LabelRegressionManager(LabelManager):
     model = 'RegressionLabel'
+
+    def create_instance(self, **kwargs):
+        kwargs['value'] = float(kwargs['value'])
+
+        return super().create_instance(**kwargs)

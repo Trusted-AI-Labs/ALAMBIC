@@ -17,4 +17,4 @@ class Command(BaseCommand):
 
         # Labels
         labels.ClassificationLabel.objects.all().delete()
-        labels.LabelRegressionManager.objects.all().delete()
+        labels.RegressionLabel.objects.all().delete()

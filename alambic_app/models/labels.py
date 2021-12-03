@@ -3,15 +3,23 @@
 
 from django.db import models
 from polymorphic.models import PolymorphicModel
+
 from alambic_app.models.managers import LabelClassificationManager, LabelRegressionManager
+from alambic_app.constantes import *
 
 
 class Label(PolymorphicModel):
-    TASKS_CHOICES = (
-        ('C', 'Classification'),  # also NER and RE
-        ('R', 'Regression'),
-    )
-    type = models.CharField(max_length=3, choices=TASKS_CHOICES)
+    type = models.CharField(max_length=3, choices=TASK_CHOICES)
+
+    @property
+    def data(self):
+        response = {
+            'task': self.get_type_display()
+        }
+        return response
+
+    class Meta:
+        app_label = 'alambic_app'
 
 
 class ClassificationLabel(Label):
@@ -20,8 +28,28 @@ class ClassificationLabel(Label):
 
     objects = LabelClassificationManager()
 
+    @property
+    def data(self):
+        response = super().data
+        response.update(
+            {
+                'value': self.value
+            }
+        )
+        return response
+
 
 class RegressionLabel(Label):
     value = models.FloatField(unique=True)
 
     objects = LabelRegressionManager()
+
+    @property
+    def data(self):
+        response = super().data
+        response.update(
+            {
+                'value': str(self.value)
+            }
+        )
+        return response

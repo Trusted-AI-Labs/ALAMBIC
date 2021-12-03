@@ -24,7 +24,7 @@
     {% block css %}
         <link rel="stylesheet" href="{% static "libs/bootstrap-4/css/bootstrap.min.css" %}">
         <link rel="stylesheet" href="{% static 'libs/node_modules/@fortawesome/fontawesome-free/css/all.min.css' %}">
-        <link rel="stylesheet" href="{% static "css/base.css" %}">
+        <link rel="stylesheet" href="{% static "alambic_app/css/base.css" %}">
     {% endblock %}
 
     <!-- JavaScript -->
@@ -37,8 +37,27 @@
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <script type='text/javascript'>
+            var ajaxLoaderPath = '{% static "images/ajax-loader.gif" %}';
+            var dataUrl = "{% url 'data_request' %}";
+        </script>
+        <script>
+            function requestData(reqData, usage) {
+                var data_request = $.ajax({
+                    type: "GET",
+                    url: "/data_request",
+                    data: {
+                        data_usage: usage,
+                        data: reqData
+                    },
+                    dataType: "json"
+                });
+                return data_request
+            }
+        </script>
     {% endblock %}
 </head>
+
 <body data-spy="scroll" data-target=".navbar" data-offset="200">
 
 {% block navbar %}

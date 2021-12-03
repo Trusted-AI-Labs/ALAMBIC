@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # django apps
     'django_extensions',
+    'widget_tweaks',
     'polymorphic',
     'crispy_forms',
     'django_select2',

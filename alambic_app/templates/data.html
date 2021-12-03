@@ -9,9 +9,11 @@
 {% block primary %}
 
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <p>
-            TBA.
-        </p>
+        <div class="table" id="all"></div>
     </main>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{% static "alambic_app/js/data.js" %}"></script>
 {% endblock %}

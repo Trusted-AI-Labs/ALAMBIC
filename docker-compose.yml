@@ -25,6 +25,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - ~/data_alambic:/app/data_alambic
     command: bash entrypoint.sh
     ports:
       - 8000:8000
@@ -32,3 +33,4 @@ services:
 volumes:
   pgdata:
   redisdata:
+  data_alambic:
