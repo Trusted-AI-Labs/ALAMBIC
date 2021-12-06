@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+    <title> ALAMBIC | Pouring the Data in the Database</title>
+{% endblock %}
+
+{% block primary %}
+
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        <h1>Pouring the Data in the Database</h1>
+        <div class='progress-wrapper'>
+            <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+        </div>
+        <div id="progress-bar-message">
+            Waiting for progress to start...
+        </div>
+    </main>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    <script>
+        // vanilla JS version
+        document.addEventListener("DOMContentLoaded", function () {
+            var progressUrl = "{% url 'celery_progress:task_status' token %}";
+            CeleryProgressBar.initProgressBar(progressUrl);
+        });
+    </script>
+
+{% endblock %}

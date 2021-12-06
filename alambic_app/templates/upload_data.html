@@ -10,14 +10,6 @@
 {% block primary %}
 
     <main id="Input" role="main" class="container-fluid maxWidth90">
-        <div style="z-index: 5000; display:none;" id="loadingDiv">
-            <table style="margin: 0px auto;">
-                <tr>
-                    <td style="padding-top:200px;"><img src='{% static "images/ajax-loader.gif" %}'
-                                                        alt="loading image"/></td>
-                </tr>
-            </table>
-        </div>
         <form enctype="multipart/form-data" action="" method="post">
             {% csrf_token %}
             {% if form.non_field_errors %}
@@ -55,15 +47,4 @@
         </form>
     </main>
 
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        $('#alambicSubmit').submit(function () {
-            // javascript way
-            document.getElementById("loadingDiv").style.display = 'block';
-            // jquery way
-            $('#loadingDiv').css('visibility', 'visible');
-        });
-    </script>
 {% endblock %}

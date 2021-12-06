@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_select2',
     'formtools',
+    'celery_progress',
     # apps
     'alambic_app',
 ]
@@ -136,6 +137,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # django-select2
 SELECT2_CACHE_BACKEND = 'select2'
 
+# Celery
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIME_ZONE = 'Europe/Brussels'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

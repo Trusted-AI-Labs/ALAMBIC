@@ -4,6 +4,8 @@ attrs==21.2.0
 Babel==2.6.0
 beautifulsoup4==4.8.0
 bs4==0.0.1
+celery==5.1.2
+celery-progress
 certifi==2019.3.9
 cffi==1.12.3
 chardet==3.0.4

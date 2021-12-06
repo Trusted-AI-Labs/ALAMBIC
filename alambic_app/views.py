@@ -5,6 +5,8 @@ from django.http import JsonResponse, HttpResponseRedirect
 
 from alambic_app.forms import *
 from alambic_app.utils.data_management import *
+from alambic_app.utils.exceptions import BadRequestError
+from alambic_app.tasks import upload_form_data
 
 # Create your views here.
 
@@ -27,12 +29,22 @@ def upload(request):
     if request.method == 'POST':
         form = GeneralInfoInputForm(request.POST, request.FILES)
         if form.is_valid():
-            upload_form_data(filename=form.cleaned_data['input_file'], model=form.cleaned_data['model'],
-                             task=form.cleaned_data['task'])
-            return HttpResponseRedirect('upload_data/data')
+            result = upload_form_data.delay(filename=form.cleaned_data['input_file'], model=form.cleaned_data['model'],
+                                            task=form.cleaned_data['task'])
+            return HttpResponseRedirect("/pouring?id=" + result.id)
     else:
         form = GeneralInfoInputForm()
     return render(request, 'upload_data.html', {'form': form})
+
+
+def pouring(request):
+    if request.method == 'GET':
+        params = request.GET
+        if "id" not in params:
+            raise BadRequestError("Missing job id")
+        task_id = params["id"]
+        return render(request, "pouring.html", {"token": task_id})
+    raise BadRequestError("Invalid server request")
 
 
 def data(request):

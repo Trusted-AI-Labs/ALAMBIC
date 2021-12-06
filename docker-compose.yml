@@ -28,9 +28,27 @@ services:
       - ~/data_alambic:/app/data_alambic
     command: bash entrypoint.sh
     ports:
-      - 8000:8000
+      - "8000:8000"
+
+  celery:
+    restart: always
+    links:
+      - postgres:postgres
+      - redis:redis
+    build:
+      context: .
+    image: web
+    command: celery -A alambic worker -l debug
+    volumes:
+      - .:/app
+      - ~/data_alambic:/app/data_alambic
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - postgres
+      - redis
+      - web
 
 volumes:
   pgdata:
   redisdata:
-  data_alambic:
