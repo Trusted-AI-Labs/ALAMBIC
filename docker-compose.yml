@@ -27,6 +27,8 @@ services:
       - .:/app
       - ~/data_alambic:/app/data_alambic
     command: bash entrypoint.sh
+    env_file:
+      - ./.env.dev
     ports:
       - "8000:8000"
 
@@ -37,8 +39,7 @@ services:
       - redis:redis
     build:
       context: .
-    image: web
-    command: celery -A alambic worker -l debug
+    command: celery -A alambic worker -l info
     volumes:
       - .:/app
       - ~/data_alambic:/app/data_alambic

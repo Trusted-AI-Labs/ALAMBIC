@@ -5,6 +5,16 @@
 {% block title %}
     <title> ALAMBIC | Pouring the Data in the Database</title>
 {% endblock %}
+{% block navbar %}
+    {{ block.super }}
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link f16" href="{% url 'distillate' %}">Run</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
 
 {% block primary %}
 

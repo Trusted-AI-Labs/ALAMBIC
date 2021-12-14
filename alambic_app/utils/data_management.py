@@ -7,5 +7,6 @@ def get_table_data(data):
         qs = Data.objects.all()
         res = [obj.data
                for obj in qs]
+        print(res)
 
     return res

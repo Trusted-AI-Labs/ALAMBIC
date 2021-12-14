@@ -1,9 +1,14 @@
 import logging
 
+from time import sleep
 from PIL import Image
 from numpy import asarray
 
+from django.db.utils import OperationalError
+
 from polymorphic.models import PolymorphicManager
+
+logger = logging.getLogger(__name__)
 
 
 class TextManager(PolymorphicManager):
@@ -12,7 +17,16 @@ class TextManager(PolymorphicManager):
         with open(kwargs['filename']) as infile:
             kwargs['content'] = ' '.join(infile.readlines())  # just a big long string
 
-        return self.create(**kwargs)
+        done = False
+        while not done:
+            try:
+                obj = self.create(**kwargs)
+                done = True
+            except OperationalError as e:
+                logger.info(e)
+                logger.info("Sleeping for a bit before trying again")
+                sleep(10)
+        return obj
 
 
 class ImageManager(PolymorphicManager):
@@ -20,7 +34,16 @@ class ImageManager(PolymorphicManager):
     def create_instance(self, **kwargs):
         kwargs['content'] = asarray(Image.open(kwargs['filename'])).tolist()  # convert in numpy array
 
-        return self.create(**kwargs)
+        done = False
+        while not done:
+            try:
+                obj = self.create(**kwargs)
+                done = True
+            except OperationalError as e:
+                logger.info(e)
+                logger.info("Sleeping for a bit before trying again")
+                sleep(10)
+        return obj
 
 
 ### LABELS
@@ -37,7 +60,16 @@ class LabelManager(PolymorphicManager):
         if len(instance) > 0:
             return instance[0]
         else:
-            return self.create(**kwargs)
+            done = False
+            while not done:
+                try:
+                    obj = self.create(**kwargs)
+                    done = True
+                except OperationalError as e:
+                    logger.info(e)
+                    logger.info("Sleeping for a bit before trying again")
+                    sleep(10)
+            return obj
 
 
 class LabelClassificationManager(LabelManager):

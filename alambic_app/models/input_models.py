@@ -11,7 +11,7 @@ from alambic_app.models.labels import Label
 
 
 class Data(PolymorphicModel):
-    filename = models.FilePathField()  # unique for vector data, different for images and text
+    filename = models.TextField()  # unique for vector data, different for images and text
 
     @property
     def name(self):

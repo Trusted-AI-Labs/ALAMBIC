@@ -1,3 +1,5 @@
+var tableRequests = [];
+
 function LoadingFig(figure_name) {
     // console.log(figure_name);
     var table_row = `#${figure_name}`;
@@ -19,7 +21,7 @@ function LoadingFig(figure_name) {
         "alt": "Loading"
     }).appendTo(divSelector);
 
-    $("<h4 class='loader-text mx-auto w-50'>Loading content.</h4>").appendTo(divSelector);
+    $("<h4 class='loader-text mx-auto w-50'>Loading content</h4>").appendTo(divSelector);
 
     return divSelector;
 }
@@ -37,6 +39,7 @@ function drawTable(table_name) {
             var currentPage = window.location.pathname;
             var table;
             table = generateTable(table_name, table_data, divSelector);
+            return table;
         });
 
     return dataRequest;
