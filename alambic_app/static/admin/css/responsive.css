@@ -415,6 +415,7 @@ input[type="submit"], button {
     }
 
     /* Messages */
+
     ul.messagelist li {
         padding-left: 55px;
         background-position: 30px 12px;

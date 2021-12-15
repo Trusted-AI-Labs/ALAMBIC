@@ -47,7 +47,7 @@ function drawTable(table_name) {
 
 function generateTable(name, data, divSelector) {
 
-    //console.log(data);
+    console.log(data);
 
     var tableId = name + "_table";
     $(divSelector).replaceWith(`<table id=${tableId} class='display'></table>`);
