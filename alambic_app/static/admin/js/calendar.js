@@ -118,7 +118,6 @@ depends on core.js for utility functions like removeChildren or quickElement
                     e.preventDefault();
                     callback(y, m, this.textContent);
                 }
-
                 return onClick;
             }
 

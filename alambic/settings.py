@@ -138,7 +138,7 @@ GRAPH_MODELS = {
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # django-select2
-# SELECT2_CACHE_BACKEND = 'select2'
+SELECT2_CACHE_BACKEND = 'select2'
 
 # Celery
 CELERY_BROKER_URL = "redis://redis:6379/0"
