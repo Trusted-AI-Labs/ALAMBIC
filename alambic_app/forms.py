@@ -49,5 +49,20 @@ class GeneralInfoInputForm(forms.Form):
                 'Missing a column with the content or the path to the file to import ("content" or "file" columns)',
                 code='invalid')
 
-class PreprocessingTemplate(forms.Form):
-    pass
+
+class PreprocessingText(forms.Form):
+    ANNOTATORS_CHOICES = [
+        ('tokenize', 'Tokenization'),
+        ('ssplit', 'Sentence Splitting'),
+        ('pos', 'POS Tagger'),
+        ('lemma', 'Lemma'),
+        ('ner', 'Named Entity Tag (non biomedical)'),
+        ('ddparse', 'Dependency Parse Tree'),
+        ('parse', 'Constituency and Dependency Parse Tree'),
+        ('coref', "Coreference Resolution"),
+    ]
+
+    annotators = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=ANNOTATORS_CHOICES
+    )

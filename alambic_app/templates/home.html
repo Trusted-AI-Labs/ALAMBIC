@@ -12,6 +12,9 @@
             <li class="nav-item">
                 <a class="nav-link f16" href="{% url 'upload' %}">Upload data</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link f16" href="{% url 'setup' %}">Launch</a>
+            </li>
         </ul>
     </div>
 {% endblock %}
@@ -41,7 +44,7 @@
                 <p></p>
                 <p></p>
                 <p class="pt-4">
-                    <a class="btn btn-success btn-lg mr-2" href="{% url 'distillate' %}" role="button">Run it!</a>
+                    <a class="btn btn-success btn-lg mr-2" href="{% url 'setup' %}" role="button">Run it!</a>
                     <a class="btn btn-primary btn-lg" href="{% url 'documentation' %}" role="button">Learn more
                         &raquo;</a>
                 </p>

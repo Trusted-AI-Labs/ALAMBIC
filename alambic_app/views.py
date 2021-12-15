@@ -2,8 +2,8 @@ import logging
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
+from django.views.generic import TemplateView
 
-from alambic_app.forms import *
 from alambic_app.utils.data_management import *
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app.tasks import upload_form_data
@@ -58,42 +58,16 @@ def data(request):
     """
     return render(request, 'data.html')
 
-
 def distillate(request):
     return render(request, 'distillate.html')
 
 
-def data_request(request):
-    """
-    View that handles data requests by delegating to the appropriate request handlers based on the request parameters.
-    Expects a GET request with a data field specifying what data to retrieve.
-    A second field called data_usage should specify what the data will be used for (table, chart, download, ...)
-    Validates the request and delegates to appropriate handlers.
+class SetupView(TemplateView):
+    template_name = "setup.html"
+    data_form, learning_form, active_form = get_forms()
 
-    :param request: The HTTP GET request that was made to the */data* url associated with this view
-    :type request: ~django.http.HttpRequest
-    :return: Either a response containing JSON with the data, or the requested file
-    :rtype: ~django.http.JsonResponse
-    """
-    requested_data = request.GET.get('data')
-    response = {}
+    def get_context_data(self, **kwargs):
+        context = super(SetupView, self).get_context_data(**kwargs)
+        context['data'] = cache.get('data', 0)
 
-    # print(list(request.GET.items()))
-
-    # If there is a valid data request we continue otherwise we throw an error
-    if requested_data is not None:
-        data_usage = request.GET.get('data_usage')
-        # Depending on what the data is for (table, chart, download, ...) a different handler is required
-        if data_usage == 'chart':
-            pass
-        elif data_usage == 'table':
-            response = JsonResponse(get_table_data(requested_data))
-            # response = JsonResponse(get_table_data(requested_data))
-        else:
-            raise Exception(
-                'Invalid data request, invalid or inexistent data_usage field')
-    else:
-        raise Exception(
-            'Invalid data request, check if you are using GET method and providing a data field')
-
-    return response
+        return context

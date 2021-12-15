@@ -62,3 +62,4 @@ def upload_form_data(self, filename, model, task):
 
         # update progress observer
         progress_recorder.set_progress(reader.line_num + 1, nb_rows)
+    cache.set('data', nb_rows)

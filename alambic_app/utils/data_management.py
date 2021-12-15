@@ -2,23 +2,21 @@ import logging
 
 from django.core.cache import cache
 
-from alambic_app.models.input_models import Data
+from alambic_app.forms import *
 
 logger = logging.getLogger(__name__)
 
 
-def get_table_data(data):
-    res = []
-    if data == 'all':
-        if not cache.get('all_data'):
-            qs = Data.objects.all()
-            i = 1
-            for obj in qs.iterator():
-                print(i)
-                res.append(obj.data)
-                i += 1
-            cache.set('all_data', res)
-        else:
-            res = cache.get('all_data')
+def get_forms():
+    forms = [None, None, None]
+    model = cache.get('model')
+    task = cache.get('task')
+    if model == 'Text':
+        forms[0] = PreprocessingText
 
-    return res
+    if task == 'Classification':
+        forms[1] = None
+
+    forms[2] = None  # active learning form
+
+    return forms

@@ -39,21 +39,6 @@
         <![endif]-->
         <script type='text/javascript'>
             var ajaxLoaderPath = '{% static "images/ajax-loader.gif" %}';
-            var dataUrl = "{% url 'data_request' %}";
-        </script>
-        <script>
-            function requestData(reqData, usage) {
-                var data_request = $.ajax({
-                    type: "GET",
-                    url: "/data_request",
-                    data: {
-                        data_usage: usage,
-                        data: reqData
-                    },
-                    dataType: "json"
-                });
-                return data_request
-            }
         </script>
     {% endblock %}
 </head>

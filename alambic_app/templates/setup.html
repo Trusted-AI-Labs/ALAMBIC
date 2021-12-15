@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | Setup </title>
+{% endblock %}
+
+{% block primary %}
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        {% if data %}
+            <h1>Choose the parameters for the task</h1>
+            <div id="parameters-accordion">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne">
+                                Processing specific to the data
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                         data-parent="#parameters-accordion">
+                        <div class="card-body">
+                            <p>ADD HERE FORM DATA-SPECIFIC</p>
+                        </div>
+                    </div>
+
+                    <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
+                                    aria-expanded="true" aria-controls="collapseTwo">
+                                Parameters specific to the learning task
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                         data-parent="#parameters-accordion">
+                        <div class="card-body">
+                            <p>ADD HERE FORM TASK-SPECIFIC</p>
+                        </div>
+                    </div>
+
+                    <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
+                                    aria-expanded="true" aria-controls="collapseThree">
+                                Parameters specific to the active learning
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                         data-parent="#parameters-accordion">
+                        <div class="card-body">
+                            <p>ADD HERE FORM ACTIVE LEARNING</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>Your first need to pour some data in the database !</p>
+            <p>Go to the <a href={% url 'upload' %}>Upload</a> page</p>
+        {% endif %}
+    </main>
+
+{% endblock %}
