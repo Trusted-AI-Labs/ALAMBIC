@@ -16,6 +16,10 @@ python manage.py migrate
 echo "Creating a superuser account"
 python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
 
+# Install Stanford Core
+#echo "Install Stanford Core NLP"
+#python manage.py initialize_stanfordcore
+
 # Start server
 echo "Starting server"
 python manage.py runserver 0.0.0.0:8000

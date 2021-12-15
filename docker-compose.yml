@@ -18,10 +18,18 @@ services:
     volumes:
       - redisdata:/data
 
+  corenlp:
+    restart: always
+    image: nlpbox/corenlp:latest
+    ports:
+      - "9000:9000"
+
+
   web:
     links:
       - postgres:postgres
       - redis:redis
+      - corenlp:corenlp
     build: .
     volumes:
       - .:/app
@@ -49,6 +57,7 @@ services:
       - postgres
       - redis
       - web
+      - corenlp
 
 volumes:
   pgdata:

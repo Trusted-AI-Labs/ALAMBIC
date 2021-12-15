@@ -48,3 +48,6 @@ class GeneralInfoInputForm(forms.Form):
             raise ValidationError(
                 'Missing a column with the content or the path to the file to import ("content" or "file" columns)',
                 code='invalid')
+
+class PreprocessingTemplate(forms.Form):
+    pass

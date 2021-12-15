@@ -110,14 +110,15 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
+        "TIMEOUT": None,
     },
     'select2': {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
+        "LOCATION": "redis://redis:6379/2",
         "TIMEOUT": "1800",  # ttl for cached widgets is 30 minutes
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
@@ -137,7 +138,7 @@ GRAPH_MODELS = {
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # django-select2
-SELECT2_CACHE_BACKEND = 'select2'
+# SELECT2_CACHE_BACKEND = 'select2'
 
 # Celery
 CELERY_BROKER_URL = "redis://redis:6379/0"

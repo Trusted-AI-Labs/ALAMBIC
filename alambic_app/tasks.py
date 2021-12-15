@@ -3,6 +3,7 @@ import csv
 import logging
 
 from django.apps import apps
+from django.core.cache import cache
 
 from celery import shared_task
 
@@ -25,6 +26,8 @@ def upload_form_data(self, filename, model, task):
     :param task: str, type of learning task
     :return: None
     """
+    cache.set('model', model)
+    cache.set('task', task)
     infile = open(filename, encoding='utf-8')
     reader = csv.DictReader(infile, delimiter='\t')
     nb_rows = len(list(reader))

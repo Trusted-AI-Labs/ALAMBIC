@@ -2,6 +2,10 @@
 # + eventually how they should be converted
 # To coordinate with the features extraction
 
+import numpy as np
+
+from PIL import Image
+
 from django.db import models
 from polymorphic.models import PolymorphicModel
 from django.contrib.postgres.fields import ArrayField
@@ -19,7 +23,7 @@ class Data(PolymorphicModel):
 
     @property
     def output(self):
-        return self.output_set
+        return self.output_set.all()[0]
 
     @property
     def data(self):
@@ -71,6 +75,12 @@ class Image(Data):
             }
         )
         return response
+
+    def as_image(self):
+        return Image.fromarray(self.as_array())
+
+    def as_array(self):
+        return np.asarray(self.content).astype(np.uint8)
 
     class Meta:
         db_table = 'image_data'
