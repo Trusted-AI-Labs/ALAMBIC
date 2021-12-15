@@ -8,11 +8,19 @@ from alambic_app.models.input_models import Text
 from alambic_app.constantes import ENDPOINT_CORENLP
 
 
-def initialize_client(properties):
+def initialize_client(annotators):
     """
     Create the CoreNLPClient
     :param properties: dictionry of the options chosen by the user for the text processing
     :return: stanza.server.CoreNLPClient
     """
-    client = CoreNLPClient(properties=properties, endpoint=ENDPOINT_CORENLP)
+    properties = dict()
+    if 'coref' in annotators:
+        properties['coref.algorithm'] = "neural"
+    client = CoreNLPClient(
+        annotators=annotators,
+        output_format="json",
+        properties=properties,
+        endpoint=ENDPOINT_CORENLP
+    )
     return client
