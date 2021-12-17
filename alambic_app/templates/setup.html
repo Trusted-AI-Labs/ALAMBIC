@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_tags %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'alambic_app/css/setup.css' %}"/>
+{% endblock %}
 
 {% block title %}
     <title> ALAMBIC | Setup </title>
@@ -8,55 +16,63 @@
 {% block primary %}
     <main id="home" role="main" class="container-fluid maxWidth90">
         {% if data %}
-            <h1>Choose the parameters for the task</h1>
-            <div id="parameters-accordion">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne"
-                                    aria-expanded="true" aria-controls="collapseOne">
-                                Processing specific to the data
-                            </button>
-                        </h2>
-                    </div>
-
-                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                         data-parent="#parameters-accordion">
-                        <div class="card-body">
-                            <p>ADD HERE FORM DATA-SPECIFIC</p>
+            <div class="col-10 form-area py-3">
+                <div id="general-progress" class="row align-content-center">
+                    <div class="col text-center">
+                        <div class="progress">
+                            <ul class="progressbar">
+                                {% for st in wizard.steps.all %}
+                                    <li class="step-progress {% if forloop.counter < wizard.steps.step1 %}done {% elif st == wizard.steps.current %}active{% endif %}">
+                                        <i class="material-icons">{{ step_icons|get_dict_item:st }}</i>
+                                        <span class="step-name">{{ st }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         </div>
+                        <hr>
                     </div>
+                </div>
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-8">
+                        <form enctype="multipart/form-data" action="" method="post" class="align-middle">
+                            {% csrf_token %}
+                            {{ wizard.management_form }}
+                            {% if wizard.form.forms %}
+                                {{ wizard.form.management_form }}
+                                {% for form in wizard.form.forms %}
+                                    {% crispy form %}
+                                {% endfor %}
+                            {% else %}
+                                {% crispy wizard.form %}
+                            {% endif %}
+                            <hr>
+                            <div class="row">
+                                {% if wizard.steps.prev %}
+                                    <div class="col-2">
+                                        {% comment %} <button formnovalidate="formnovalidate" class="btn btn-outline-secondary"
+                                    name="wizard_goto_step" type="submit" value="{{ wizard.steps.second }}">Back to publication</button>
+                                    {% endcomment %}
+                                        <button formnovalidate="formnovalidate" class="btn btn-secondary"
+                                                name="wizard_goto_step" type="submit"
+                                                value="{{ wizard.steps.prev }}">Previous
+                                        </button>
+                                    </div>
+                                {% endif %}
 
-                    <div class="card-header" id="headingTwo">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo"
-                                    aria-expanded="true" aria-controls="collapseTwo">
-                                Parameters specific to the learning task
-                            </button>
-                        </h2>
-                    </div>
+                                <div class="col-2">
+                                    {% if wizard.steps.next %}
+                                        <button class="btn btn-success form-step" type="submit">
+                                            Next
+                                        </button>
 
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-                         data-parent="#parameters-accordion">
-                        <div class="card-body">
-                            <p>ADD HERE FORM TASK-SPECIFIC</p>
-                        </div>
-                    </div>
-
-                    <div class="card-header" id="headingThree">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
-                                    aria-expanded="true" aria-controls="collapseThree">
-                                Parameters specific to the active learning
-                            </button>
-                        </h2>
-                    </div>
-
-                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
-                         data-parent="#parameters-accordion">
-                        <div class="card-body">
-                            <p>ADD HERE FORM ACTIVE LEARNING</p>
-                        </div>
+                                    {% else %}
+                                        <button class="btn btn-success form-step" type="submit">
+                                            Submit
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

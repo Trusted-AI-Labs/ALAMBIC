@@ -8,15 +8,21 @@ logger = logging.getLogger(__name__)
 
 
 def get_forms():
-    forms = [None, None, None]
+    forms = []
     model = cache.get('model')
     task = cache.get('task')
+    form = None
+
     if model == 'Text':
-        forms[0] = PreprocessingText
+        form = PreprocessingText
 
-    if task == 'Classification':
-        forms[1] = None
+    forms.append(('data', form))
 
-    forms[2] = None  # active learning form
+    if task == 'C':
+        form = ClassificationParameters
+
+    forms.append(('task', form))
+
+    forms.append(('AL', form))
 
     return forms

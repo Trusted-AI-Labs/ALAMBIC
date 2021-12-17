@@ -3,9 +3,28 @@ from django.core.exceptions import ValidationError
 
 from django_select2.forms import Select2Widget
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, HTML, Field
+from crispy_forms.bootstrap import InlineCheckboxes
+
 from csv import DictReader
 
 from alambic_app.constantes import *
+
+
+class CrispyWizardStep(forms.Form):
+    """
+    Base class for forms that use django-crispy-forms and are used in a form wizard
+    Applies common initialization steps
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.include_media = False
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.label_class = 'bold'
 
 
 class GeneralInfoInputForm(forms.Form):
@@ -50,7 +69,9 @@ class GeneralInfoInputForm(forms.Form):
                 code='invalid')
 
 
-class PreprocessingText(forms.Form):
+### DATA SPECIFIC PROCESSING
+
+class PreprocessingText(CrispyWizardStep):
     ANNOTATORS_CHOICES = [
         ('tokenize', 'Tokenization'),
         ('ssplit', 'Sentence Splitting'),
@@ -64,5 +85,44 @@ class PreprocessingText(forms.Form):
 
     annotators = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
-        choices=ANNOTATORS_CHOICES
+        choices=ANNOTATORS_CHOICES,
+        required=False
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Processing linked to the data</h2>'),
+                InlineCheckboxes('annotators')
+            )
+        )
+
+
+### TASK SPECIFIC PARAMETERS
+
+class ClassificationParameters(CrispyWizardStep):
+    CLASSIFICATION_MODELS_CHOCIES = [
+        ('SVM', 'SVM'),
+        ('RF', 'Random Forest'),
+    ]
+
+    model_choice = forms.ChoiceField(
+        choices=CLASSIFICATION_MODELS_CHOCIES,
+        required=True,
+        widget=Select2Widget(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0
+            }
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Parameters linked to your chosen task'),
+                Field('model_choice')
+            )
+        )

@@ -2,7 +2,7 @@ import logging
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
-from django.views.generic import TemplateView
+from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.exceptions import BadRequestError
@@ -62,12 +62,42 @@ def distillate(request):
     return render(request, 'distillate.html')
 
 
-class SetupView(TemplateView):
+class SetupView(SessionWizardView):
     template_name = "setup.html"
-    data_form, learning_form, active_form = get_forms()
+    form_list = get_forms()
+    print(form_list)
 
-    def get_context_data(self, **kwargs):
-        context = super(SetupView, self).get_context_data(**kwargs)
-        context['data'] = cache.get('data', 0)
+    def get_context_data(self, form, **kwargs):
+        context = super(SetupView, self).get_context_data(
+            form=form, **kwargs)
+        context.update({
+            'data': cache.get('data', 0),
+            'step_icons': {
+                'data': 'Description',
+                'task': 'DisplaySettings',
+                'AL': 'CoPresent'
+            }
+        })
 
         return context
+
+    def process_step(self, form):
+        step_data = super().process_step(form)
+        print(step_data)
+
+        if self.steps.current == 'disease':
+            pass
+
+        return step_data
+
+    def done(self, form_list, **kwargs):
+        data_list = [form.cleaned_data for form in form_list]
+        form_data = {
+            'variants': data_list[0],
+            # NOTE: we might allow multiple disease selection
+            'diseases': data_list[1]['disease_name'],
+            'submitter': self.request.user
+        }
+        form_data.update(data_list[2])
+        ## do something with it
+        return JsonResponse({'success': True})
