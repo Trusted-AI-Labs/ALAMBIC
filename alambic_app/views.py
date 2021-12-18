@@ -73,9 +73,9 @@ class SetupView(SessionWizardView):
         context.update({
             'data': cache.get('data', 0),
             'step_icons': {
-                'data': 'Description',
-                'task': 'DisplaySettings',
-                'AL': 'CoPresent'
+                'data': 'description',
+                'task': 'display_settings',
+                'AL': 'co_present'
             }
         })
 

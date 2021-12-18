@@ -16,7 +16,7 @@
 {% block primary %}
     <main id="home" role="main" class="container-fluid maxWidth90">
         {% if data %}
-            <div class="col-10 form-area py-3">
+            <div class="col-12 form-area py-3">
                 <div id="general-progress" class="row align-content-center">
                     <div class="col text-center">
                         <div class="progress">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="row justify-content-center align-items-center">
-                    <div class="col-8">
+                    <div class="col-10">
                         <form enctype="multipart/form-data" action="" method="post" class="align-middle">
                             {% csrf_token %}
                             {{ wizard.management_form }}

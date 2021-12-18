@@ -1,3 +1,12 @@
+.progress {
+    height: 10rem;
+    width: 100%;
+    background: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .progressbar {
     overflow-x: hidden;
     overflow-y: visible;
@@ -21,17 +30,17 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 7rem;
-    min-width: 7rem;
-    height: 7rem;
-    max-height: 7rem;
-    margin: 2em 10em;
+    width: 5rem;
+    min-width: 5rem;
+    height: 5rem;
+    max-height: 5rem;
+    margin: 2em 8em;
     overflow: visible;
 }
 
 .progressbar li i {
     display: block;
-    font-size: 5rem;
+    font-size: 3rem;
     padding: 0.2rem;
     color: var(--dark-grey);
 
@@ -39,7 +48,7 @@
 
 .progressbar li::before {
     content: '';
-    width: 11em;
+    width: 8.5em;
     height: 2px;
     background: var(--dark-grey);
     position: absolute;
@@ -48,7 +57,7 @@
 
 .progressbar li::after {
     content: '';
-    width: 11em;
+    width: 8.5em;
     height: 2px;
     background: var(--dark-grey);
     position: absolute;
@@ -57,7 +66,7 @@
 
 span.step-name {
     position: absolute;
-    top: 7rem;
+    top: 5rem;
     font-size: .9rem;
     color: var(--dark-grey);
 }
