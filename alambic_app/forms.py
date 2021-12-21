@@ -99,16 +99,11 @@ class PreprocessingText(CrispyWizardStep):
         )
 
 
-### TASK SPECIFIC PARAMETERS
+### CHOICE MODEL
 
-class ClassificationParameters(CrispyWizardStep):
-    CLASSIFICATION_MODELS_CHOCIES = [
-        ('SVM', 'SVM'),
-        ('RF', 'Random Forest'),
-    ]
-
+class ClassificationModel(CrispyWizardStep):
     model_choice = forms.ChoiceField(
-        choices=CLASSIFICATION_MODELS_CHOCIES,
+        choices=CLASSIFICATION_MODELS_CHOICES,
         required=True,
         widget=Select2Widget(
             attrs={
@@ -122,7 +117,69 @@ class ClassificationParameters(CrispyWizardStep):
         super().__init__(*args, **kwargs)
         self.helper.layout = Layout(
             Div(
-                HTML('<h2>Parameters linked to your chosen task'),
+                HTML('<h2>Choose a model</h2>'),
                 Field('model_choice')
+            )
+        )
+
+
+### MODEL-SPECIFIC PARAMETERS
+
+class SVCClassification(CrispyWizardStep):
+    C = forms.FloatField(
+        min_value=0,
+        max_value=10,
+        required=True
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Parameters for the Support Vector Classification</h2>'),
+                Field('C')
+            )
+        )
+
+
+class RFClassification(CrispyWizardStep):
+    # TODO Inheritance for the different models and then specifialize according to task ?
+
+    number_trees = forms.IntegerField(
+        max_value=100,
+        min_value=1,
+        required=True
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Parameters for the Random Forest Classification</h2>'),
+                Field('number_trees')
+            )
+        )
+
+
+### ACTIVE LEARNING
+
+class ActiveLearningParameters(CrispyWizardStep):
+    query_strategy = forms.ChoiceField(
+        choices=AL_ALGORITHMS_CHOICES,
+        required=True,
+        widget=Select2Widget(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0
+            }
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Parameters of the Active learning</h2>'),
+                Field('query_strategy')
             )
         )

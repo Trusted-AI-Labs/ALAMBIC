@@ -64,8 +64,9 @@ def distillate(request):
 
 class SetupView(SessionWizardView):
     template_name = "setup.html"
-    form_list = get_forms()
-    print(form_list)
+    form_list = get_default_form_list()
+
+    # print(form_list)
 
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(
@@ -73,31 +74,48 @@ class SetupView(SessionWizardView):
         context.update({
             'data': cache.get('data', 0),
             'step_icons': {
-                'data': 'description',
-                'task': 'display_settings',
-                'AL': 'co_present'
+                'Data': 'description',
+                'Task': 'display_settings',
+                'Model Settings': 'build',
+                'Active Learning': 'co_present'
             }
         })
 
         return context
 
+    def get_form(self, step=None, data=None, files=None):
+        if step is None:
+            step = self.steps.current
+
+        if step == "Data":
+            form_class = get_form_data()
+            form = form_class(data)
+
+        elif step == "Task":
+            form_class = get_form_task()
+            form = form_class(data)
+
+        elif step == "Model Settings":
+            model_choice = self.get_cleaned_data_for_step("Task")['model_choice']
+            form_class = get_form_model(model_choice)
+            form = form_class(data)
+
+        elif step == "Active Learning":
+            form_class = get_form_AL()
+            form = form_class(data)
+
+        return form
+
     def process_step(self, form):
         step_data = super().process_step(form)
-        print(step_data)
 
-        if self.steps.current == 'disease':
+        if self.steps.current == 'Data':
             pass
 
         return step_data
 
     def done(self, form_list, **kwargs):
         data_list = [form.cleaned_data for form in form_list]
-        form_data = {
-            'variants': data_list[0],
-            # NOTE: we might allow multiple disease selection
-            'diseases': data_list[1]['disease_name'],
-            'submitter': self.request.user
-        }
-        form_data.update(data_list[2])
         ## do something with it
+        print(data_list)
         return JsonResponse({'success': True})
