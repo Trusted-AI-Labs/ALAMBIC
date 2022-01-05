@@ -63,3 +63,36 @@ def upload_form_data(self, filename, model, task):
         # update progress observer
         progress_recorder.set_progress(reader.line_num + 1, nb_rows)
     cache.set('data', nb_rows)
+
+
+@shared_task
+def preprocessing(form_data):
+    # Inspired by : https://stackoverflow.com/questions/17649976/celery-chain-monitoring-the-easy-way
+    # ... Code to define which functions to launch ...
+    # stepsToLaunch = [fun1, fun2, fun3, fun4, fun5]
+    # chainId = chain(stepsToLaunch).apply_async()
+    # chainAsyncObjects = [node for node in reversed(list(nodes(chainId)))]
+    #
+    # current_task.update_state(state="PROGRESS", meta={'step': 1, 'total': numSteps})
+    #
+    # for t in range(10800):  # The same max duration of a celery task
+    #     for i, step in enumerate(chainAsyncObjects):
+    #         currStep = i + 1
+    #         if step.state == 'PENDING':
+    #             current_task.update_state(state="PROGRESS", meta={'step': currStep, 'total': numSteps})
+    #             break
+    #         if step.state == 'SUCCESS':
+    #             if currStep == numSteps:
+    #                 current_task.update_state(state="SUCCESS", meta={'step': currStep, 'total': numSteps})
+    #                 sleep(5)  # Wait before stop this task, in order for javascript to get the result!
+    #                 return
+    #
+    #         if step.state == 'FAILURE':
+    #             return
+    #     sleep(1)
+    pass
+
+
+@shared_task
+def pipeline_ML(properties):
+    pass

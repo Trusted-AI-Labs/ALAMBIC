@@ -6,6 +6,7 @@ urlpatterns = [
     path('upload', upload, name='upload'),
     path('pouring', pouring, name='pouring'),
     path('setup', SetupView.as_view(), name='setup'),
+    path('chopping', chopping_ingredients, name='chopping'),
     path('distillate', distillate, name='distillate'),
     path('about', about, name='about'),
     path('documentation', documentation, name='documentation'),

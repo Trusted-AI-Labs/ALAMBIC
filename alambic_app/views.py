@@ -1,12 +1,14 @@
 import logging
 
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.exceptions import BadRequestError
-from alambic_app.tasks import upload_form_data
+from alambic_app.tasks import upload_form_data, preprocessing, pipeline_ML
+
+from celery.result import AsyncResult
 
 # Create your views here.
 
@@ -47,16 +49,25 @@ def pouring(request):
     raise BadRequestError("Invalid server request")
 
 
-def data(request):
+def chopping_ingredients(request):
     """
-    Renders the template for the page that is shown to the user after successfully submitting new data.
-
-    :param request: Request coming from the done view
-    :type request: ~django.http.HttpRequest
-    :return: Rendered template for the submit success page
-    :rtype: ~django.http.HttpResponse
+    Renders template page for the feature extraction and preprocessing
+    Inspired by : https://stackoverflow.com/questions/17649976/celery-chain-monitoring-the-easy-way
     """
-    return render(request, 'data.html')
+    taskId = request.GET['token']
+    if taskId != '':  # If the task is already running
+        task = AsyncResult(taskId)
+        currStep = task.result['step']
+        totSteps = task.result['total']
+        response = {
+            'status': task.state,
+            'currStep': currStep,
+            'totSteps': totSteps
+        }
+        return JsonResponse(response)
+    else:  # If the task must be started
+        result = preprocessing.delay(request.GET['form_data'])
+    return render(request, 'chopping.html', {'token': result.id})
 
 def distillate(request):
     return render(request, 'distillate.html')
@@ -104,6 +115,9 @@ class SetupView(SessionWizardView):
             form_class = get_form_AL()
             form = form_class(data)
 
+        else:
+            BadRequestError("Invalid server request")
+
         return form
 
     def process_step(self, form):
@@ -117,5 +131,10 @@ class SetupView(SessionWizardView):
     def done(self, form_list, **kwargs):
         data_list = [form.cleaned_data for form in form_list]
         ## do something with it
-        print(data_list)
-        return JsonResponse({'success': True})
+        form_data = {
+            'data': data_list[0],
+            'task': data_list[1],
+            'active': data_list[2]
+        }
+        # TODO :  create here an instance for the model
+        return HttpResponseRedirect("/chopping", form_data)

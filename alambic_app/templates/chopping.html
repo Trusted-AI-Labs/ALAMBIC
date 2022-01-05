@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | Chopping the ingredients </title>
+{% endblock %}
+
+{% block primary %}
+
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        <p>
+            Page for the preprocessing + feature extraction
+            Will show the progress of the feature extraction (should we just do a loading gif) ?
+        </p>
+    </main>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            function checkJobStatus() {
+                $.ajax({
+                    url: '/chopping/status',
+                    data: {
+                        'id': "{{ token }}"
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status === "SUCCESS") {
+                            window.location.replace("/distillate");
+                        } else if (data.status === "FAILURE") {
+                            $("#job_status").text(data.status);
+                            $("#job-failure-message").removeClass("d-none");
+                        } else {
+                            $("#job_status").fadeOut(function () {
+                                $(this).text(data.status).fadeIn();
+                            });
+                            setTimeout(checkJobStatus, 3000);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $("#job_status").text("UNKNOWN");
+                        $("#job-error-message").removeClass("d-none");
+                    }
+                });
+            }
+
+            checkJobStatus();
+        });
+    </script>
+{% endblock %}

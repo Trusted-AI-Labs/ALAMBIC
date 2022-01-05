@@ -8,42 +8,8 @@
 {% block primary %}
 
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <h1>Choose the parameters for your distillation</h1>
         <p>
-            TO DO:
-        </p>
-        <ul>
-            <li>
-                Add parameters for preprocessing (select in function of data type)
-            </li>
-            <li>
-                Add parameters for learning task
-                <ul>
-                    <li>
-                        In function of the type of task (classification, etc.)
-                    </li>
-                    <li>
-                        Global (number of iterations, size of training set/test set, etc.)
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Add parameters for active learning
-                <ul>
-                    <li>
-                        Algorithm
-                    </li>
-                    <li>
-                        Stop criterion
-                    </li>
-                    <li>
-                        Propagation of the learning (complete retraining or just with the new query)
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        <p>
-            Pipeline to implement : preprocess then training ->
+            Pipeline to implement : training ->
             prediction unlabelled -> query strategy -> annotation and then back to training until stop criterion
         </p>
         <p>

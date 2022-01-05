@@ -143,7 +143,7 @@ class SVCClassification(CrispyWizardStep):
 
 
 class RFClassification(CrispyWizardStep):
-    # TODO Inheritance for the different models and then specifialize according to task ?
+    # TODO Inheritance for the different models and then specialize according to task ?
 
     number_trees = forms.IntegerField(
         max_value=100,
