@@ -8,13 +8,56 @@
 {% block primary %}
 
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <p>
-            Pipeline to implement : training ->
-            prediction unlabelled -> query strategy -> annotation and then back to training until stop criterion
-        </p>
-        <p>
-            Add plots for the tracking of results (AUC, precision, etc. in function of % labelled data/total data)
-        </p>
+        <h1>Distilling the knowledge (and the data)</h1>
+
+        <div class="col-12 form-area py-3">
+            <div id="loading-gif" class="row align-content-center">
+                <img src="{% static 'images/alambic.gif' %}" alt="experiment"/>
+                <div id="status_message" class="col-12 dtf">{{ status_message }}</div>
+            </div>
+
+
+        </div>
+
     </main>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function () {
+            function checkJobStatus() {
+                $.ajax({
+                    url: '/job_status',
+                    data: {
+                        'token': "{{ token }}"
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.status === "SUCCESS") {
+                            document.getElementById('loading-gif').classList.add('d-none');
+                        } else if (data.status === "FAILURE") {
+                            $("#job_status").text(data.status);
+                            $("#job-failure-message").removeClass("d-none");
+                            $("#loading-gif").attr("src", "{% static 'images/error.gif' %}")
+                        } else {
+                            $("#job_status").fadeOut(function () {
+                                $(this).text(data.status).fadeIn();
+                            });
+                            $("#curr_step").text(data.current_step);
+                            $("#total_step").text(data.total_steps);
+                            setTimeout(checkJobStatus, 3000);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $("#job_status").text("UNKNOWN");
+                        $("#job-failure-message").removeClass("d-none");
+                        $("#loading-gif").attr("src", "{% static 'images/error.gif' %}")
+                    }
+                });
+            }
+
+            checkJobStatus();
+        });
+    </script>
 {% endblock %}

@@ -6,7 +6,7 @@ from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.exceptions import BadRequestError
-from alambic_app.tasks import upload_form_data, preprocessing, pipeline_ML
+from alambic_app import tasks
 
 from celery.result import AsyncResult
 
@@ -31,8 +31,9 @@ def upload(request):
     if request.method == 'POST':
         form = GeneralInfoInputForm(request.POST, request.FILES)
         if form.is_valid():
-            result = upload_form_data.delay(filename=form.cleaned_data['input_file'], model=form.cleaned_data['model'],
-                                            task=form.cleaned_data['task'])
+            result = tasks.upload_form_data.delay(filename=form.cleaned_data['input_file'],
+                                                  model=form.cleaned_data['model'],
+                                                  task=form.cleaned_data['task'])
             return HttpResponseRedirect("/pouring?id=" + result.id)
     else:
         form = GeneralInfoInputForm()
@@ -49,28 +50,66 @@ def pouring(request):
     raise BadRequestError("Invalid server request")
 
 
+def job_status(request):
+    """
+    Shamelessly found in ORVAL code, by Alexandre Renaud
+    Keep track of progress of pipelines
+    """
+    if request.method == 'GET':
+        params = request.GET
+        if "token" not in params:
+            raise ValidationError("Invalid or missing job id.")
+        job_id = params["token"]
+        result = AsyncResult(job_id)
+        if result.status == "SUCCESS":
+            return JsonResponse({"token": job_id, "status": result.status})
+        else:
+            task_refs = tasks.get_pipeline_task_refs(job_id)
+            success_counter = 0
+            for task, task_ref in sorted(task_refs.items(), key=lambda kv: kv[1]["step"]):
+                task_id = task_refs[task]["id"]
+                result = tasks.get_task_signature(task).AsyncResult(task_id)
+                if result.status == "FAILURE":
+                    return JsonResponse({"id": job_id, "status": result.status})
+                elif result.status == "SUCCESS":
+                    success_counter += 1
+            progress_status = "RUNNING..."  # ({0:.0f}%)".format(float(success_counter * 100)/len(task_refs))
+            return JsonResponse(
+                {"id": job_id,
+                 "status": progress_status,
+                 "current_step": success_counter + 1,
+                 "total_steps": len(task_refs)}
+            )
+    raise BadRequestError("Invalid server request")
+
+
 def chopping_ingredients(request):
     """
     Renders template page for the feature extraction and preprocessing
     Inspired by : https://stackoverflow.com/questions/17649976/celery-chain-monitoring-the-easy-way
     """
-    taskId = request.GET['token']
-    if taskId != '':  # If the task is already running
-        task = AsyncResult(taskId)
-        currStep = task.result['step']
-        totSteps = task.result['total']
-        response = {
-            'status': task.state,
-            'currStep': currStep,
-            'totSteps': totSteps
-        }
-        return JsonResponse(response)
-    else:  # If the task must be started
-        result = preprocessing.delay(request.GET['form_data'])
-    return render(request, 'chopping.html', {'token': result.id})
+    if request.method == 'GET':
+        params = request.GET
+        if "id" not in params:
+            raise BadRequestError("Missing job id")
+        task_id = params["id"]
+        return render(request, 'chopping.html', {'token': task_id})
+    raise BadRequestError("Invalid server request")
+
 
 def distillate(request):
-    return render(request, 'distillate.html')
+    if request.method == 'GET':
+        # TODO launch the machine learning algorithm + evaluation + query afterwards
+        return render(request, 'distillate.html')
+    raise BadRequestError("Invalid server request")
+
+
+def tasting(request):
+    if request.method == 'GET':
+        annotation_template = get_annotation_template_page()
+        # TODO check stop criterion andd redirect to page final where the user can download the results and model
+        return render(request, annotation_template)
+    raise BadRequestError("Invalid server request")
 
 
 class SetupView(SessionWizardView):
@@ -95,6 +134,8 @@ class SetupView(SessionWizardView):
         return context
 
     def get_form(self, step=None, data=None, files=None):
+        form = None
+
         if step is None:
             step = self.steps.current
 
@@ -136,5 +177,5 @@ class SetupView(SessionWizardView):
             'task': data_list[1],
             'active': data_list[2]
         }
-        # TODO :  create here an instance for the model
-        return HttpResponseRedirect("/chopping", form_data)
+        result = tasks.preprocess_and_feature_extraction(form_data)
+        return HttpResponseRedirect("/chopping?id=" + result.id)

@@ -21,7 +21,7 @@ def get_form_data():
     if model == 'Text':
         return PreprocessingText
     else:
-        raise MissingForm
+        raise MissingForm("Form for the specified data not found.")
 
 
 def get_form_task():
@@ -30,7 +30,7 @@ def get_form_task():
     if task == 'C':
         return ClassificationModel
     else:
-        raise MissingForm
+        raise MissingForm("Form for the specified task not found")
 
 
 def get_form_model(model):
@@ -39,8 +39,13 @@ def get_form_model(model):
     elif model == "RF":
         return RFClassification
     else:
-        raise MissingForm
+        raise MissingForm("Form for the specified model not found")
 
 
 def get_form_AL():
     return ActiveLearningParameters
+
+
+def get_annotation_template_page():
+    # TODO test cache and select the page according to task and data
+    return 'annotations/classification.html'  # toy at the moment

@@ -12,6 +12,42 @@
             Page for the preprocessing + feature extraction
             Will show the progress of the feature extraction (should we just do a loading gif) ?
         </p>
+        <h1>
+            Preparing the ingredients...
+        </h1>
+        <div class="col-12 form-area py-3">
+            <div id="loading-gif" class="row align-content-center">
+                <img src="{% static 'images/chopping.gif' %}" alt="chop chop"/>
+            </div>
+            <div class="row justify-content-center align-items-center">
+
+                <div class="row mt-3">
+                    <div class="col-3 dtf color-black">Job Id:</div>
+                    <div class="col-9 dtf" id="job_id">{{ token }}</div>
+                    <div class="col-3 dtf color-black">Job Status:</div>
+                    <div class="col-9 dtf" id="job_status">{{ job_status }}</div>
+                    <div class="col-3 dtf color-black">Step</div>
+                    <div class="col-3 dtf" id="curr_step">{{ curr_step }}</div>
+                    <div class="col-3 dtf color-black"> on</div>
+                    <div class="col-3 dtf color-black" id="total_step">{{ total_step }}</div>
+                </div>
+
+                <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">
+                    <div class="col-1 mt-2">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                    <div class="col-11">
+                        <p>
+                            An unexpected error happened with your job.<br/>
+                            If the error persists, don't hesitate to post an issue on the repository of ALAMBIC.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
     </main>
 
 {% endblock %}
@@ -21,9 +57,9 @@
         $(function () {
             function checkJobStatus() {
                 $.ajax({
-                    url: '/chopping/status',
+                    url: '/job_status',
                     data: {
-                        'id': "{{ token }}"
+                        'token': "{{ token }}"
                     },
                     dataType: 'json',
                     success: function (data) {
@@ -32,16 +68,20 @@
                         } else if (data.status === "FAILURE") {
                             $("#job_status").text(data.status);
                             $("#job-failure-message").removeClass("d-none");
+                            $("#loading-gif").attr("src", "{% static 'images/error.gif' %}")
                         } else {
                             $("#job_status").fadeOut(function () {
                                 $(this).text(data.status).fadeIn();
                             });
+                            $("#curr_step").text(data.currStep);
+                            $("#total_step").text(data.totSteps);
                             setTimeout(checkJobStatus, 3000);
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {
                         $("#job_status").text("UNKNOWN");
-                        $("#job-error-message").removeClass("d-none");
+                        $("#job-failure-message").removeClass("d-none");
+                        $("#loading-gif").attr("src", "{% static 'images/error.gif' %}")
                     }
                 });
             }
