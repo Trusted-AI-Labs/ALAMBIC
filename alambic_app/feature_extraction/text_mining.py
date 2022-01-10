@@ -25,3 +25,5 @@ def initialize_client(annotators):
         start_server=StartServer.DONT_START
     )
     return client
+
+# TODO : embedding, bow, tf-idf
