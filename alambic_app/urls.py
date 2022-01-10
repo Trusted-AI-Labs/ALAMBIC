@@ -8,7 +8,8 @@ urlpatterns = [
     path('setup', SetupView.as_view(), name='setup'),
     path('job/status', job_status, name='job_status'),
     path('chopping', chopping_ingredients, name='chopping'),
-    path('distillate', distillate, name='distillate'),
+    path('distilling', distilling, name='distilling'),
+    path('tasting', tasting, name='tasting'),
     path('about', about, name='about'),
     path('documentation', documentation, name='documentation'),
 ]

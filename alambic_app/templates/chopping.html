@@ -64,7 +64,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.status === "SUCCESS") {
-                            window.location.replace("/distillate");
+                            window.location.replace("/distilling");
                         } else if (data.status === "FAILURE") {
                             $("#job_status").text(data.status);
                             $("#job-failure-message").removeClass("d-none");

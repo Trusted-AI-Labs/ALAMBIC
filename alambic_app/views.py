@@ -97,18 +97,32 @@ def chopping_ingredients(request):
     raise BadRequestError("Invalid server request")
 
 
-def distillate(request):
+def distilling(request):
     if request.method == 'GET':
         # TODO launch the machine learning algorithm + evaluation + query afterwards
-        return render(request, 'distillate.html')
+        return render(request, 'distilling.html')
     raise BadRequestError("Invalid server request")
 
 
 def tasting(request):
     if request.method == 'GET':
         annotation_template = get_annotation_template_page()
-        # TODO check stop criterion andd redirect to page final where the user can download the results and model
+        # TODO check stop criterion and redirect to page final where the user can download the results and model
         return render(request, annotation_template)
+    raise BadRequestError("Invalid server request")
+
+
+def success(request):
+    """
+    Renders the page when the stop criterion has been reached, where you can
+    download the model and the results (csv + plots)
+    """
+    if request.method == 'GET':
+        params = request.GET
+        if "id" not in params:
+            raise BadRequestError("Missing result id")
+        result_id = params["id"]
+        return render(request, 'essence.html', {'token': result_id})
     raise BadRequestError("Invalid server request")
 
 
