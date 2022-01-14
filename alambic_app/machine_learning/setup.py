@@ -1,6 +1,7 @@
 from random import sample
 
-from alambic_app.models.input_models import *
+from alambic_app.machine_learning.preprocessing import *
+from alambic_app.models.results import Result
 
 
 class MLManager:
@@ -8,12 +9,14 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, model):
+    def __init__(self, model, ):
         self.step = 1
         self.model = model
         self.unlabelled_dataset, self.labelled_dataset = self.get_labelled_dataset()
         self.training_set = []
         self.test_set = []
+        self.y_test = []
+        self.y_predicted = []
 
     def get_labelled_dataset(self):
         unlabelled = list(Output.objects.filter(label__isnull=True).values_list('data_id', flat=True))
@@ -65,6 +68,10 @@ class MLManager:
     def add_to_training(self, data_id):
         self.training_set += [data_id]
 
+    def get_y(self, lst):
+        outputs = Output.objects.filter(data_id__in=lst)
+        return outputs
+
     def add_to_labelled(self, data_id):
         self.labelled_dataset += [data_id]
         self.unlabelled_dataset.remove(data_id)
@@ -72,28 +79,43 @@ class MLManager:
     def set_test_set(self, lst):
         self.test_set = lst
 
+    def register_result(self):
+        raise NotImplementedError("This is only implemented in subclasses")
+
+    def launch_ml(self):
+        self.model.fit()
+
 
 class ClassificationManager(MLManager):
 
     def __init__(self, model):
         super().__init__(model)
-        self.TP = 0
-        self.FP = 0
-        self.TN = 0
-        self.FN = 0
+        self.type_classification = self.get_type()
+
+    def get_type(self):
+        nb_classes = Label.objects.distinct().count()
+        if nb_classes > 2:
+            type = "weighted"
+        else:
+            type = "binary"
+        return type
+
+    def get_y(self, lst):
+        outputs = super().get_y(lst)
+        return [outputs.get(data_id=id).label.class_id for id in lst]
 
     @property
     def accuracy(self):
-        return (self.TP + self.TN) / (self.TP + self.TN + self.TN + self.FN)
+        return sklearn.metrics.accuracy_score(self.y_test, self.y_predicted)
 
     @property
     def precision(self):
-        return self.TP / (self.TP + self.FP)
+        return sklearn.metrics.precision_score(self.y_test, self.y_predicted)
 
     @property
     def recall(self):
-        return self.TP / (self.TP + self.FN)
+        return sklearn.metrics.recall_score(self.y_test, self.y_predicted)
 
     @property
-    def specificity(self):
-        return
+    def f1_score(self):
+        return sklearn.metrics.f1_score(self.y_test, self.y_predicted, average=self.type_classification)

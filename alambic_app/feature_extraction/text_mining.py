@@ -26,4 +26,4 @@ def initialize_client(annotators):
     )
     return client
 
-# TODO : embedding, bow, tf-idf
+# TODO : embedding

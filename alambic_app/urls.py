@@ -10,6 +10,7 @@ urlpatterns = [
     path('chopping', chopping_ingredients, name='chopping'),
     path('distilling', distilling, name='distilling'),
     path('tasting', tasting, name='tasting'),
+    path('spirit', success, name='spirit'),
     path('about', about, name='about'),
     path('documentation', documentation, name='documentation'),
 ]

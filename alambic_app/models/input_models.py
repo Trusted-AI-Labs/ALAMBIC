@@ -4,7 +4,7 @@
 
 import numpy as np
 
-from PIL import Image
+from PIL import Image as Im
 
 from django.db import models
 from polymorphic.models import PolymorphicModel
@@ -77,7 +77,7 @@ class Image(Data):
         return response
 
     def as_image(self):
-        return Image.fromarray(self.as_array())
+        return Im.fromarray(self.as_array())
 
     def as_array(self):
         return np.asarray(self.content).astype(np.uint8)
@@ -91,7 +91,6 @@ class Output(models.Model):
     label = models.ForeignKey('Label', on_delete=models.CASCADE, null=True)
     annotated_by_human = models.BooleanField(
         default=False)  # to allow the co-existence of the manual annotation and the automatic one
-    predicted = models.BooleanField(default=False)  # ground truth or produced by model
 
     @property
     def data_content(self):
@@ -102,4 +101,4 @@ class Output(models.Model):
     class Meta:
         app_label = 'alambic_app'
         db_table = 'output'
-        unique_together = ['data', 'label', 'annotated_by_human', 'predicted']
+        unique_together = ['data', 'label', 'annotated_by_human']

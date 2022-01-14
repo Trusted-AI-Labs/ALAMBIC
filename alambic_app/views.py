@@ -108,6 +108,8 @@ def tasting(request):
     if request.method == 'GET':
         annotation_template = get_annotation_template_page()
         # TODO check stop criterion and redirect to page final where the user can download the results and model
+        # if stop_criterion:
+        ## return HttpResponseRedirect("/spirit?id=" + result.id)
         return render(request, annotation_template)
     raise BadRequestError("Invalid server request")
 
@@ -122,7 +124,7 @@ def success(request):
         if "id" not in params:
             raise BadRequestError("Missing result id")
         result_id = params["id"]
-        return render(request, 'essence.html', {'token': result_id})
+        return render(request, 'spirit.html', {'token': result_id})
     raise BadRequestError("Invalid server request")
 
 

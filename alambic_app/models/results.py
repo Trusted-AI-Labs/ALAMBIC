@@ -20,3 +20,7 @@ class Result(models.Model):
     mcc = models.FloatField(null=True)
     f1_score = models.FloatField(null=True)
     mse = models.FloatField(null=True)
+
+    class Meta:
+        app_label = 'alambic_app'
+        db_table = 'result'
