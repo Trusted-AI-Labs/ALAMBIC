@@ -62,16 +62,16 @@
                         defined = {},
                         waiting = {},
                         config = {},
-        defining = {},
-        hasOwn = Object.prototype.hasOwnProperty,
-        aps = [].slice,
-        jsSuffixRegExp = /\.js$/;
+                        defining = {},
+                        hasOwn = Object.prototype.hasOwnProperty,
+                        aps = [].slice,
+                        jsSuffixRegExp = /\.js$/;
 
-    function hasProp(obj, prop) {
-        return hasOwn.call(obj, prop);
-    }
+                    function hasProp(obj, prop) {
+                        return hasOwn.call(obj, prop);
+                    }
 
-    /**
+                    /**
      * Given a relative module name, like ./something, normalize it to
      * a real name that can be mapped to a path.
      * @param {String} name the relative name
@@ -1047,16 +1047,16 @@ S2.define('select2/results',[
           attrs.role = 'group';
           attrs['aria-label'] = data.text;
           delete attrs['aria-selected'];
-    }
+      }
 
-    for (var attr in attrs) {
-      var val = attrs[attr];
+      for (var attr in attrs) {
+          var val = attrs[attr];
 
-      option.setAttribute(attr, val);
-    }
+          option.setAttribute(attr, val);
+      }
 
-    if (data.children) {
-      var $option = $(option);
+      if (data.children) {
+          var $option = $(option);
 
       var label = document.createElement('strong');
       label.className = 'select2-results__group';
@@ -1218,10 +1218,10 @@ S2.define('select2/results',[
         var nextOffset = self.$results.scrollTop() + (nextTop - currentOffset);
 
         if (nextIndex === 0) {
-        self.$results.scrollTop(0);
-      } else if (nextTop - currentOffset < 0) {
-        self.$results.scrollTop(nextOffset);
-      }
+            self.$results.scrollTop(0);
+        } else if (nextTop - currentOffset < 0) {
+            self.$results.scrollTop(nextOffset);
+        }
     });
 
     container.on('results:next', function () {
@@ -1534,12 +1534,12 @@ S2.define('select2/selection/base',[
 
       $all.each(function () {
         if (this == $select[0]) {
-          return;
+            return;
         }
 
           var $element = Utils.GetData(this, 'element');
 
-        $element.select2('close');
+          $element.select2('close');
       });
     });
   };
@@ -1640,15 +1640,15 @@ S2.define('select2/selection/single',[
           // User focuses on the container
       });
 
-    this.$selection.on('blur', function (evt) {
-      // User exits the container
-    });
+      this.$selection.on('blur', function (evt) {
+          // User exits the container
+      });
 
-    container.on('focus', function (evt) {
-      if (!container.isOpen()) {
-          self.$selection.trigger('focus');
-      }
-    });
+      container.on('focus', function (evt) {
+          if (!container.isOpen()) {
+              self.$selection.trigger('focus');
+          }
+      });
   };
 
   SingleSelection.prototype.clear = function () {
@@ -1887,10 +1887,10 @@ S2.define('select2/selection/placeholder',[
                         self._handleClear(evt);
                     });
 
-    container.on('keypress', function (evt) {
-      self._handleKeyboardClear(evt, container);
-    });
-  };
+                container.on('keypress', function (evt) {
+                    self._handleKeyboardClear(evt, container);
+                });
+            };
 
   AllowClear.prototype._handleClear = function (_, evt) {
       // Ignore the event if it is disabled
@@ -2029,11 +2029,11 @@ S2.define('select2/selection/search',[
       });
 
       container.on('disable', function () {
-      self.$search.prop('disabled', true);
-    });
+          self.$search.prop('disabled', true);
+      });
 
-    container.on('focus', function (evt) {
-      self.$search.trigger('focus');
+      container.on('focus', function (evt) {
+          self.$search.trigger('focus');
     });
 
     container.on('results:focus', function (params) {
@@ -2098,16 +2098,16 @@ S2.define('select2/selection/search',[
           function (evt) {
               // IE will trigger the `input` event when a placeholder is used on a
               // search box. To get around this issue, we are forced to ignore all
-        // `input` events in IE and keep using `keyup`.
-        if (disableInputEvents) {
-          self.$selection.off('input.search input.searchcheck');
-          return;
-        }
+              // `input` events in IE and keep using `keyup`.
+              if (disableInputEvents) {
+                  self.$selection.off('input.search input.searchcheck');
+                  return;
+              }
 
-        // Unbind the duplicated `keyup` event
-        self.$selection.off('keyup.search');
-      }
-    );
+              // Unbind the duplicated `keyup` event
+              self.$selection.off('keyup.search');
+          }
+      );
 
     this.$selection.on(
       'keyup.search input.search',
@@ -2249,13 +2249,13 @@ S2.define('select2/selection/eventRelay',[
 
           self.$element.trigger(evt);
 
-      // Only handle preventable events if it was one
-      if ($.inArray(name, preventableEvents) === -1) {
-        return;
-      }
+          // Only handle preventable events if it was one
+          if ($.inArray(name, preventableEvents) === -1) {
+              return;
+          }
 
-      params.prevented = evt.isDefaultPrevented();
-    });
+          params.prevented = evt.isDefaultPrevented();
+      });
   };
 
   return EventRelay;
@@ -2532,16 +2532,16 @@ S2.define('select2/diacritics',[
     '\u00D5': 'O',
     '\u1E4C': 'O',
     '\u022C': 'O',
-    '\u1E4E': 'O',
-    '\u014C': 'O',
-    '\u1E50': 'O',
-    '\u1E52': 'O',
-    '\u014E': 'O',
-    '\u022E': 'O',
-    '\u0230': 'O',
-    '\u00D6': 'O',
-    '\u022A': 'O',
-    '\u1ECE': 'O',
+      '\u1E4E': 'O',
+      '\u014C': 'O',
+      '\u1E50': 'O',
+      '\u1E52': 'O',
+      '\u014E': 'O',
+      '\u022E': 'O',
+      '\u0230': 'O',
+      '\u00D6': 'O',
+      '\u022A': 'O',
+      '\u1ECE': 'O',
       '\u0150': 'O',
       '\u01D1': 'O',
       '\u020C': 'O',
@@ -2583,16 +2583,16 @@ S2.define('select2/diacritics',[
       '\u24C7': 'R',
       '\uFF32': 'R',
       '\u0154': 'R',
-    '\u1E58': 'R',
-    '\u0158': 'R',
-    '\u0210': 'R',
-    '\u0212': 'R',
-    '\u1E5A': 'R',
-    '\u1E5C': 'R',
-    '\u0156': 'R',
-    '\u1E5E': 'R',
-    '\u024C': 'R',
-    '\u2C64': 'R',
+      '\u1E58': 'R',
+      '\u0158': 'R',
+      '\u0210': 'R',
+      '\u0212': 'R',
+      '\u1E5A': 'R',
+      '\u1E5C': 'R',
+      '\u0156': 'R',
+      '\u1E5E': 'R',
+      '\u024C': 'R',
+      '\u2C64': 'R',
     '\uA75A': 'R',
     '\uA7A6': 'R',
     '\uA782': 'R',
@@ -2942,16 +2942,16 @@ S2.define('select2/diacritics',[
     '\u00F5': 'o',
     '\u1E4D': 'o',
     '\u022D': 'o',
-    '\u1E4F': 'o',
-    '\u014D': 'o',
-    '\u1E51': 'o',
-    '\u1E53': 'o',
-    '\u014F': 'o',
-    '\u022F': 'o',
-    '\u0231': 'o',
-    '\u00F6': 'o',
-    '\u022B': 'o',
-    '\u1ECF': 'o',
+      '\u1E4F': 'o',
+      '\u014D': 'o',
+      '\u1E51': 'o',
+      '\u1E53': 'o',
+      '\u014F': 'o',
+      '\u022F': 'o',
+      '\u0231': 'o',
+      '\u00F6': 'o',
+      '\u022B': 'o',
+      '\u1ECF': 'o',
       '\u0151': 'o',
       '\u01D2': 'o',
       '\u020D': 'o',
@@ -2993,16 +2993,16 @@ S2.define('select2/diacritics',[
       '\u24E1': 'r',
       '\uFF52': 'r',
       '\u0155': 'r',
-    '\u1E59': 'r',
-    '\u0159': 'r',
-    '\u0211': 'r',
-    '\u0213': 'r',
-    '\u1E5B': 'r',
-    '\u1E5D': 'r',
-    '\u0157': 'r',
-    '\u1E5F': 'r',
-    '\u024D': 'r',
-    '\u027D': 'r',
+      '\u1E59': 'r',
+      '\u0159': 'r',
+      '\u0211': 'r',
+      '\u0213': 'r',
+      '\u1E5B': 'r',
+      '\u1E5D': 'r',
+      '\u0157': 'r',
+      '\u1E5F': 'r',
+      '\u024D': 'r',
+      '\u027D': 'r',
     '\uA75B': 'r',
     '\uA7A7': 'r',
     '\uA783': 'r',
@@ -3111,16 +3111,16 @@ S2.define('select2/diacritics',[
     '\u1EFF': 'y',
     '\u24E9': 'z',
     '\uFF5A': 'z',
-    '\u017A': 'z',
-    '\u1E91': 'z',
-    '\u017C': 'z',
-    '\u017E': 'z',
-    '\u1E93': 'z',
-    '\u1E95': 'z',
-    '\u01B6': 'z',
-    '\u0225': 'z',
-    '\u0240': 'z',
-    '\u2C6C': 'z',
+      '\u017A': 'z',
+      '\u1E91': 'z',
+      '\u017C': 'z',
+      '\u017E': 'z',
+      '\u1E93': 'z',
+      '\u1E95': 'z',
+      '\u01B6': 'z',
+      '\u0225': 'z',
+      '\u0240': 'z',
+      '\u2C6C': 'z',
       '\uA763': 'z',
       '\u0386': '\u0391',
       '\u0388': '\u0395',
@@ -3235,9 +3235,9 @@ S2.define('select2/data/select',[
 
     if (this.$element.prop('multiple')) {
       this.current(function (currentData) {
-        var val = [];
+          var val = [];
 
-        data = [data];
+          data = [data];
           data.push.apply(data, currentData);
 
           for (var d = 0; d < data.length; d++) {
@@ -3375,13 +3375,13 @@ S2.define('select2/data/select',[
       }
 
       if (data.title) {
-      option.title = data.title;
-    }
+          option.title = data.title;
+      }
 
-    var $option = $(option);
+      var $option = $(option);
 
-    var normalizedData = this._normalizeItem(data);
-    normalizedData.element = option;
+      var normalizedData = this._normalizeItem(data);
+      normalizedData.element = option;
 
     // Override the option's data with the combined data
       Utils.StoreData(option, 'data', normalizedData);
@@ -3452,15 +3452,15 @@ S2.define('select2/data/select',[
           disabled: false
       };
 
-    if (item.id != null) {
-      item.id = item.id.toString();
-    }
+      if (item.id != null) {
+          item.id = item.id.toString();
+      }
 
-    if (item.text != null) {
-      item.text = item.text.toString();
-    }
+      if (item.text != null) {
+          item.text = item.text.toString();
+      }
 
-    if (item._resultId == null && item.id && this.container != null) {
+      if (item._resultId == null && item.id && this.container != null) {
       item._resultId = this.generateResultId(this.container, item);
     }
 
@@ -3978,55 +3978,55 @@ S2.define('select2/data/maximumInputLength',[
   return MaximumInputLength;
 });
 
-S2.define('select2/data/maximumSelectionLength', [], function () {
-    function MaximumSelectionLength(decorated, $e, options) {
-        this.maximumSelectionLength = options.get('maximumSelectionLength');
+        S2.define('select2/data/maximumSelectionLength', [], function () {
+            function MaximumSelectionLength(decorated, $e, options) {
+                this.maximumSelectionLength = options.get('maximumSelectionLength');
 
-        decorated.call(this, $e, options);
-    }
+                decorated.call(this, $e, options);
+            }
 
-    MaximumSelectionLength.prototype.bind =
-        function (decorated, container, $container) {
-            var self = this;
+            MaximumSelectionLength.prototype.bind =
+                function (decorated, container, $container) {
+                    var self = this;
 
-            decorated.call(this, container, $container);
+                    decorated.call(this, container, $container);
 
-            container.on('select', function () {
-                self._checkIfMaximumSelected();
-            });
-        };
+                    container.on('select', function () {
+                        self._checkIfMaximumSelected();
+                    });
+                };
 
-    MaximumSelectionLength.prototype.query =
-        function (decorated, params, callback) {
-            var self = this;
+            MaximumSelectionLength.prototype.query =
+                function (decorated, params, callback) {
+                    var self = this;
 
-            this._checkIfMaximumSelected(function () {
-                decorated.call(self, params, callback);
-            });
-        };
+                    this._checkIfMaximumSelected(function () {
+                        decorated.call(self, params, callback);
+                    });
+                };
 
-    MaximumSelectionLength.prototype._checkIfMaximumSelected =
-        function (_, successCallback) {
-            var self = this;
+            MaximumSelectionLength.prototype._checkIfMaximumSelected =
+                function (_, successCallback) {
+                    var self = this;
 
-            this.current(function (currentData) {
-                var count = currentData != null ? currentData.length : 0;
-                if (self.maximumSelectionLength > 0 &&
-                    count >= self.maximumSelectionLength) {
-                    self.trigger('results:message', {
-                        message: 'maximumSelected',
-                        args: {
-                            maximum: self.maximumSelectionLength
+                    this.current(function (currentData) {
+                        var count = currentData != null ? currentData.length : 0;
+                        if (self.maximumSelectionLength > 0 &&
+                            count >= self.maximumSelectionLength) {
+                            self.trigger('results:message', {
+                                message: 'maximumSelected',
+                                args: {
+                                    maximum: self.maximumSelectionLength
+                                }
+                            });
+                            return;
+                        }
+
+                        if (successCallback) {
+                            successCallback();
                         }
                     });
-                    return;
-                }
-
-                if (successCallback) {
-                    successCallback();
-                }
-            });
-        };
+                };
 
   return MaximumSelectionLength;
 });
@@ -4118,22 +4118,22 @@ S2.define('select2/dropdown/search',[
       this.$search.on('input', function (evt) {
           // Unbind the duplicated `keyup` event
           $(this).off('keyup');
-    });
+      });
 
-    this.$search.on('keyup input', function (evt) {
-      self.handleSearch(evt);
-    });
+      this.$search.on('keyup input', function (evt) {
+          self.handleSearch(evt);
+      });
 
-    container.on('open', function () {
-        self.$search.attr('tabindex', 0);
-        self.$search.attr('aria-controls', resultsId);
+      container.on('open', function () {
+          self.$search.attr('tabindex', 0);
+          self.$search.attr('aria-controls', resultsId);
 
-        self.$search.trigger('focus');
+          self.$search.trigger('focus');
 
-        window.setTimeout(function () {
-            self.$search.trigger('focus');
-        }, 0);
-    });
+          window.setTimeout(function () {
+              self.$search.trigger('focus');
+          }, 0);
+      });
 
     container.on('close', function () {
         self.$search.attr('tabindex', -1);
@@ -4451,15 +4451,15 @@ S2.define('select2/dropdown/attachBody',[
 
             $watchers.on(scrollEvent, function (ev) {
                 var position = Utils.GetData(this, 'select2-scroll-position');
-      $(this).scrollTop(position.y);
-    });
+                $(this).scrollTop(position.y);
+            });
 
-    $(window).on(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent,
-      function (e) {
-      self._positionDropdown();
-      self._resizeDropdown();
-    });
-  };
+            $(window).on(scrollEvent + ' ' + resizeEvent + ' ' + orientationEvent,
+                function (e) {
+                    self._positionDropdown();
+                    self._resizeDropdown();
+                });
+        };
 
   AttachBody.prototype._detachPositioningHandler =
       function (decorated, container) {
@@ -4492,14 +4492,14 @@ S2.define('select2/dropdown/attachBody',[
     container.top = offset.top;
     container.bottom = offset.top + container.height;
 
-    var dropdown = {
-      height: this.$dropdown.outerHeight(false)
-    };
+      var dropdown = {
+          height: this.$dropdown.outerHeight(false)
+      };
 
-    var viewport = {
-      top: $window.scrollTop(),
-      bottom: $window.scrollTop() + $window.height()
-    };
+      var viewport = {
+          top: $window.scrollTop(),
+          bottom: $window.scrollTop() + $window.height()
+      };
 
       var enoughRoomAbove = viewport.top < (offset.top - dropdown.height);
       var enoughRoomBelow = viewport.bottom > (offset.bottom + dropdown.height);
@@ -4549,13 +4549,13 @@ S2.define('select2/dropdown/attachBody',[
       }
 
       if (newDirection != null) {
-      this.$dropdown
-        .removeClass('select2-dropdown--below select2-dropdown--above')
-        .addClass('select2-dropdown--' + newDirection);
-      this.$container
-        .removeClass('select2-container--below select2-container--above')
-        .addClass('select2-container--' + newDirection);
-    }
+          this.$dropdown
+              .removeClass('select2-dropdown--below select2-dropdown--above')
+              .addClass('select2-dropdown--' + newDirection);
+          this.$container
+              .removeClass('select2-container--below select2-container--above')
+              .addClass('select2-container--' + newDirection);
+      }
 
     this.$dropdownContainer.css(css);
   };
@@ -4642,16 +4642,16 @@ S2.define('select2/dropdown/minimumResultsForSearch',[
 
             SelectOnClose.prototype._handleSelectOnClose = function (_, params) {
                 if (params && params.originalSelect2Event != null) {
-      var event = params.originalSelect2Event;
+                    var event = params.originalSelect2Event;
 
-      // Don't select an item if the close event was triggered from a select or
-      // unselect event
-      if (event._type === 'select' || event._type === 'unselect') {
-        return;
-      }
-    }
+                    // Don't select an item if the close event was triggered from a select or
+                    // unselect event
+                    if (event._type === 'select' || event._type === 'unselect') {
+                        return;
+                    }
+                }
 
-    var $highlightedResults = this.getHighlightedResults();
+                var $highlightedResults = this.getHighlightedResults();
 
     // Only select highlighted results
     if ($highlightedResults.length < 1) {
@@ -4729,16 +4729,16 @@ S2.define('select2/i18n/en',[],function () {
 
       return message;
     },
-    inputTooShort: function (args) {
-      var remainingChars = args.minimum - args.input.length;
+      inputTooShort: function (args) {
+          var remainingChars = args.minimum - args.input.length;
 
-      var message = 'Please enter ' + remainingChars + ' or more characters';
+          var message = 'Please enter ' + remainingChars + ' or more characters';
 
-      return message;
-    },
-    loadingMore: function () {
-      return 'Loading more results…';
-    },
+          return message;
+      },
+      loadingMore: function () {
+          return 'Loading more results…';
+      },
       maximumSelected: function (args) {
           var message = 'You can only select ' + args.maximum + ' item';
 
@@ -5258,15 +5258,15 @@ S2.define('select2/options',[
       this.options.disabled = $e.prop('disabled');
     }
 
-    if (this.options.dir == null) {
-      if ($e.prop('dir')) {
-        this.options.dir = $e.prop('dir');
-      } else if ($e.closest('[dir]').prop('dir')) {
-          this.options.dir = $e.closest('[dir]').prop('dir');
-      } else {
-          this.options.dir = 'ltr';
+      if (this.options.dir == null) {
+          if ($e.prop('dir')) {
+              this.options.dir = $e.prop('dir');
+          } else if ($e.closest('[dir]').prop('dir')) {
+              this.options.dir = $e.closest('[dir]').prop('dir');
+          } else {
+              this.options.dir = 'ltr';
+          }
       }
-    }
 
       $e.prop('disabled', this.options.disabled);
       $e.prop('multiple', this.options.multiple);
@@ -5397,11 +5397,11 @@ S2.define('select2/core',[
 
       this._placeContainer($container);
 
-    var SelectionAdapter = this.options.get('selectionAdapter');
-    this.selection = new SelectionAdapter($element, this.options);
-    this.$selection = this.selection.render();
+      var SelectionAdapter = this.options.get('selectionAdapter');
+      this.selection = new SelectionAdapter($element, this.options);
+      this.$selection = this.selection.render();
 
-    this.selection.position(this.$selection, $container);
+      this.selection.position(this.$selection, $container);
 
     var DropdownAdapter = this.options.get('dropdownAdapter');
     this.dropdown = new DropdownAdapter($element, this.options);
@@ -5419,16 +5419,16 @@ S2.define('select2/core',[
 
     var self = this;
 
-    // Bind the container to all of the adapters
-    this._bindAdapters();
+      // Bind the container to all of the adapters
+      this._bindAdapters();
 
-    // Register any DOM event handlers
-    this._registerDomEvents();
+      // Register any DOM event handlers
+      this._registerDomEvents();
 
-    // Register any internal event handlers
-    this._registerDataEvents();
-    this._registerSelectionEvents();
-    this._registerDropdownEvents();
+      // Register any internal event handlers
+      this._registerDataEvents();
+      this._registerSelectionEvents();
+      this._registerDropdownEvents();
       this._registerResultsEvents();
       this._registerEvents();
 
@@ -5903,11 +5903,11 @@ S2.define('select2/core',[
         this.trigger('focus', {});
     };
 
-  Select2.prototype.enable = function (args) {
-    if (this.options.get('debug') && window.console && console.warn) {
-      console.warn(
-        'Select2: The `select2("enable")` method has been deprecated and will' +
-        ' be removed in later Select2 versions. Use $element.prop("disabled")' +
+    Select2.prototype.enable = function (args) {
+        if (this.options.get('debug') && window.console && console.warn) {
+            console.warn(
+                'Select2: The `select2("enable")` method has been deprecated and will' +
+                ' be removed in later Select2 versions. Use $element.prop("disabled")' +
         ' instead.'
       );
     }
@@ -5970,7 +5970,7 @@ S2.define('select2/core',[
     }
 
     if (this._observer != null) {
-      this._observer.disconnect();
+        this._observer.disconnect();
         this._observer = null;
     } else if (this.$element[0].removeEventListener) {
         this.$element[0]
@@ -6310,7 +6310,7 @@ S2.define('select2/compat/initSelection',[
     data.selected = false;
 
     this.current(function (allData) {
-      var values = [];
+        var values = [];
 
         for (var d = 0; d < allData.length; d++) {
             var item = allData[d];
@@ -6775,15 +6775,15 @@ S2.define('select2/selection/stopPropagation',[
                         this.each(function () {
                             var instance = Utils.GetData(this, 'select2');
 
-          if (instance == null && window.console && console.error) {
-            console.error(
-              'The select2(\'' + options + '\') method was called on an ' +
-              'element that is not using Select2.'
-            );
-          }
+                            if (instance == null && window.console && console.error) {
+                                console.error(
+                                    'The select2(\'' + options + '\') method was called on an ' +
+                                    'element that is not using Select2.'
+                                );
+                            }
 
-          ret = instance[options].apply(instance, args);
-        });
+                            ret = instance[options].apply(instance, args);
+                        });
 
         // Check if we should be returning `this`
         if ($.inArray(options, thisMethods) > -1) {
