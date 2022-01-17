@@ -1,3 +1,5 @@
+import numpy as np
+
 from random import sample
 
 from alambic_app.machine_learning.preprocessing import *
@@ -9,9 +11,10 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, model, ):
+    def __init__(self, model, handler):
         self.step = 1
         self.model = model
+        self.handler = handler
         self.unlabelled_dataset, self.labelled_dataset = self.get_labelled_dataset()
         self.training_set = []
         self.test_set = []
@@ -45,7 +48,6 @@ class MLManager:
             self.training_set = [id for id in self.labelled_dataset if id not in self.test_set]
 
         ids_to_add += self.set_seed(size_seed)
-
         return ids_to_add
 
     def set_seed(self, size_seed):
@@ -65,31 +67,52 @@ class MLManager:
             self.unlabelled_dataset = [id for id in self.unlabelled_dataset if id not in ids_to_add]
             return ids_to_add
 
-    def add_to_training(self, data_id):
-        self.training_set += [data_id]
-
     def get_y(self, lst):
         outputs = Output.objects.filter(data_id__in=lst)
         return outputs
 
-    def add_to_labelled(self, data_id):
-        self.labelled_dataset += [data_id]
-        self.unlabelled_dataset.remove(data_id)
-
     def set_test_set(self, lst):
         self.test_set = lst
 
-    def register_result(self):
-        raise NotImplementedError("This is only implemented in subclasses")
+    def get_y_test(self):
+        self.y_test = self.get_y(self.test_set)
 
-    def launch_ml(self):
-        self.model.fit()
+    def get_x(self):
+        x = []
+        y = np.array(self.get_y(self.training_set))
+        for id in self.training_set:
+            x.append(self.handler[id])
+        x = np.array(x)
+        return x, y
+
+    def next_step(self, data_id):
+        self.training_set += [data_id]
+        self.labelled_dataset += [data_id]
+        self.unlabelled_dataset.remove(data_id)
+        self.step += 1
+
+    def register_result(self):
+        return {
+            'step': self.step,
+            'labelled_data': len(self.labelled_dataset),
+            'unlabelled_data': len(self.unlabelled_dataset),
+            'annotated_by_human': Output.objects.filter(annotated_by_human=True).count(),
+            'training_size': len(self.training_set),
+            'test_size': len(self.test_set)
+        }
+
+    def train(self):
+        X_train, Y_train = self.get_x()
+        self.model.fit(X_train, Y_train)
+
+    def predict(self):
+        self.y_predicted = self.model.predict(self.test_set)
 
 
 class ClassificationManager(MLManager):
 
-    def __init__(self, model):
-        super().__init__(model)
+    def __init__(self, model, handler):
+        super().__init__(model, handler)
         self.type_classification = self.get_type()
 
     def get_type(self):
@@ -119,3 +142,19 @@ class ClassificationManager(MLManager):
     @property
     def f1_score(self):
         return sklearn.metrics.f1_score(self.y_test, self.y_predicted, average=self.type_classification)
+
+    @property
+    def mcc(self):
+        return sklearn.metrics.matthews_corrcoef(self.y_test, self.y_predicted)
+
+    def register_result(self):
+        attributes = super().register_result()
+        attributes.update({
+            'precision': self.precision,
+            'recall': self.recall,
+            'accuracy': self.accuracy,
+            'f1_score': self.f1_score,
+            'mcc': self.mcc
+        })
+        result_id = Result.objects.create(**attributes)
+        return result_id

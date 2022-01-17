@@ -28,7 +28,7 @@ class PreprocessingHandler:
 
     def __init__(self, operations):
         self.pipeline = self.get_pipeline(operations)
-        self.features = []
+        self.features = dict()
 
     def get_pipeline(self, operations):
         lst = []
@@ -38,7 +38,13 @@ class PreprocessingHandler:
             )
         return lst
 
-    def create_features(self, lst_ids):
-        data = list(Data.objects.values_list("content", flat=True))
+    def create_features(self):
+        data = list(Data.objects.values_list("id", "content"))
+        data_ids = [item['id'] for item in data]
+        data = [item['content'] for item in data]
         pipeline = sklearn.pipeline.Pipeline(self.pipeline)
-        return pipeline.fit_transform(data)
+        features = pipeline.fit_transform(data)
+        self.features = {k: v for k, v in zip(data_ids, features)}
+
+    def __getitem__(self, id):
+        return self.features[id]

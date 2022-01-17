@@ -10,11 +10,12 @@ class Result(models.Model):
     labelled_data = models.IntegerField()
     unlabelled_data = models.IntegerField()
     annotated_by_human = models.IntegerField()
+    training_size = models.IntegerField()
+    test_size = models.IntegerField()
 
     # Performance indicators
     cross_val = models.BooleanField()  # done with cross-val ?
     precision = models.FloatField(null=True)
-    specificity = models.FloatField(null=True)
     recall = models.FloatField(null=True)
     accuracy = models.FloatField(null=True)
     mcc = models.FloatField(null=True)
