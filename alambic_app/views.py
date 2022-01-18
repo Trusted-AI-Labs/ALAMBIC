@@ -155,7 +155,7 @@ class SetupView(SessionWizardView):
         if step is None:
             step = self.steps.current
 
-        if step == "Data":
+        if step == "Data" and cache.get('data', 0) > 0:
             form_class = get_form_data()
             form = form_class(data)
 

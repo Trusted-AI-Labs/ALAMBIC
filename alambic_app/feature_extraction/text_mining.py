@@ -11,7 +11,7 @@ from alambic_app.constantes import ENDPOINT_CORENLP
 def initialize_client(annotators):
     """
     Create the CoreNLPClient
-    :param properties: dictionry of the options chosen by the user for the text processing
+    :param annotators: dictionary of the options chosen by the user for the text processing
     :return: stanza.server.CoreNLPClient
     """
     properties = dict()

@@ -1,9 +1,18 @@
 import numpy as np
 
-from random import sample
+from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sampling
 
 from alambic_app.machine_learning.preprocessing import *
+from alambic_app.active_learning.stopcriterion import *
+from alambic_app.active_learning.strategies import random_sampling
 from alambic_app.models.results import Result
+
+STRATEGY_MATCH = {
+    'random': random_sampling,
+    'uncertainty': uncertainty_sampling,
+    'margin': margin_sampling,
+    'entropy': entropy_sampling
+}
 
 
 class MLManager:
@@ -11,10 +20,12 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, model, handler):
+    def __init__(self, model, handler, strategy, stopcriterion):
         self.step = 1
         self.model = model
         self.handler = handler
+        self.strategy = STRATEGY_MATCH[strategy]
+        self.stopcriterion = stopcriterion
         self.unlabelled_dataset, self.labelled_dataset = self.get_labelled_dataset()
         self.training_set = []
         self.test_set = []
@@ -39,12 +50,12 @@ class MLManager:
         # missing labelled data
         if current_ratio < ratio:
             nb_ids_to_add = (total_data * ratio) - len(self.labelled_dataset)
-            ids_to_add = sample(self.unlabelled_dataset, nb_ids_to_add)
+            ids_to_add = np.random.sample(self.unlabelled_dataset, nb_ids_to_add)
             self.test_set = ids_to_add.copy()
             self.unlabelled_dataset = [id for id in self.unlabelled_dataset if id not in ids_to_add]
         elif current_ratio > ratio:
             nb_ids_to_sample = (total_data * ratio)
-            self.test_set = sample(self.labelled_dataset, nb_ids_to_sample)
+            self.test_set = np.random.sample(self.labelled_dataset, nb_ids_to_sample)
             self.training_set = [id for id in self.labelled_dataset if id not in self.test_set]
 
         ids_to_add += self.set_seed(size_seed)
@@ -58,11 +69,11 @@ class MLManager:
         :return: list of ints, ids of the data points to label
         """
         if len(self.training_set) >= size_seed:
-            self.training_set = sample(self.training_set, size_seed)
+            self.training_set = np.random.sample(self.training_set, size_seed)
             return []
         else:
             nb_ids_to_add = size_seed - len(self.training_set)
-            ids_to_add = sample(self.unlabelled_dataset, nb_ids_to_add)
+            ids_to_add = np.random.sample(self.unlabelled_dataset, nb_ids_to_add)
             self.training_set += ids_to_add
             self.unlabelled_dataset = [id for id in self.unlabelled_dataset if id not in ids_to_add]
             return ids_to_add
@@ -77,10 +88,10 @@ class MLManager:
     def get_y_test(self):
         self.y_test = self.get_y(self.test_set)
 
-    def get_x(self):
+    def get_data(self, lst):
         x = []
-        y = np.array(self.get_y(self.training_set))
-        for id in self.training_set:
+        y = np.array(self.get_y(lst))
+        for id in lst:
             x.append(self.handler[id])
         x = np.array(x)
         return x, y
@@ -102,17 +113,21 @@ class MLManager:
         }
 
     def train(self):
-        X_train, Y_train = self.get_x()
+        X_train, Y_train = self.get_data(self.training_set)
         self.model.fit(X_train, Y_train)
 
     def predict(self):
         self.y_predicted = self.model.predict(self.test_set)
 
+    def query(self):
+        unlabelled_X, _ = self.get_data(self.unlabelled_dataset)
+        query_result = self.strategy(self.model, unlabelled_X)
+
 
 class ClassificationManager(MLManager):
 
-    def __init__(self, model, handler):
-        super().__init__(model, handler)
+    def __init__(self, model, handler, strategy):
+        super().__init__(model, handler, strategy)
         self.type_classification = self.get_type()
 
     def get_type(self):
