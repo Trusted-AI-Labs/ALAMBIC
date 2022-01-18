@@ -4,14 +4,14 @@ from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sam
 
 from alambic_app.machine_learning.preprocessing import *
 from alambic_app.active_learning.stopcriterion import *
-from alambic_app.active_learning.strategies import random_sampling
+from alambic_app.active_learning import strategies
 from alambic_app.models.results import Result
 
 STRATEGY_MATCH = {
-    'random': random_sampling,
+    'random': strategies.random_sampling,
     'uncertainty': uncertainty_sampling,
     'margin': margin_sampling,
-    'entropy': entropy_sampling
+    'entropy': entropy_sampling,
 }
 
 

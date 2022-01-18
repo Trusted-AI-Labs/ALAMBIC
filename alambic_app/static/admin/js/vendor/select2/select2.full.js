@@ -72,14 +72,14 @@
                     }
 
                     /**
-     * Given a relative module name, like ./something, normalize it to
-     * a real name that can be mapped to a path.
-     * @param {String} name the relative name
-     * @param {String} baseName a real name that the name arg is relative
-     * to.
-     * @returns {String} normalized name
-     */
-    function normalize(name, baseName) {
+                     * Given a relative module name, like ./something, normalize it to
+                     * a real name that can be mapped to a path.
+                     * @param {String} name the relative name
+                     * @param {String} baseName a real name that the name arg is relative
+                     * to.
+                     * @returns {String} normalized name
+                     */
+                    function normalize(name, baseName) {
         var nameParts, nameSegment, mapValue, foundMap, lastIndex,
             foundI, foundStarMap, starI, i, j, part, normalizedBaseParts,
             baseParts = baseName && baseName.split("/"),
@@ -1058,15 +1058,15 @@ S2.define('select2/results',[
       if (data.children) {
           var $option = $(option);
 
-      var label = document.createElement('strong');
-      label.className = 'select2-results__group';
+          var label = document.createElement('strong');
+          label.className = 'select2-results__group';
 
-      var $label = $(label);
-      this.template(data, label);
+          var $label = $(label);
+          this.template(data, label);
 
-      var $children = [];
+          var $children = [];
 
-      for (var c = 0; c < data.children.length; c++) {
+          for (var c = 0; c < data.children.length; c++) {
         var child = data.children[c];
 
         var $child = this.option(child);
@@ -2034,15 +2034,15 @@ S2.define('select2/selection/search',[
 
       container.on('focus', function (evt) {
           self.$search.trigger('focus');
-    });
+      });
 
-    container.on('results:focus', function (params) {
-        if (params.data._resultId) {
-            self.$search.attr('aria-activedescendant', params.data._resultId);
-        } else {
-            self.$search.removeAttr('aria-activedescendant');
-        }
-    });
+      container.on('results:focus', function (params) {
+          if (params.data._resultId) {
+              self.$search.attr('aria-activedescendant', params.data._resultId);
+          } else {
+              self.$search.removeAttr('aria-activedescendant');
+          }
+      });
 
     this.$selection.on('focusin', '.select2-search--inline', function (evt) {
       self.trigger('focus', evt);
@@ -2109,10 +2109,10 @@ S2.define('select2/selection/search',[
           }
       );
 
-    this.$selection.on(
-      'keyup.search input.search',
-      '.select2-search--inline',
-      function (evt) {
+      this.$selection.on(
+          'keyup.search input.search',
+          '.select2-search--inline',
+          function (evt) {
         // IE will trigger the `input` event when a placeholder is used on a
         // search box. To get around this issue, we are forced to ignore all
         // `input` events in IE and keep using `keyup`.
@@ -2522,16 +2522,16 @@ S2.define('select2/diacritics',[
     '\u01CB': 'Nj',
     '\u24C4': 'O',
     '\uFF2F': 'O',
-    '\u00D2': 'O',
-    '\u00D3': 'O',
-    '\u00D4': 'O',
-    '\u1ED2': 'O',
-    '\u1ED0': 'O',
-    '\u1ED6': 'O',
-    '\u1ED4': 'O',
-    '\u00D5': 'O',
-    '\u1E4C': 'O',
-    '\u022C': 'O',
+      '\u00D2': 'O',
+      '\u00D3': 'O',
+      '\u00D4': 'O',
+      '\u1ED2': 'O',
+      '\u1ED0': 'O',
+      '\u1ED6': 'O',
+      '\u1ED4': 'O',
+      '\u00D5': 'O',
+      '\u1E4C': 'O',
+      '\u022C': 'O',
       '\u1E4E': 'O',
       '\u014C': 'O',
       '\u1E50': 'O',
@@ -2593,16 +2593,16 @@ S2.define('select2/diacritics',[
       '\u1E5E': 'R',
       '\u024C': 'R',
       '\u2C64': 'R',
-    '\uA75A': 'R',
-    '\uA7A6': 'R',
-    '\uA782': 'R',
-    '\u24C8': 'S',
-    '\uFF33': 'S',
-    '\u1E9E': 'S',
-    '\u015A': 'S',
-    '\u1E64': 'S',
-    '\u015C': 'S',
-    '\u1E60': 'S',
+      '\uA75A': 'R',
+      '\uA7A6': 'R',
+      '\uA782': 'R',
+      '\u24C8': 'S',
+      '\uFF33': 'S',
+      '\u1E9E': 'S',
+      '\u015A': 'S',
+      '\u1E64': 'S',
+      '\u015C': 'S',
+      '\u1E60': 'S',
     '\u0160': 'S',
     '\u1E66': 'S',
     '\u1E62': 'S',
@@ -2932,16 +2932,16 @@ S2.define('select2/diacritics',[
     '\u01CC': 'nj',
     '\u24DE': 'o',
     '\uFF4F': 'o',
-    '\u00F2': 'o',
-    '\u00F3': 'o',
-    '\u00F4': 'o',
-    '\u1ED3': 'o',
-    '\u1ED1': 'o',
-    '\u1ED7': 'o',
-    '\u1ED5': 'o',
-    '\u00F5': 'o',
-    '\u1E4D': 'o',
-    '\u022D': 'o',
+      '\u00F2': 'o',
+      '\u00F3': 'o',
+      '\u00F4': 'o',
+      '\u1ED3': 'o',
+      '\u1ED1': 'o',
+      '\u1ED7': 'o',
+      '\u1ED5': 'o',
+      '\u00F5': 'o',
+      '\u1E4D': 'o',
+      '\u022D': 'o',
       '\u1E4F': 'o',
       '\u014D': 'o',
       '\u1E51': 'o',
@@ -3003,16 +3003,16 @@ S2.define('select2/diacritics',[
       '\u1E5F': 'r',
       '\u024D': 'r',
       '\u027D': 'r',
-    '\uA75B': 'r',
-    '\uA7A7': 'r',
-    '\uA783': 'r',
-    '\u24E2': 's',
-    '\uFF53': 's',
-    '\u00DF': 's',
-    '\u015B': 's',
-    '\u1E65': 's',
-    '\u015D': 's',
-    '\u1E61': 's',
+      '\uA75B': 'r',
+      '\uA7A7': 'r',
+      '\uA783': 'r',
+      '\u24E2': 's',
+      '\uFF53': 's',
+      '\u00DF': 's',
+      '\u015B': 's',
+      '\u1E65': 's',
+      '\u015D': 's',
+      '\u1E61': 's',
     '\u0161': 's',
     '\u1E67': 's',
     '\u1E63': 's',
@@ -3101,16 +3101,16 @@ S2.define('select2/diacritics',[
     '\u0177': 'y',
     '\u1EF9': 'y',
     '\u0233': 'y',
-    '\u1E8F': 'y',
-    '\u00FF': 'y',
-    '\u1EF7': 'y',
-    '\u1E99': 'y',
-    '\u1EF5': 'y',
-    '\u01B4': 'y',
-    '\u024F': 'y',
-    '\u1EFF': 'y',
-    '\u24E9': 'z',
-    '\uFF5A': 'z',
+      '\u1E8F': 'y',
+      '\u00FF': 'y',
+      '\u1EF7': 'y',
+      '\u1E99': 'y',
+      '\u1EF5': 'y',
+      '\u01B4': 'y',
+      '\u024F': 'y',
+      '\u1EFF': 'y',
+      '\u24E9': 'z',
+      '\uFF5A': 'z',
       '\u017A': 'z',
       '\u1E91': 'z',
       '\u017C': 'z',
@@ -3383,10 +3383,10 @@ S2.define('select2/data/select',[
       var normalizedData = this._normalizeItem(data);
       normalizedData.element = option;
 
-    // Override the option's data with the combined data
+      // Override the option's data with the combined data
       Utils.StoreData(option, 'data', normalizedData);
 
-    return $option;
+      return $option;
   };
 
   SelectAdapter.prototype.item = function ($option) {
@@ -3461,10 +3461,10 @@ S2.define('select2/data/select',[
       }
 
       if (item._resultId == null && item.id && this.container != null) {
-      item._resultId = this.generateResultId(this.container, item);
-    }
+          item._resultId = this.generateResultId(this.container, item);
+      }
 
-    return $.extend({}, defaults, item);
+      return $.extend({}, defaults, item);
   };
 
   SelectAdapter.prototype.matches = function (params, data) {
@@ -4135,14 +4135,14 @@ S2.define('select2/dropdown/search',[
           }, 0);
       });
 
-    container.on('close', function () {
-        self.$search.attr('tabindex', -1);
-        self.$search.removeAttr('aria-controls');
-        self.$search.removeAttr('aria-activedescendant');
+      container.on('close', function () {
+          self.$search.attr('tabindex', -1);
+          self.$search.removeAttr('aria-controls');
+          self.$search.removeAttr('aria-activedescendant');
 
-        self.$search.val('');
-        self.$search.trigger('blur');
-    });
+          self.$search.val('');
+          self.$search.trigger('blur');
+      });
 
     container.on('focus', function () {
         if (!container.isOpen()) {
@@ -4483,14 +4483,14 @@ S2.define('select2/dropdown/attachBody',[
 
     var offset = this.$container.offset();
 
-    offset.bottom = offset.top + this.$container.outerHeight(false);
+      offset.bottom = offset.top + this.$container.outerHeight(false);
 
-    var container = {
-      height: this.$container.outerHeight(false)
-    };
+      var container = {
+          height: this.$container.outerHeight(false)
+      };
 
-    container.top = offset.top;
-    container.bottom = offset.top + container.height;
+      container.top = offset.top;
+      container.bottom = offset.top + container.height;
 
       var dropdown = {
           height: this.$dropdown.outerHeight(false)
@@ -4557,7 +4557,7 @@ S2.define('select2/dropdown/attachBody',[
               .addClass('select2-container--' + newDirection);
       }
 
-    this.$dropdownContainer.css(css);
+      this.$dropdownContainer.css(css);
   };
 
   AttachBody.prototype._resizeDropdown = function () {
@@ -4719,15 +4719,15 @@ S2.define('select2/i18n/en',[],function () {
       return 'The results could not be loaded.';
     },
     inputTooLong: function (args) {
-      var overChars = args.input.length - args.maximum;
+        var overChars = args.input.length - args.maximum;
 
-      var message = 'Please delete ' + overChars + ' character';
+        var message = 'Please delete ' + overChars + ' character';
 
-      if (overChars != 1) {
-        message += 's';
-      }
+        if (overChars != 1) {
+            message += 's';
+        }
 
-      return message;
+        return message;
     },
       inputTooShort: function (args) {
           var remainingChars = args.minimum - args.input.length;
@@ -5248,15 +5248,15 @@ S2.define('select2/options',[
   }
 
   Options.prototype.fromElement = function ($e) {
-    var excludedData = ['select2'];
+      var excludedData = ['select2'];
 
-    if (this.options.multiple == null) {
-      this.options.multiple = $e.prop('multiple');
-    }
+      if (this.options.multiple == null) {
+          this.options.multiple = $e.prop('multiple');
+      }
 
-    if (this.options.disabled == null) {
-      this.options.disabled = $e.prop('disabled');
-    }
+      if (this.options.disabled == null) {
+          this.options.disabled = $e.prop('disabled');
+      }
 
       if (this.options.dir == null) {
           if ($e.prop('dir')) {
@@ -5403,21 +5403,21 @@ S2.define('select2/core',[
 
       this.selection.position(this.$selection, $container);
 
-    var DropdownAdapter = this.options.get('dropdownAdapter');
-    this.dropdown = new DropdownAdapter($element, this.options);
-    this.$dropdown = this.dropdown.render();
+      var DropdownAdapter = this.options.get('dropdownAdapter');
+      this.dropdown = new DropdownAdapter($element, this.options);
+      this.$dropdown = this.dropdown.render();
 
-    this.dropdown.position(this.$dropdown, $container);
+      this.dropdown.position(this.$dropdown, $container);
 
-    var ResultsAdapter = this.options.get('resultsAdapter');
-    this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
-    this.$results = this.results.render();
+      var ResultsAdapter = this.options.get('resultsAdapter');
+      this.results = new ResultsAdapter($element, this.options, this.dataAdapter);
+      this.$results = this.results.render();
 
-    this.results.position(this.$results, this.$dropdown);
+      this.results.position(this.$results, this.$dropdown);
 
-    // Bind events
+      // Bind events
 
-    var self = this;
+      var self = this;
 
       // Bind the container to all of the adapters
       this._bindAdapters();
@@ -5908,15 +5908,15 @@ S2.define('select2/core',[
             console.warn(
                 'Select2: The `select2("enable")` method has been deprecated and will' +
                 ' be removed in later Select2 versions. Use $element.prop("disabled")' +
-        ' instead.'
-      );
-    }
+                ' instead.'
+            );
+        }
 
-    if (args == null || args.length === 0) {
-      args = [true];
-    }
+        if (args == null || args.length === 0) {
+            args = [true];
+        }
 
-    var disabled = !args[0];
+        var disabled = !args[0];
 
     this.$element.prop('disabled', disabled);
   };
