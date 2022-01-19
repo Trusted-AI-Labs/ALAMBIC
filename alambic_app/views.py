@@ -106,11 +106,19 @@ def distilling(request):
 
 def tasting(request):
     if request.method == 'GET':
+        params = request.GET
         annotation_template = get_annotation_template_page()
+        manager = cache.get('manager')
         # TODO check stop criterion and redirect to page final where the user can download the results and model
-        # if stop_criterion:
+        # if manager.check_criterion():
         ## return HttpResponseRedirect("/spirit?id=" + result.id)
-        return render(request, annotation_template)
+        if "id" not in params:
+            raise BadRequestError("Missing result id")
+        chain_id = params["id"]
+
+        id_data = tasks.get_pipeline_result(chain_id, tasks.query)
+        data = get_info_data(id_data)
+        return render(request, annotation_template, {'to_annotate': data})
     raise BadRequestError("Invalid server request")
 
 
@@ -191,7 +199,8 @@ class SetupView(SessionWizardView):
         form_data = {
             'data': data_list[0],
             'task': data_list[1],
-            'active': data_list[2]
+            'model_settings': data_list[2],
+            'active': data_list[3]
         }
         result = tasks.preprocess_and_feature_extraction(form_data)
         return HttpResponseRedirect("/chopping?id=" + result.id)

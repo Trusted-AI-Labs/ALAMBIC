@@ -1,4 +1,7 @@
-import sklearn
+import sklearn.feature_extraction.text
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer
+from sklearn.impute import SimpleImputer, KNNImputer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 
 from alambic_app.models.input_models import *
 from alambic_app.feature_extraction import *
@@ -6,17 +9,16 @@ from alambic_app.feature_extraction import *
 OPERATIONS_MATCH = {
     # global
     ## scaler
-    'standard': sklearn.preprocessing.StandardScaler,
-    'minmax': sklearn.preprocessing.MinMaxScaler,
-    'normalize': sklearn.preprocessing.Normalizer,
+    'standard': StandardScaler,
+    'minmax': MinMaxScaler,
+    'normalize': Normalizer,
     ## imputation,
-    'simple_imp': sklearn.impute.SimpleImputer,
-    'knn_imp': sklearn.impute.KNNImputer,
-    'iterative_imp': sklearn.impute.IterativeImputer,
+    'simple_imp': SimpleImputer,
+    'knn_imp': KNNImputer,
     # text
-    'tfidf': sklearn.feature_extraction.text.TfidfTransformer,
-    'bow': sklearn.feature_extraction.text.CountVectorizer,
-    'hashing': sklearn.feature_extraction.text.HashingVectorizer,
+    'tfidf': TfidfVectorizer,
+    'bow': CountVectorizer,
+    'hashing': HashingVectorizer,
     # image
 }
 

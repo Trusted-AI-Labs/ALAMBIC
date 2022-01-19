@@ -3,6 +3,7 @@ import logging
 from django.core.cache import cache
 
 from alambic_app.forms import *
+from alambic_app.models.input_models import Data
 from alambic_app.utils.exceptions import MissingForm
 
 logger = logging.getLogger(__name__)
@@ -49,3 +50,7 @@ def get_form_AL():
 def get_annotation_template_page():
     # TODO test cache and select the page according to task and data
     return 'annotations/classification.html'  # toy at the moment
+
+
+def get_info_data(id):
+    return Data.objects.get(id=id)

@@ -7,7 +7,6 @@ class Result(models.Model):
     step = models.IntegerField()
 
     # Info about the ratio of labelled vs unlabelled
-    labelled_data = models.IntegerField()
     unlabelled_data = models.IntegerField()
     annotated_by_human = models.IntegerField()
     training_size = models.IntegerField()

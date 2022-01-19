@@ -31,7 +31,9 @@ RE_MODELS_CHOICES = [
 
 AL_ALGORITHMS_CHOICES = [
     ('RS', 'Random Sampling'),
-    ('UC', 'Uncertainty measure'),
+    ('US', 'Uncertainty Sampling'),
+    ('MS', 'Margin Sampling'),
+    ('ES', 'Entropy Sampling')
 ]
 
 DATA_PATH = "/app/data_alambic"
