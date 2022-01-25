@@ -2,6 +2,10 @@ import csv
 
 import logging
 
+import celery
+
+from typing import Any, Dict, List
+
 from django.apps import apps
 from django.core.cache import cache
 
@@ -14,14 +18,14 @@ from celery_progress.backend import ProgressRecorder
 from alambic_app.models.input_models import Output
 from alambic_app.constantes import *
 from alambic_app.machine_learning.preprocessing import PreprocessingHandler
-from alambic_app.machine_learning.setup import ClassificationManager
+from alambic_app.machine_learning.setup import MLManager, ClassificationManager
 from alambic_app.utils.exceptions import TaskIdNotFoundError
 
 logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True)
-def upload_form_data(self, filename, model, task):
+def upload_form_data(self: celery.Task, filename: str, model: str, task: str):
     """
     Read the file containing all the info for the data instances
     and creates the model instances corresponding to the model
@@ -71,7 +75,7 @@ def upload_form_data(self, filename, model, task):
     cache.set('data', nb_rows)
 
 
-def preprocess_and_feature_extraction(form_data):
+def preprocess_and_feature_extraction(form_data: Dict[str, Any]):
     task_id = uuid()
     data = form_data.get('data')
 
@@ -98,7 +102,7 @@ def pipeline_ML():
 
 
 @shared_task
-def run_preprocess(operations):
+def run_preprocess(operations: Dict[str, Any]) -> PreprocessingHandler:
     """
     Celery task for the extraction of the features and the preprocessing of the data
     :param operations: list of str, names of the different operations to do
@@ -110,7 +114,7 @@ def run_preprocess(operations):
 
 
 @shared_task
-def create_ML_manager(form_data, handler):
+def create_ML_manager(form_data: Dict[str, Any], handler: PreprocessingHandler):
     """
     Create a manager to handle the training, prediction, query selection and the related dataset
     :param form_data: dict, contained all the information for the active learning process
@@ -137,7 +141,7 @@ def create_ML_manager(form_data, handler):
 
 
 @shared_task
-def train(manager):
+def train(manager: MLManager) -> MLManager:
     """
     Train the model
     :param manager: MLManager
@@ -148,7 +152,7 @@ def train(manager):
 
 
 @shared_task
-def predict(manager):
+def predict(manager: MLManager) -> MLManager:
     """
     Predict the test set and store the result
     :param manager: MLManager
@@ -159,7 +163,7 @@ def predict(manager):
 
 
 @shared_task
-def query(manager):
+def query(manager: MLManager) -> int:
     """
     Choose the query of interest among the unlabelled dataset
     :param manager: MLManager
@@ -170,7 +174,7 @@ def query(manager):
 
 
 @shared_task
-def register_result(manager):
+def register_result(manager: MLManager) -> MLManager:
     """
     Store the result measures in the database
     :param manager: MLManager
@@ -181,7 +185,7 @@ def register_result(manager):
 
 
 @shared_task
-def run_pipeline_task_refs(task_refs):
+def run_pipeline_task_refs(task_refs: Dict[Any, Dict[str, int]]) -> Dict[Any, Dict[str, int]]:
     return task_refs
 
 
@@ -190,7 +194,7 @@ def run_pipeline_done():
     return True
 
 
-def get_pipeline_task_refs(pipeline_chain_id, timeout=10.0):
+def get_pipeline_task_refs(pipeline_chain_id: int, timeout=10.0) -> Any:
     """
     Shamelessly found in ORVAL code, by Alexandre Renaud
     Get the list of tasks references
@@ -201,7 +205,7 @@ def get_pipeline_task_refs(pipeline_chain_id, timeout=10.0):
         raise TaskIdNotFoundError(e)
 
 
-def get_pipeline_result(pipeline_chain_id, target_task):
+def get_pipeline_result(pipeline_chain_id: int, target_task: Any) -> Any:
     """
     Shamelessly found in ORVAL code, by Alexandre Renaud
     Get a result from a specific task in a chain
@@ -215,7 +219,7 @@ def get_pipeline_result(pipeline_chain_id, target_task):
         return None
 
 
-def get_task_ref_id(task_id):
+def get_task_ref_id(task_id: str):
     return task_id + "_0"
 
 

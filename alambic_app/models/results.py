@@ -24,3 +24,4 @@ class Result(models.Model):
     class Meta:
         app_label = 'alambic_app'
         db_table = 'result'
+        ordering = ['step']

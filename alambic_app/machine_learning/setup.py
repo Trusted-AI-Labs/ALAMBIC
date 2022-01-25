@@ -1,10 +1,14 @@
 import numpy as np
 import sklearn
 
+from typing import List, Dict, Any
+
+from django.db.models import QuerySet
 from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sampling
 
 from alambic_app.active_learning.stopcriterion import *
 from alambic_app.active_learning import strategies
+from alambic_app.machine_learning.preprocessing import PreprocessingHandler
 
 from alambic_app.models.input_models import Output, Data, Label
 from alambic_app.models.results import Result
@@ -27,9 +31,9 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, handler, model, strategy, stopcriterion, params):
+    def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, stopcriterion: str, params: dict):
         self.step = 1
-        self.model = self.create_model(model, **params)
+        self.model = self.create_model(model, params)
         self.handler = handler
         self.strategy = AL_ALGORITHMS_MATCH[strategy]
         self.stopcriterion = stopcriterion  # TODO decide of the format for the stopcriterion
@@ -39,7 +43,13 @@ class MLManager:
         self.y_predicted = []
 
     @staticmethod
-    def create_model(model, **params):
+    def create_model(model: str, params: Dict[str, Any]):
+        """
+        Create the model to train with the chosen parameters
+        :param model: name of the model found in MODELS_MATCH as key
+        :param params: parameters of the model
+        :return: parameterized model
+        """
         # TODO add here parameters if necessary according to the model
         return MODELS_MATCH[model](**params)
 
@@ -49,11 +59,11 @@ class MLManager:
         labelled = list(Output.objects.excludde(data_id__in=unlabelled).values_list('data_id', flat=True))
         return labelled, unlabelled
 
-    def initialize_dataset(self, ratio, size_seed):
+    def initialize_dataset(self, ratio: float, size_seed: int) -> List[int]:
         """
         Split into training set and test set, assign them to training_set and test_set
-        :param ratio: float
-        :param size_seed: int, number of data points the learner will begin with in the active learning algorithm
+        :param ratio: percentage of the total dataset dedicated to the test set
+        :param size_seed: number of data points the learner will begin with in the active learning algorithm
         :return: list of ints, ids of data to label
         """
         total_data = Data.objects.all().count()
@@ -77,13 +87,13 @@ class MLManager:
 
         return ids_to_add
 
-    def set_seed(self, size_seed):
+    def set_seed(self, size_seed: int) -> List[int]:
         """
         Get the seed for the active learning algorithm.
         Set the training set to have an initial size corresponding to the initial size
         Put the rest of the remaining labelled dataset to the unlabelled dataset
-        :param size_seed: int, number of data points the learner begins with
-        :return: list of ints, ids of the data points to label
+        :param size_seed: number of data points the learner begins with
+        :return: ids of the data points to label
         """
         ids_to_add = []
 
@@ -103,17 +113,17 @@ class MLManager:
 
         return ids_to_add
 
-    def get_y(self, lst):
+    def get_y(self, lst: List[int]) -> QuerySet:
         outputs = Output.objects.filter(data_id__in=lst)
         return outputs
 
-    def set_test_set(self, lst):
+    def set_test_set(self, lst: List[int]):
         self.test_set = lst
 
     def get_y_test(self):
         self.y_test = self.get_y(self.test_set)
 
-    def get_data(self, lst):
+    def get_data(self, lst: List[int]) -> (np.ndarray, np.ndarray):
         x = []
         y = np.array(self.get_y(lst))
         for data_id in lst:
@@ -121,21 +131,21 @@ class MLManager:
         x = np.array(x)
         return x, y
 
-    def next_step(self, data):
+    def next_step(self, data: List[int]):
         """
         Update the value of the manager to go to the next step
-        :param data: list, list of ids labelled
+        :param data: list of ids labelled
         :return: None
         """
         self.update_datasets(data)
         self.step += 1
 
-    def update_datasets(self, data):
+    def update_datasets(self, data: List[int]):
         self.training_set += data
         for data_id in data:
             self.unlabelled_dataset.remove(data_id)
 
-    def register_result(self):
+    def register_result(self) -> Dict[str, int]:
         return {
             'step': self.step,
             'unlabelled_data': len(self.unlabelled_dataset),
@@ -151,7 +161,7 @@ class MLManager:
     def predict(self):
         self.y_predicted = self.model.predict(self.test_set)
 
-    def query(self):
+    def query(self) -> int:
         unlabelled_X, _ = self.get_data(self.unlabelled_dataset)
         query_index = self.strategy(self.model, unlabelled_X)
         return self.unlabelled_dataset[query_index]
@@ -159,8 +169,8 @@ class MLManager:
 
 class ClassificationManager(MLManager):
 
-    def __init__(self, model, handler, strategy, stopcriterion, params):
-        super().__init__(model, handler, strategy, stopcriterion, params)
+    def __init__(self, handler, model, strategy, stopcriterion, params):
+        super().__init__(handler, model, strategy, stopcriterion, params)
         self.type_classification = self.get_type()
 
     @staticmethod
@@ -172,31 +182,31 @@ class ClassificationManager(MLManager):
             type = "binary"
         return type
 
-    def get_y(self, lst):
+    def get_y(self, lst: List[int]) -> List[int]:
         outputs = super().get_y(lst)
         return [outputs.get(data_id=data_id).label.class_id for data_id in lst]
 
     @property
-    def accuracy(self):
+    def accuracy(self) -> float:
         return sklearn.metrics.accuracy_score(self.y_test, self.y_predicted)
 
     @property
-    def precision(self):
+    def precision(self) -> float:
         return sklearn.metrics.precision_score(self.y_test, self.y_predicted)
 
     @property
-    def recall(self):
+    def recall(self) -> float:
         return sklearn.metrics.recall_score(self.y_test, self.y_predicted)
 
     @property
-    def f1_score(self):
+    def f1_score(self) -> float:
         return sklearn.metrics.f1_score(self.y_test, self.y_predicted, average=self.type_classification)
 
     @property
-    def mcc(self):
+    def mcc(self) -> float:
         return sklearn.metrics.matthews_corrcoef(self.y_test, self.y_predicted)
 
-    def register_result(self):
+    def register_result(self) -> int:
         attributes = super().register_result()
         attributes.update({
             'precision': self.precision,

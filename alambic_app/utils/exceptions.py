@@ -8,3 +8,6 @@ class MissingForm(Exception):
 
 class TaskIdNotFoundError(Exception):
     pass
+
+class ParsingError(Exception):
+    pass
