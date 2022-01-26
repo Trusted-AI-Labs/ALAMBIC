@@ -1,4 +1,6 @@
 import json
+from io import BytesIO
+import base64
 
 from django import template
 from django.utils.safestring import mark_safe
@@ -71,3 +73,12 @@ def get_dict_item(dictionary, key):
     :rtype: any or None
     """
     return dictionary.get(key)
+
+
+@register.inclusion_tag('annotations/image.html')
+def convert_image(data):
+    image = data.as_image()
+    buffer = BytesIO()
+    image.save(buffer, "PNG")
+    img_str = base64.b64encode(buffer.getvalue())
+    return {'img_str': img_str}

@@ -1,16 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_tags %}
+{% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     <title> ALAMBIC | Tasting</title>
 {% endblock %}
 
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "alambic_app/css/annotation.css" %}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="{% static "libs/amcharts5/index.js" %}"></script>
+    <script src="{% static "libs/amcharts5/xy.js" %}"></script>
+    <script src="{% static "libs/amcharts5/themes/Animated.js" %}"></script>
+    <script src="{% static "alambic_app/js/charts.js" %}"></script>
+{% endblock %}
+
 {% block primary %}
 
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <div id="plots_performance">
+        <div class="chartdiv" id="plots_performance">
         </div>
         <div id="annotation_div">
+
+            <div id="data_div">
+                {% if to_annotate|get_class == "Image" %}
+                    {% convert_image to_annotate %}
+                {% elif to_annotate|get_class == "Text" %}
+                    {{ to_annotate.content }}
+                {% endif %}
+            </div>
+
+            <div id="label_div">
+                <div class="col-md-10">
+                    {% crispy form %}
+                </div>
+            </div>
         </div>
     </main>
 

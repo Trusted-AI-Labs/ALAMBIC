@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
+from alambic_app.utils.plots import get_performance_chart_formatted_data
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
 
@@ -83,6 +84,17 @@ def job_status(request):
     raise BadRequestError("Invalid server request")
 
 
+def data_request(request):
+    data = request.GET.get('data')
+    data_type = request.GET.get('data_type')
+    res = None
+
+    if data == 'performance':
+        res = get_performance_chart_formatted_data(data_type)
+
+    return JsonResponse(res)
+
+
 def chopping_ingredients(request):
     """
     Renders template page for the feature extraction and preprocessing
@@ -111,14 +123,15 @@ def tasting(request):
         manager = cache.get('manager')
         # TODO check stop criterion and redirect to page final where the user can download the results and model
         # if manager.check_criterion():
-        ## return HttpResponseRedirect("/spirit?id=" + result.id)
+        #   return HttpResponseRedirect("/spirit?id=" + result.id)
         if "id" not in params:
             raise BadRequestError("Missing result id")
         chain_id = params["id"]
 
         id_data = tasks.get_pipeline_result(chain_id, tasks.query)
         data = get_info_data(id_data)
-        return render(request, annotation_template, {'to_annotate': data})
+        form = None
+        return render(request, annotation_template, {'to_annotate': data, 'form': form})
     raise BadRequestError("Invalid server request")
 
 

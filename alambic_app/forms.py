@@ -10,6 +10,7 @@ from crispy_forms.bootstrap import InlineCheckboxes
 from csv import DictReader
 
 from alambic_app.constantes import *
+from alambic_app.annotation.fields import ClassificationLabelSelectField
 
 
 class CrispyWizardStep(forms.Form):
@@ -183,3 +184,12 @@ class ActiveLearningParameters(CrispyWizardStep):
                 Field('query_strategy')
             )
         )
+
+
+### ANNOTATION
+class ClassificationAnnotationForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.label_class = 'bold'
