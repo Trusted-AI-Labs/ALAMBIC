@@ -5,7 +5,7 @@ from django_select2.forms import Select2Widget
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML, Field
-from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.bootstrap import InlineCheckboxes, InlineRadios, Accordion, AccordionGroup
 
 from csv import DictReader
 
@@ -73,19 +73,39 @@ class GeneralInfoInputForm(forms.Form):
 ### DATA SPECIFIC PROCESSING
 
 class PreprocessingText(CrispyWizardStep):
-    ANNOTATORS_CHOICES = [
-        ('tokenize', 'Tokenization'),
-        ('ssplit', 'Sentence Splitting'),
-        ('pos', 'POS Tagger'),
-        ('lemma', 'Lemma'),
-        ('ner', 'Named Entity Tag (non biomedical)'),
-        ('ddparse', 'Dependency Parse Tree'),
-        ('parse', 'Constituency and Dependency Parse Tree'),
-        ('coref', "Coreference Resolution"),
-    ]
+    vectorizer = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=FEATURES_TEXT_CHOICES,
+        required=False
+    )
 
-    annotators = forms.MultipleChoiceField(
+    ngram_min = forms.IntegerField(
+        label='Min n-gram',
+        help_text='Minimum size for the n-gram analysis',
+        required=False,
+        initial=1
+    )
+    ngram_max = forms.IntegerField(
+        label='Max n-gram',
+        help_text='Maximal size for the n-gram analysis',
+        required=False,
+        initial=1
+    )
+    max_features = forms.IntegerField(
+        label='Maximum number of features',
+        help_text='Build a vocabulary that only consider the top max_features ordered by term frequency across the corpus',
+        required=False
+    )
+
+    preprocessing_steps = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
+        choices=PREPROCESSING_TEXT_CHOICES,
+        required=False,
+        help_text="Available preprocessing that can be done on the text before feature extraction"
+    )
+
+    annotators = forms.ChoiceField(
+        widget=forms.RadioSelect,
         choices=ANNOTATORS_CHOICES,
         required=False
     )
@@ -94,11 +114,69 @@ class PreprocessingText(CrispyWizardStep):
         super().__init__(*args, **kwargs)
         self.helper.layout = Layout(
             Div(
-                HTML('<h2>Processing linked to the data</h2>'),
-                InlineCheckboxes('annotators')
-            )
+                HTML('<h2>Optional preprocessing steps</h2><br><br>'),
+                css_class='form-row'
+            ),
+            Div(
+                InlineCheckboxes('preprocessing_steps'),
+                css_class='form-row'
+            ),
+            Div(
+                HTML('<h2>Features for your model</h2>'),
+                css_class='form-row'
+            ),
+            Accordion(
+                AccordionGroup(
+                    'Vectorizers',
+                    InlineRadios('vectorizer'),
+                    Div(
+                        Div(
+                            HTML(
+                                '<span class="align-bottom"> With the range value for the analyzed n-grams from </span>'),
+                            css_class='col-3'
+                        ),
+                        Div('ngram_min', css_class='col-3'),
+                        Div(
+                            HTML('<span class="align-bottom"> to </span>'),
+                            css_class='col-3'
+                        ),
+                        Div('ngram_max', css_class='col-3'),
+                        css_class='form-row'
+                    ),
+                    Field('max_features')
+                ),
+                AccordionGroup(
+                    'Convert in a tree',
+                    InlineRadios('annotators'),
+                )
+            ),
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        print(cleaned_data)
+        operations = dict()
+        tree = cleaned_data.get('annotators')
+        vector = cleaned_data.get('vectorizer')
+        preprocess = cleaned_data.get('preprocessing_steps')
+        if tree != '' and vector != '':
+            self.add_error('annotators', 'Only one type of features can be selected')
+            self.add_error('vectorizer', 'Only one type of features can be selected')
+
+        if 'lemma' in preprocess:
+            operations['client'] = 'tokenize,mwt,pos,lemma'
+
+        if vector:
+            operations[vector] = {'ngram_range': (cleaned_data['ngram_min'], cleaned_data['ngram_max'])}
+            if 'stop_words' in preprocess:
+                operations[vector]['stop_words'] = 'english'
+            if cleaned_data.get('max_features') is not None:
+                operations[vector]['max_features'] = cleaned_data.get('max_features')
+
+        if tree:
+            operations['client'] = f'tokenize,mwt,pos,lemma,{tree}'
+
+        return operations
 
 ### CHOICE MODEL
 
@@ -130,7 +208,8 @@ class SVCClassification(CrispyWizardStep):
     C = forms.FloatField(
         min_value=0,
         max_value=10,
-        required=True
+        required=True,
+
     )
 
     def __init__(self, *args, **kwargs):
@@ -176,20 +255,52 @@ class ActiveLearningParameters(CrispyWizardStep):
         )
     )
 
+    ratio_test = forms.FloatField(
+        min_value=0,
+        max_value=1,
+        required=True,
+        help_text='Percentage of the dataset for the test set'
+    )
+
+    size_seed = forms.IntegerField(
+        min_value=1,
+        required=True,
+        help_text='Initial size of the training set'
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper.layout = Layout(
             Div(
                 HTML('<h2>Parameters of the Active learning</h2>'),
-                Field('query_strategy')
+                Field('query_strategy'),
+                Field('ratio_test'),
+                Field('size_seed')
+            ),
+            Accordion(
+                AccordionGroup(
+                    'Number of labels added'
+                ),
+                AccordionGroup(
+                    'Accuracy to reach'
+                )
             )
+
         )
 
 
 ### ANNOTATION
 class ClassificationAnnotationForm(forms.Form):
+    label = ClassificationLabelSelectField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.label_class = 'bold'
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Label of the data</h2>'),
+                Field('label'),
+                css_class='col-md-10 d-flex justify-content-center'
+            )
+        )

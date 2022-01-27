@@ -49,6 +49,7 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ block.super }}
     <script>
         $(function () {
             function checkJobStatus() {

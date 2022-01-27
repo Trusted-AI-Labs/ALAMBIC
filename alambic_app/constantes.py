@@ -13,7 +13,7 @@ LABEL_MATCH = {
 }
 
 CLASSIFICATION_MODELS_CHOICES = [
-    ('SVM', 'SVM'),
+    ('SVC', 'SVM'),
     ('RF', 'Random Forest'),
 ]
 
@@ -27,6 +27,22 @@ NER_MODELS_CHOICES = [
 
 RE_MODELS_CHOICES = [
 
+]
+
+ANNOTATORS_CHOICES = [
+    ('ddparse', 'Dependency Parse Tree'),
+    ('parse', 'Constituency and Dependency Parse Tree'),
+]
+
+PREPROCESSING_TEXT_CHOICES = [
+    # ('lemma', 'Lemma'),
+    ('stop_word', 'Ignore stop words'),
+]
+
+FEATURES_TEXT_CHOICES = [
+    ('tfidf', 'TF-IDF'),
+    ('bow', 'Bag Of Words'),
+    ('hashing', 'Token occurrences with hashing'),
 ]
 
 AL_ALGORITHMS_CHOICES = [
