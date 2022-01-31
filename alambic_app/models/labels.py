@@ -38,6 +38,9 @@ class ClassificationLabel(Label):
         )
         return response
 
+    def __str__(self):
+        return f"Class {self.value}"
+
 
 class RegressionLabel(Label):
     value = models.FloatField(unique=True)

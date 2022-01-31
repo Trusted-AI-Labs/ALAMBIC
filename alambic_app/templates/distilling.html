@@ -24,6 +24,7 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ block.super }}
     <script>
         $(function () {
             function checkJobStatus() {
@@ -35,7 +36,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.status === "SUCCESS") {
-                            document.getElementById('loading-gif').classList.add('d-none');
+                            window.location.replace("/tasting?id={{ token }}");
                         } else if (data.status === "FAILURE") {
                             $("#job_status").text(data.status);
                             $("#job-failure-message").removeClass("d-none");
@@ -46,7 +47,7 @@
                             });
                             $("#curr_step").text(data.current_step);
                             $("#total_step").text(data.total_steps);
-                            setTimeout(checkJobStatus, 3000);
+                            setTimeout(checkJobStatus, 10000);
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {

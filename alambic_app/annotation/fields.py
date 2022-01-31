@@ -20,7 +20,6 @@ class ClassificationLabelSelectField(ModelChoiceField):
                              attrs={
                                  'data-minimum-input-length': 0,
                                  'data-placeholder': 'Select or create a classification label',
-                                 'class': 'label-select'
                              }),
                          queryset=ClassificationLabel.objects.all(),
                          error_messages={

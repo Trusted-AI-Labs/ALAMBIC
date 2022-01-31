@@ -78,8 +78,9 @@ def upload_form_data(self: celery.Task, filename: str, model: str, task: str):
 def preprocess_and_feature_extraction(form_data: Dict[str, Any]):
     task_id = uuid()
     data = form_data.get('data')
+    print(form_data)
 
-    chopping_pipeline = [run_preprocess.si(data), create_ML_manager.s(args=(form_data,))]
+    chopping_pipeline = [run_preprocess.si(data), create_ML_manager.si(form_data)]
 
     init_pipeline(chopping_pipeline, task_id, run_pipeline_task_refs, run_pipeline_done)
 
@@ -94,7 +95,7 @@ def pipeline_ML():
     task_id = uuid()
     manager = cache.get('manager')
 
-    distilling_pipeline = [train.si(manager), predict.s(), register_result.s(), query.s()]
+    distilling_pipeline = [train.si(manager), predict.si(), register_result.si(), query.si()]
 
     init_pipeline(distilling_pipeline, task_id, run_pipeline_task_refs, run_pipeline_done)
 
@@ -102,7 +103,7 @@ def pipeline_ML():
 
 
 @shared_task
-def run_preprocess(operations: Dict[str, Any]) -> PreprocessingHandler:
+def run_preprocess(operations: Dict[str, Any]) -> bool:
     """
     Celery task for the extraction of the features and the preprocessing of the data
     :param operations: list of str, names of the different operations to do
@@ -110,11 +111,12 @@ def run_preprocess(operations: Dict[str, Any]) -> PreprocessingHandler:
     """
     handler = PreprocessingHandler(operations)
     handler.create_features()
-    return handler
+    cache.set('handler', handler)
+    return True
 
 
 @shared_task
-def create_ML_manager(form_data: Dict[str, Any], handler: PreprocessingHandler):
+def create_ML_manager(form_data: Dict[str, Any]):
     """
     Create a manager to handle the training, prediction, query selection and the related dataset
     :param form_data: dict, contained all the information for the active learning process
@@ -124,64 +126,68 @@ def create_ML_manager(form_data: Dict[str, Any], handler: PreprocessingHandler):
     model = form_data.get('task')['model_choice']
     params_model = form_data.get('model_settings')
     query_strategy = form_data.get('active')['query_strategy']
-    stop_criterion = form_data.get('active')['stop_criterion']
+    stop_criterion = form_data.get('active')['stop_criterion']['algorithm']
+    param_stop_criterion = form_data.get('active')['stop_criterion']['param']
     ratio = form_data.get('active')['ratio_test']
     size_seed = form_data.get('active')['size_seed']
+    handler = cache.get('handler')
+    cache.delete('handler')
 
     task = cache.get('task')
-    if task == 'Classification':
-        manager = ClassificationManager(handler, model, query_strategy, stop_criterion, params_model)
-    elif task == 'Regression':
+    if task == 'C':
+        manager = ClassificationManager(handler, model, query_strategy, stop_criterion, param_stop_criterion,
+                                        params_model)
+    elif task == 'R':
         pass
 
     cache.set('manager', manager)
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
-
-    return ids_to_label
+    cache.set('to_label', ids_to_label)
+    return True
 
 
 @shared_task
-def train(manager: MLManager) -> MLManager:
+def train(manager: MLManager) -> bool:
     """
     Train the model
-    :param manager: MLManager
-    :return: MLManager
     """
     manager.train()
-    return manager
+    cache.set('manager', manager)
+    return True
 
 
 @shared_task
-def predict(manager: MLManager) -> MLManager:
+def predict() -> bool:
     """
     Predict the test set and store the result
     :param manager: MLManager
     :return: MLManager
     """
+    manager = cache.get('manager')
     manager.predict()
-    return manager
+    cache.set('manager', manager)
+    return True
 
 
 @shared_task
-def query(manager: MLManager) -> int:
+def query() -> int:
     """
     Choose the query of interest among the unlabelled dataset
     :param manager: MLManager
     :return: MLManager
     """
-    cache.set('manager', manager)  # update manager in cache
+    manager = cache.get('manager')
     return manager.query()
 
 
 @shared_task
-def register_result(manager: MLManager) -> MLManager:
+def register_result():
     """
     Store the result measures in the database
-    :param manager: MLManager
-    :return: MLManager
     """
-    manager.register_result()
-    return manager
+    manager = cache.get('manager')
+    result_id = manager.register_result()
+    return result_id
 
 
 @shared_task

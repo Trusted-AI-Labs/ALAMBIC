@@ -1,10 +1,11 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.cache import cache
 
 from django_select2.forms import Select2Widget
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, HTML, Field
+from crispy_forms.layout import Layout, Div, HTML, Field, Submit
 from crispy_forms.bootstrap import InlineCheckboxes, InlineRadios, Accordion, AccordionGroup
 
 from csv import DictReader
@@ -154,7 +155,6 @@ class PreprocessingText(CrispyWizardStep):
 
     def clean(self):
         cleaned_data = super().clean()
-        print(cleaned_data)
         operations = dict()
         tree = cleaned_data.get('annotators')
         vector = cleaned_data.get('vectorizer')
@@ -328,11 +328,15 @@ class ActiveLearningParameters(CrispyWizardStep):
 
     def clean(self):
         cleaned_data = super().clean()
-        print(cleaned_data)
+        size_seed = cleaned_data['size_seed']
+
+        if size_seed > cache.get('data'):
+            self.add_error('size_seed', 'You are exceeding the size of the dataset')
+
         data = {
             'ratio_test': cleaned_data['ratio_test'],
             'query_strategy': cleaned_data['query_strategy'],
-            'size_seed': cleaned_data['size_seed']
+            'size_seed': size_seed
         }
 
         if cleaned_data['accuracy_goal'] is not None and cleaned_data['budget'] is not None:
@@ -348,6 +352,8 @@ class ActiveLearningParameters(CrispyWizardStep):
                 self.add_error('accuracy_goal', 'You have to choose one stop criterion')
                 self.add_error('budget', 'You have to choose one stop criterion')
 
+        return data
+
 
 ### ANNOTATION
 class ClassificationAnnotationForm(forms.Form):
@@ -361,6 +367,10 @@ class ClassificationAnnotationForm(forms.Form):
             Div(
                 HTML('<h2>Label of the data</h2>'),
                 Field('label'),
-                css_class='col-md-10 d-flex justify-content-center'
-            )
+                css_class='justify-content-center'
+            ),
+            Submit('submit', 'Submit')
         )
+
+    def clean(self):
+        return super().clean()

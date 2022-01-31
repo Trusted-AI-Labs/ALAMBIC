@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'widget_tweaks',
     'polymorphic',
-    'crispy_forms',
     'django_select2',
+    'crispy_forms',
     'formtools',
     'celery_progress',
     # apps
@@ -143,9 +143,9 @@ SELECT2_CACHE_BACKEND = 'select2'
 # Celery
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['application/json', 'application/x-python-serialize']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
 CELERY_TIME_ZONE = 'Europe/Brussels'

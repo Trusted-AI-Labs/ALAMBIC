@@ -45,9 +45,9 @@ class PreprocessingHandler:
         return lst
 
     def create_features(self):
-        data = list(Data.objects.values_list("id", "content"))
-        data_ids = [item['id'] for item in data]
-        data = [item['content'] for item in data]
+        data = Data.objects.all()
+        data_ids = [item.id for item in data]
+        data = [item.content for item in data]
         if isinstance(self.pipeline, list):
             pipeline = sklearn.pipeline.Pipeline(self.pipeline)
             features = pipeline.fit_transform(data)
@@ -57,3 +57,6 @@ class PreprocessingHandler:
 
     def __getitem__(self, id):
         return self.features[id]
+
+    def __str__(self):
+        return f"Handler of Data with {len(self.features)} data points"

@@ -1,4 +1,5 @@
 import numpy as np
+import random
 import sklearn
 
 from typing import List, Dict, Any
@@ -6,7 +7,7 @@ from typing import List, Dict, Any
 from django.db.models import QuerySet
 from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sampling
 
-from alambic_app.active_learning.stopcriterion import *
+from alambic_app.active_learning import stopcriterion
 from alambic_app.active_learning import strategies
 from alambic_app.machine_learning.preprocessing import PreprocessingHandler
 
@@ -21,8 +22,13 @@ AL_ALGORITHMS_MATCH = {
 }
 
 MODELS_MATCH = {
-    'SVM': sklearn.svm.SVC,
+    'SVC': sklearn.svm.SVC,
     'RF': sklearn.ensemble.RandomForestClassifier,
+}
+
+STOP_CRITERION_MATCH = {
+    'budget': stopcriterion.budget_reached,
+    'accuracy': stopcriterion.accuracy_reached
 }
 
 
@@ -31,12 +37,14 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, stopcriterion: str, params: dict):
+    def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, stopcriterion: str,
+                 stopcriterion_param: Any, params: dict):
         self.step = 1
         self.model = self.create_model(model, params)
         self.handler = handler
         self.strategy = AL_ALGORITHMS_MATCH[strategy]
-        self.stopcriterion = stopcriterion  # TODO decide of the format for the stopcriterion
+        self.stopcriterion = STOP_CRITERION_MATCH[stopcriterion]
+        self.goal = stopcriterion_param
         self.unlabelled_dataset, self.training_set = self.get_labelled_dataset()
         self.test_set = []
         self.y_test = []
@@ -53,11 +61,18 @@ class MLManager:
         # TODO add here parameters if necessary according to the model
         return MODELS_MATCH[model](**params)
 
+    def check_criterion(self):
+        return self.stopcriterion(self.goal, self)
+
+    @staticmethod
+    def get_annotated_by_human():
+        return Output.objects.filter(annotated_by_human=True).count()
+
     @staticmethod
     def get_labelled_dataset():
         unlabelled = list(Output.objects.filter(label__isnull=True).values_list('data_id', flat=True))
-        labelled = list(Output.objects.excludde(data_id__in=unlabelled).values_list('data_id', flat=True))
-        return labelled, unlabelled
+        labelled = list(Output.objects.exclude(data_id__in=unlabelled).values_list('data_id', flat=True))
+        return unlabelled, labelled
 
     def initialize_dataset(self, ratio: float, size_seed: int) -> List[int]:
         """
@@ -72,14 +87,14 @@ class MLManager:
 
         # missing labelled data
         if current_ratio < ratio:
-            nb_ids_to_add = (total_data * ratio) - len(self.training_set)
-            ids_to_add = np.random.sample(self.unlabelled_dataset, nb_ids_to_add)
+            nb_ids_to_add = int((total_data * ratio) - len(self.training_set))
+            ids_to_add = random.sample(self.unlabelled_dataset, nb_ids_to_add)
             self.test_set = ids_to_add.copy()
             self.unlabelled_dataset = [data_id for data_id in self.unlabelled_dataset if data_id not in ids_to_add]
 
         elif current_ratio > ratio:
-            nb_ids_to_sample = (total_data * ratio)
-            self.test_set = np.random.sample(self.training_set, nb_ids_to_sample)
+            nb_ids_to_sample = int(total_data * ratio)
+            self.test_set = random.sample(self.training_set, nb_ids_to_sample)
             self.training_set = [data_id for data_id in self.training_set if data_id not in self.test_set]
 
         # reduce the training set to the original size
@@ -99,15 +114,15 @@ class MLManager:
 
         # enough labelled data
         if len(self.training_set) >= size_seed:
-            training_set = np.random.sample(self.training_set, size_seed)
+            training_set = random.sample(self.training_set, size_seed)
             # put remaining data in the unlabelled dataset to be the candidates to be labelled in the active
             # learning process
             self.unlabelled_dataset += [data_id for data_id in self.training_set if data_id not in training_set]
             self.training_set = training_set
 
         else:
-            nb_ids_to_add = size_seed - len(self.training_set)
-            ids_to_add = np.random.sample(self.unlabelled_dataset, nb_ids_to_add)
+            nb_ids_to_add = int(size_seed - len(self.training_set))
+            ids_to_add = random.sample(self.unlabelled_dataset, nb_ids_to_add)
             self.training_set += ids_to_add
             self.unlabelled_dataset = [data_id for data_id in self.unlabelled_dataset if data_id not in ids_to_add]
 
@@ -145,11 +160,11 @@ class MLManager:
         for data_id in data:
             self.unlabelled_dataset.remove(data_id)
 
-    def register_result(self) -> Dict[str, int]:
+    def register_result(self):
         return {
             'step': self.step,
             'unlabelled_data': len(self.unlabelled_dataset),
-            'annotated_by_human': Output.objects.filter(annotated_by_human=True).count(),
+            'annotated_by_human': self.get_annotated_by_human(),
             'training_size': len(self.training_set),
             'test_size': len(self.test_set)
         }
@@ -169,8 +184,8 @@ class MLManager:
 
 class ClassificationManager(MLManager):
 
-    def __init__(self, handler, model, strategy, stopcriterion, params):
-        super().__init__(handler, model, strategy, stopcriterion, params)
+    def __init__(self, handler, model, strategy, stopcriterion, stop_criterion_param, params):
+        super().__init__(handler, model, strategy, stopcriterion, stop_criterion_param, params)
         self.type_classification = self.get_type()
 
     @staticmethod

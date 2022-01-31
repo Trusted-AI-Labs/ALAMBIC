@@ -47,9 +47,27 @@ def get_form_AL():
     return ActiveLearningParameters
 
 
-def get_annotation_template_page():
-    # TODO test cache and select the page according to task and data
-    return 'annotations/classification.html'  # toy at the moment
+def get_template_annotation(task):
+    if task == 'C':
+        temp = 'annotations/classification.html'
+    else:
+        raise MissingForm('No template implemented for this task')
+    return temp
+
+
+def get_form_annotation(task):
+    if task == 'C':
+        form = ClassificationAnnotationForm
+
+    else:
+        raise MissingForm('No form implemented for this task')
+
+    return form
+
+
+def get_form_and_template_annotation():
+    task = cache.get('task')
+    return get_form_annotation(task), get_template_annotation(task)
 
 
 def get_info_data(id):

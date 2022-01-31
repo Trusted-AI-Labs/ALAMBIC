@@ -9,7 +9,7 @@ from alambic_app.models.input_models import *
 @admin.register(Data)
 class DataParentAdmin(PolymorphicParentModelAdmin):
     """
-    Parent admin model for variants to show all variant types from the same list view.
+    Parent admin model for data to show all data types from the same list view.
     Defined as suggested by the `Django Polymorphic documentation <https://django-polymorphic.readthedocs.io/en/stable/admin.html>`_
     """
     child_models = (Image, Text)
@@ -58,3 +58,12 @@ class TextAdmin(DataChildAdmin):
     Concrete model admin for CopyNumberVariant variants
     """
     base_model = Text
+
+
+@admin.register(Output)
+class OutputAdmin(admin.ModelAdmin):
+    list_display = (
+        'data',
+        'label',
+        'annotated_by_human'
+    )
