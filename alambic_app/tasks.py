@@ -200,7 +200,7 @@ def run_pipeline_done():
     return True
 
 
-def get_pipeline_task_refs(pipeline_chain_id: int, timeout=10.0) -> Any:
+def get_pipeline_task_refs(pipeline_chain_id: int, timeout=100.0) -> Any:
     """
     Shamelessly found in ORVAL code, by Alexandre Renaud
     Get the list of tasks references

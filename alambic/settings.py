@@ -149,6 +149,7 @@ CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_TASK_ACKS_LATE = True
 CELERY_TASK_REJECT_ON_WORKER_LOST = True
 CELERY_TIME_ZONE = 'Europe/Brussels'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

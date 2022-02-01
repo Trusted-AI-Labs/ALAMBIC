@@ -47,7 +47,7 @@ services:
       - redis:redis
     build:
       context: .
-    command: celery -A alambic worker -l info
+    command: celery -A alambic worker -l info --concurrency=2
     volumes:
       - .:/app
       - ~/data_alambic:/app/data_alambic
