@@ -1,6 +1,10 @@
 import numpy as np
 import random
+
+import scipy.sparse.csr
 import sklearn
+
+from scipy.sparse import vstack
 
 from typing import List, Dict, Any
 
@@ -10,6 +14,7 @@ from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sam
 from alambic_app.active_learning import stopcriterion
 from alambic_app.active_learning import strategies
 from alambic_app.machine_learning.preprocessing import PreprocessingHandler
+from alambic_app.utils.misc import filter__in_preserve
 
 from alambic_app.models.input_models import Output, Data, Label
 from alambic_app.models.results import Result
@@ -47,6 +52,7 @@ class MLManager:
         self.goal = stopcriterion_param
         self.unlabelled_dataset, self.training_set = self.get_labelled_dataset()
         self.test_set = []
+        self.Y_train = []
         self.y_test = []
         self.y_predicted = []
 
@@ -128,39 +134,51 @@ class MLManager:
 
         return ids_to_add
 
-    def get_y(self, lst: List[int]) -> QuerySet:
-        outputs = Output.objects.filter(data_id__in=lst)
+    def get_y(self, lst: List[int], annotated_by_human=None) -> QuerySet:
+        outputs = filter__in_preserve(Output.objects, 'data_id', lst)
+        if annotated_by_human is not None:
+            outputs = outputs.filter(annotated_by_human=annotated_by_human)
         return outputs
+
+    def get_x(self, lst: List[int]):
+        x = []
+        for data_id in lst:
+            x.append(self.handler[data_id])
+        if isinstance(x[0], scipy.sparse.csr.csr_matrix):
+            x = vstack(x)
+        else:
+            x = np.concatenate(x)
+        return x
 
     def set_test_set(self, lst: List[int]):
         self.test_set = lst
 
     def get_y_test(self):
-        self.y_test = self.get_y(self.test_set)
+        self.y_test = np.array(self.get_y(self.test_set))
 
     def get_data(self, lst: List[int]) -> (np.ndarray, np.ndarray):
-        x = []
+        x = self.get_x(lst)
         y = np.array(self.get_y(lst))
-        for data_id in lst:
-            x.append(self.handler[data_id])
-        x = np.array(x)
         return x, y
 
-    def next_step(self, data: List[int]):
+    def next_step(self, data: List[int], annotated_by_human=None):
         """
         Update the value of the manager to go to the next step
         :param data: list of ids labelled
         :return: None
         """
-        self.update_datasets(data)
+        self.update_datasets(data, annotated_by_human)
         self.step += 1
 
-    def update_datasets(self, data: List[int]):
+    def update_datasets(self, data: List[int], annotated_by_human=None):
         self.training_set += data
+        self.Y_train = np.append(self.Y_train, self.get_y(data, annotated_by_human=annotated_by_human))
         for data_id in data:
             self.unlabelled_dataset.remove(data_id)
 
     def register_result(self):
+        if self.y_test == []:  # initialize the y_test
+            self.get_y_test()
         return {
             'step': self.step,
             'unlabelled_data': len(self.unlabelled_dataset),
@@ -170,23 +188,26 @@ class MLManager:
         }
 
     def train(self):
-        X_train, Y_train = self.get_data(self.training_set)
-        self.model.fit(X_train, Y_train)
+        if self.Y_train == []:
+            X_train, self.Y_train = self.get_data(self.training_set)
+        else:
+            X_train, _ = self.get_data(self.training_set)
+        self.model.fit(X_train, self.Y_train)
 
     def predict(self):
-        self.y_predicted = self.model.predict(self.test_set)
+        self.y_predicted = self.model.predict(self.get_x(self.test_set))
 
     def query(self) -> int:
         unlabelled_X, _ = self.get_data(self.unlabelled_dataset)
         query_index = self.strategy(self.model, unlabelled_X)
-        return self.unlabelled_dataset[query_index]
+        print(query_index)
+        return np.array(self.unlabelled_dataset)[query_index].tolist()
 
 
 class ClassificationManager(MLManager):
 
     def __init__(self, handler, model, strategy, stopcriterion, stop_criterion_param, params):
         super().__init__(handler, model, strategy, stopcriterion, stop_criterion_param, params)
-        self.type_classification = self.get_type()
 
     @staticmethod
     def get_type():
@@ -197,9 +218,9 @@ class ClassificationManager(MLManager):
             type = "binary"
         return type
 
-    def get_y(self, lst: List[int]) -> List[int]:
-        outputs = super().get_y(lst)
-        return [outputs.get(data_id=data_id).label.class_id for data_id in lst]
+    def get_y(self, lst: List[int], annotated_by_human=None) -> List[int]:
+        outputs = super().get_y(lst, annotated_by_human)
+        return list(outputs.values_list('label__classificationlabel__class_id', flat=True))
 
     @property
     def accuracy(self) -> float:
@@ -215,7 +236,7 @@ class ClassificationManager(MLManager):
 
     @property
     def f1_score(self) -> float:
-        return sklearn.metrics.f1_score(self.y_test, self.y_predicted, average=self.type_classification)
+        return sklearn.metrics.f1_score(self.y_test, self.y_predicted, average=self.get_type())
 
     @property
     def mcc(self) -> float:

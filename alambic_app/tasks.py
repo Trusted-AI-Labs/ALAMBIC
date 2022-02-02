@@ -140,8 +140,8 @@ def create_ML_manager(form_data: Dict[str, Any]):
     elif task == 'R':
         pass
 
-    cache.set('manager', manager)
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
+    cache.set('manager', manager)
     cache.set('to_label', ids_to_label)
     return True
 
@@ -170,14 +170,16 @@ def predict() -> bool:
 
 
 @shared_task
-def query() -> int:
+def query() -> bool:
     """
     Choose the query of interest among the unlabelled dataset
     :param manager: MLManager
     :return: MLManager
     """
     manager = cache.get('manager')
-    return manager.query()
+    ids_to_label = manager.query()
+    cache.set('to_label', ids_to_label)
+    return True
 
 
 @shared_task

@@ -1,11 +1,9 @@
-import logging
-
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
-from alambic_app.utils.misc import create_label_oracle
+from alambic_app.utils.misc import create_label_oracle, get_data_to_label
 from alambic_app.utils.plots import get_performance_chart_formatted_data
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
@@ -111,11 +109,13 @@ def chopping_ingredients(request):
 
 def distilling(request):
     if request.method == 'GET':
-        ids_to_label = cache.get('to_label')
-        if len(ids_to_label) > 0:
-            to_label = ids_to_label.pop()
-            cache.set('to_label', ids_to_label)
-            return HttpResponseRedirect(f"/tasting?pre_labelling={to_label}")
+        to_label = len(cache.get('to_label'))
+        if to_label:
+            to_label = get_data_to_label()
+            if cache.get('pre_label'):
+                return HttpResponseRedirect(f"/tasting?pre_labelling={to_label}")
+            else:
+                return HttpResponseRedirect(f"/tasting")
         else:
             chain_id = tasks.pipeline_ML()
             return render(request, 'distilling.html', {'token': chain_id})
@@ -132,27 +132,27 @@ def tasting(request):
             id_data = params['pre_labelling']
             cache.set('pre_label', True)
         else:
-            if "id" not in params:
-                raise BadRequestError("Missing result id")
-            chain_id = params["id"]
             if manager.check_criterion():
-                return HttpResponseRedirect(f"/spirit?id={chain_id}")
-
-            id_data = tasks.get_pipeline_result(chain_id, tasks.query)
+                return HttpResponseRedirect(f"/spirit")
+            id_data = get_data_to_label()
         data = get_info_data(id_data)
         cache.set('current_data_labelled', data)
         return render(request, annotation_template, {'to_annotate': data, 'form': form})
 
     elif request.method == "POST":
-        print(request.GET)
         completed_form = form(request.POST)
         if completed_form.is_valid():
             data = cache.get('current_data_labelled')
             create_label_oracle(completed_form.cleaned_data['label'], data)
             if cache.get('pre_label'):
-                manager.update_datasets([data.pk])
+                manager.update_datasets([data.pk], True)
+                cache.set('manager', manager)
             else:
-                manager.next_step([data.pk])
+                manager.next_step([data.pk], True)
+                cache.set('manager', manager)
+                to_label = len(cache.get('to_label'))
+                if to_label:
+                    return HttpResponseRedirect(f"/tasting")
             return HttpResponseRedirect('/distilling')
     raise BadRequestError("Invalid server request")
 

@@ -2,6 +2,7 @@ from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 
 from alambic_app.models.input_models import *
+from alambic_app.models.results import Result
 
 
 # Register your models here.
@@ -67,3 +68,23 @@ class OutputAdmin(admin.ModelAdmin):
         'label',
         'annotated_by_human'
     )
+    search_fields = ['data__id']
+
+
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    list_display = (
+        'step',
+        'unlabelled_data',
+        'annotated_by_human',
+        'training_size',
+        'test_size',
+        'cross_val',
+        'precision',
+        'recall',
+        'mcc',
+        'f1_score',
+        'mse'
+    )
+    list_filter = ['step']
+    search_fields = ['step']

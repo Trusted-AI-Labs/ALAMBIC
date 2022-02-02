@@ -13,7 +13,7 @@ class Result(models.Model):
     test_size = models.IntegerField()
 
     # Performance indicators
-    cross_val = models.BooleanField()  # done with cross-val ?
+    cross_val = models.BooleanField(default=False)  # done with cross-val ?
     precision = models.FloatField(null=True)
     recall = models.FloatField(null=True)
     accuracy = models.FloatField(null=True)

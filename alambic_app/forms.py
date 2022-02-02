@@ -227,6 +227,11 @@ class SVCClassification(CrispyWizardStep):
             )
         )
 
+    def clean(self):
+        clean_data = super().clean()
+        clean_data['probability'] = True  # to be able to use predict_proba in the query strategies
+        return clean_data
+
 
 class RFClassification(CrispyWizardStep):
     # TODO Inheritance for the different models and then specialize according to task ?

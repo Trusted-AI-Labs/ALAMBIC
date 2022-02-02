@@ -57,7 +57,7 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.status === "SUCCESS") {
-                            window.location.replace("/tasting?id={{ token }}");
+                            window.location.replace("/tasting");
                         } else if (data.status === "FAILURE") {
                             $("#job_status").text(data.status);
                             $("#job-failure-message").removeClass("d-none");
@@ -75,7 +75,7 @@
                                 }
                                 $(this).text(text).fadeIn();
                             });
-                            setTimeout(checkJobStatus, 5000);
+                            setTimeout(checkJobStatus, 3000);
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {

@@ -60,3 +60,6 @@ class PreprocessingHandler:
 
     def __str__(self):
         return f"Handler of Data with {len(self.features)} data points"
+
+    def __repr__(self):
+        return str(self)
