@@ -3,10 +3,15 @@
  */
 
 function drawClassificationChart() {
+    var data;
     data = requestData('performance', 'classification');
-    drawPerformanceChart(data, ['precision', 'recall', 'accuracy', 'mcc', 'f1_score']);
+    data.done(function (response) {
+        drawPerformanceChart(response, ['precision', 'recall', 'accuracy', 'mcc', 'f1_score']);
+    });
 }
 
 $(document).ready(function () {
-    drawClassificationChart();
-}
+    am5.ready(function () {
+        drawClassificationChart();
+    });
+});

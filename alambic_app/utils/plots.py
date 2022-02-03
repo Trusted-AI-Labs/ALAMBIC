@@ -6,7 +6,7 @@ from alambic_app.models.results import Result
 def get_performance_chart_formatted_data(data_type: str):
     results = None
 
-    if data_type == 'Classification':
+    if data_type == 'classification':
         results = list(
             Result.objects.values(
                 'step',
@@ -19,7 +19,7 @@ def get_performance_chart_formatted_data(data_type: str):
                 'f1_score'
             )
         )
-    elif data_type == 'Regression':
+    elif data_type == 'regression':
         results = list(
             Result.objects.values(
                 'step',
@@ -34,3 +34,6 @@ def get_performance_chart_formatted_data(data_type: str):
         data_step['ratio labelled'] = data_step['annotated_by_human'] / data_step['unlabelled_data']
         del data_step['annotated_by_human']
         del data_step['unlabelled_data']
+        results[i] = data_step
+
+    return results

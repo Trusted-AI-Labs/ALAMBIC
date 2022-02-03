@@ -14,4 +14,5 @@ urlpatterns = [
     path('about', about, name='about'),
     path('documentation', documentation, name='documentation'),
     path("select2/", include("django_select2.urls")),
+    path('data', data_request, name='data')
 ]

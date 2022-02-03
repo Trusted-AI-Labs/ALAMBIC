@@ -69,6 +69,7 @@ class OutputAdmin(admin.ModelAdmin):
         'annotated_by_human'
     )
     search_fields = ['data__id']
+    list_filter = ['annotated_by_human']
 
 
 @admin.register(Result)

@@ -1,12 +1,12 @@
 function requestData(reqData, type) {
-    return data_request = $.ajax({
+    return $.ajax({
         type: "GET",
         url: "/data",
         data: {
-            data_type: type,
-            data: reqData
+            'data_type': type,
+            'data': reqData
         },
-        dataType: "json"
+        dataType: "json",
     });
 }
 
@@ -21,7 +21,7 @@ function drawPerformanceChart(data, fields) {
             am5themes_Animated.new(root)
         ]
     );
-    var chart = root.container.children.push({
+    var chart = root.container.children.push(
         am5xy.XYChart.new(root, {
             panX: false,
             panY: false,
@@ -29,7 +29,7 @@ function drawPerformanceChart(data, fields) {
             wheelY: "zoomX",
             maxTooltipDistance: -1
         })
-    });
+    );
 
     var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
         behavior: "zoomX"
@@ -51,7 +51,7 @@ function drawPerformanceChart(data, fields) {
     }));
 
     fields.forEach(element => {
-        addSeries(data, chart, element, "step", xAxis, yAxis)
+        addSeries(data, chart, root, element, "step", xAxis, yAxis)
     });
 
 
@@ -111,21 +111,21 @@ function drawPerformanceChart(data, fields) {
     chart.appear(1000, 100);
 }
 
-function addSeries(data, chart, yfield, xfield, xAxis, yAxis) {
-
+function addSeries(data, chart, root, yfield, xfield, xAxis, yAxis) {
+    let nameY = yfield.charAt(0).toUpperCase() + yfield.slice(1);
     var series = chart.series.push(
         am5xy.LineSeries.new(root, {
-                name: xfield.charAt(0).toUpperCase() + xfield.slice(1),
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: yfield,
-                valueXField: xfield,
-                legendValueText: "{valueY}",
-                tooltip: am5.Tooltip.new(root, {
-                        pointerOrientation: "horizontal",
-                        labelText: "[bold]{name}[/]:{valueY}"
-                    }
-                )
+            name: nameY,
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: yfield,
+            valueXField: xfield,
+            legendValueText: "{valueY}",
+            tooltip: am5.Tooltip.new(root, {
+                    pointerOrientation: "horizontal",
+                    labelText: "[bold]{name}[/]:{valueY}"
+                }
+            )
             }
         )
     );

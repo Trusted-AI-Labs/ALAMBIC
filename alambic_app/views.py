@@ -90,7 +90,7 @@ def data_request(request):
     if data == 'performance':
         res = get_performance_chart_formatted_data(data_type)
 
-    return JsonResponse(res)
+    return JsonResponse(res, safe=False)
 
 
 def chopping_ingredients(request):
@@ -163,11 +163,7 @@ def success(request):
     download the model and the results (csv + plots)
     """
     if request.method == 'GET':
-        params = request.GET
-        if "id" not in params:
-            raise BadRequestError("Missing result id")
-        result_id = params["id"]
-        return render(request, 'spirit.html', {'token': result_id})
+        return render(request, 'spirit.html')
     raise BadRequestError("Invalid server request")
 
 
@@ -230,7 +226,6 @@ class SetupView(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         data_list = [form.cleaned_data for form in form_list]
-        ## do something with it
         form_data = {
             'data': data_list[0],
             'task': data_list[1],
