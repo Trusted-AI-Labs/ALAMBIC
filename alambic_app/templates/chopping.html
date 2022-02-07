@@ -22,10 +22,6 @@
                     <div class="col-9 dtf" id="job_id">{{ token }}</div>
                     <div class="col-3 dtf color-black">Job Status:</div>
                     <div class="col-9 dtf" id="job_status">{{ job_status }}</div>
-                    <div class="col-2 dtf color-black">Step</div>
-                    <div class="col-3 dtf" id="curr_step">{{ curr_step }}</div>
-                    <div class="col-3 dtf color-black"> on</div>
-                    <div class="col-3 dtf color-black" id="total_step">{{ total_step }}</div>
                 </div>
 
                 <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">
@@ -68,10 +64,13 @@
                             $("#loading-gif").attr("src", "{% static 'images/error.gif' %}")
                         } else {
                             $("#job_status").fadeOut(function () {
-                                $(this).text(data.status).fadeIn();
+                                if (data.current_step === 1) {
+                                    var text = "PREPROCESSING AND CREATING THE FEATURES...";
+                                } else if (data.current_step === 2) {
+                                    var text = "CREATING THE LEARNER..."
+                                }
+                                $(this).text(text).fadeIn();
                             });
-                            $("#curr_step").text(data.current_step);
-                            $("#total_step").text(data.total_steps);
                             setTimeout(checkJobStatus, 3000);
                         }
                     },

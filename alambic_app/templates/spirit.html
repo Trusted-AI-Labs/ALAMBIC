@@ -2,24 +2,36 @@
 {% load static %}
 
 {% block title %}
-    <title> ALAMBIC | Getting the essence</title>
+    <title> ALAMBIC | The Spirit</title>
 {% endblock %}
 
 {% block primary %}
 
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <p>Stuff to do here</p>
-        <ul>
-            <li>
-                Download model(s) (pickle ?)
-            </li>
-            <li>
-                Csv of performance according to time
-            </li>
-            <li>
-                Plots
-            </li>
-        </ul>
+        <h1>Getting the results</h1>
+
+        <div class="col-12 justify-content-center align-items-center">
+            <h2 class="text-center">Last Statistics</h2>
+            {% for key, value in stats.items %}
+                {% if value != None %}
+                    <div class="row justify-content-md-center">
+                        <div class="col-2 dtf color-black">{{ key }}</div>
+                        <div class="col-2 dtf">{{ value }}</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br><br>
+            <h2 class="text-center">Download your model and its statistics</h2>
+            <div class="col-12 vertical-align">
+                <a href="{{ MEDIA_URL }}model.joblib.gz" download class="btn btn-dark float-right"><i
+                        class="fa fa-download"></i> Download the model</a>
+            </div>
+            <br>
+            <div class="col-12 vertical-align">
+                <a href="{{ MEDIA_URL }}statistics.csv" download class="btn btn-dark float-right"><i
+                        class="fa fa-download"></i> Download the statistics</a>
+            </div>
+        </div>
     </main>
 
 {% endblock %}

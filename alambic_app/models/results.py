@@ -21,6 +21,21 @@ class Result(models.Model):
     f1_score = models.FloatField(null=True)
     mse = models.FloatField(null=True)
 
+    def get_nice_format(self):
+        return {
+            'Unlabelled data': self.unlabelled_data,
+            'Data labelled by human': self.annotated_by_human,
+            'Training size': self.training_size,
+            'Test size': self.test_size,
+            'Cross-validation': self.cross_val,
+            'Precision': self.precision,
+            'Recall': self.recall,
+            'Accuracy': self.accuracy,
+            'MCC': self.mcc,
+            'F1 score': self.f1_score,
+            'MSE': self.mse
+        }
+
     class Meta:
         app_label = 'alambic_app'
         db_table = 'result'

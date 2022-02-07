@@ -4,7 +4,7 @@ from formtools.wizard.views import SessionWizardView
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.misc import create_label_oracle, get_data_to_label
-from alambic_app.utils.plots import get_performance_chart_formatted_data
+from alambic_app.utils.plots import get_performance_chart_formatted_data, generate_results_file, get_last_statistics
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
 
@@ -163,7 +163,11 @@ def success(request):
     download the model and the results (csv + plots)
     """
     if request.method == 'GET':
-        return render(request, 'spirit.html')
+        manager = cache.get('manager')
+        manager.dump()
+        generate_results_file(cache.get('task'))
+        statistics = get_last_statistics()
+        return render(request, 'spirit.html', {'stats': statistics})
     raise BadRequestError("Invalid server request")
 
 

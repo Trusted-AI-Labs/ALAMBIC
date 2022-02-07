@@ -5,10 +5,13 @@ import scipy.sparse.csr
 import sklearn
 
 from scipy.sparse import vstack
+from joblib import dump, load
 
 from typing import List, Dict, Any
 
 from django.db.models import QuerySet
+from django.conf import settings
+
 from modAL.uncertainty import entropy_sampling, margin_sampling, uncertainty_sampling
 
 from alambic_app.active_learning import stopcriterion
@@ -202,6 +205,12 @@ class MLManager:
         query_index = self.strategy(self.model, unlabelled_X)
         print(query_index)
         return np.array(self.unlabelled_dataset)[query_index].tolist()
+
+    def dump(self):
+        dump(self.model, f'{settings.MEDIA_URL}model.joblib.gz', compress='gzip')
+
+    def load(self, filename):
+        self.model = load(filename)
 
 
 class ClassificationManager(MLManager):

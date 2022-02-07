@@ -116,6 +116,7 @@ venv.bak/
 
 # Pycharm project settings
 .idea/
+media/*
 
 # Rope project settings
 .ropeproject
