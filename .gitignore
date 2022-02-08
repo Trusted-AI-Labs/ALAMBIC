@@ -116,8 +116,8 @@ venv.bak/
 
 # Pycharm project settings
 .idea/
-media/*
-!media/.gitkeep
+alambic_app/media/*
+!alambic_app/media/.gitkeep
 
 # Rope project settings
 .ropeproject

@@ -32,6 +32,7 @@ AL_ALGORITHMS_MATCH = {
 MODELS_MATCH = {
     'SVC': sklearn.svm.SVC,
     'RF': sklearn.ensemble.RandomForestClassifier,
+    'loading': load
 }
 
 STOP_CRITERION_MATCH = {
@@ -197,8 +198,11 @@ class MLManager:
             X_train, _ = self.get_data(self.training_set)
         self.model.fit(X_train, self.Y_train)
 
-    def predict(self):
-        self.y_predicted = self.model.predict(self.get_x(self.test_set))
+    def predict(self, lst):
+        return self.model.predict(self.get_x(lst))
+
+    def performance_predict(self):
+        self.y_predicted = self.predict(self.test_set)
 
     def query(self) -> int:
         unlabelled_X, _ = self.get_data(self.unlabelled_dataset)
@@ -207,10 +211,7 @@ class MLManager:
         return np.array(self.unlabelled_dataset)[query_index].tolist()
 
     def dump(self):
-        dump(self.model, f'{settings.MEDIA_URL}model.joblib.gz', compress='gzip')
-
-    def load(self, filename):
-        self.model = load(filename)
+        dump(self.model, f'{settings.MEDIA_ROOT}/model.joblib.gz', compress='gzip')
 
 
 class ClassificationManager(MLManager):

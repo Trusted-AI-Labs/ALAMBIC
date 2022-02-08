@@ -164,7 +164,7 @@ def predict() -> bool:
     :return: MLManager
     """
     manager = cache.get('manager')
-    manager.predict()
+    manager.performance_predict()
     cache.set('manager', manager)
     return True
 
