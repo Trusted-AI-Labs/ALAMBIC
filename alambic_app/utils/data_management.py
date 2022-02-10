@@ -1,6 +1,7 @@
 import logging
 
 from django.core.cache import cache
+from django.apps import apps
 
 from alambic_app.forms import *
 from alambic_app.models.input_models import Data
@@ -50,6 +51,8 @@ def get_form_AL():
 def get_template_annotation(task):
     if task == 'C':
         temp = 'annotations/classification.html'
+    elif task == 'RE':
+        temp = 'annotations/relation_extraction.html'
     else:
         raise MissingForm('No template implemented for this task')
     return temp
@@ -58,6 +61,9 @@ def get_template_annotation(task):
 def get_form_annotation(task):
     if task == 'C':
         form = ClassificationAnnotationForm
+
+    elif task == 'RE':
+        form = None
 
     else:
         raise MissingForm('No form implemented for this task')
@@ -72,3 +78,8 @@ def get_form_and_template_annotation():
 
 def get_info_data(id):
     return Data.objects.get(id=id)
+
+
+def get_list_existing_instances(model_type):
+    model = apps.get_model(app_label='alambic_app', model_name=model_type)
+    return list(model.objects.all().values())

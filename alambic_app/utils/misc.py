@@ -21,9 +21,7 @@ def filter__in_preserve(queryset, field, values):
 
 def get_data_to_label():
     ids_to_label = cache.get('to_label')
-    print(ids_to_label)
     id_data = ids_to_label.pop()
-    print(ids_to_label)
     cache.set('to_label', ids_to_label)
     return id_data
 

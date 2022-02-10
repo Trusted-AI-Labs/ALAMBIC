@@ -4,6 +4,7 @@ import base64
 
 from django import template
 from django.utils.safestring import mark_safe
+from django.utils.html import format_html_join
 
 register = template.Library()
 
@@ -82,3 +83,14 @@ def convert_image(data):
     image.save(buffer, "PNG")
     img_str = base64.b64encode(buffer.getvalue())
     return {'img_str': img_str}
+
+
+@register.simple_tag(name='to_span')
+def to_span(text):
+    text = text.strip().split()
+    text = enumerate(text)
+    text = format_html_join(
+        ' ', '<span id="{}" class="card-body-span span-{}">{}</span>',
+        ((word[0], word[0], word[1]) for word in text)
+    )
+    return text

@@ -49,7 +49,7 @@ var arr = [];
 
 var getProto = Object.getPrototypeOf;
 
-    var slice = arr.slice;
+var slice = arr.slice;
 
     var flat = arr.flat ? function (array) {
         return arr.flat.call(array);
@@ -179,13 +179,13 @@ function toType( obj ) {
         get: function (num) {
 
             // Return all the elements in a clean array
-		if ( num == null ) {
-			return slice.call( this );
-		}
+            if (num == null) {
+                return slice.call(this);
+            }
 
-		// Return just the one element from the set
-		return num < 0 ? this[ num + this.length ] : this[ num ];
-	},
+            // Return just the one element from the set
+            return num < 0 ? this[num + this.length] : this[num];
+        },
 
         // Take an array of elements and push it onto the stack
         // (returning the new matched element set)
@@ -409,20 +409,20 @@ jQuery.extend( {
             } else {
                 push.call(ret, arr);
             }
-		}
+        }
 
-		return ret;
-	},
+        return ret;
+    },
 
-	inArray: function( elem, arr, i ) {
-		return arr == null ? -1 : indexOf.call( arr, elem, i );
-	},
+    inArray: function (elem, arr, i) {
+        return arr == null ? -1 : indexOf.call(arr, elem, i);
+    },
 
-	// Support: Android <=4.0 only, PhantomJS 1 only
-	// push.apply(_, arraylike) throws on ancient WebKit
-	merge: function( first, second ) {
-		var len = +second.length,
-			j = 0,
+    // Support: Android <=4.0 only, PhantomJS 1 only
+    // push.apply(_, arraylike) throws on ancient WebKit
+    merge: function (first, second) {
+        var len = +second.length,
+            j = 0,
 			i = first.length;
 
 		for ( ; j < len; j++ ) {
@@ -3744,7 +3744,7 @@ jQuery.extend( {
                             });
                         });
                         fns = null;
-					} ).promise();
+                    }).promise();
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
 					var maxDepth = 0;
@@ -4769,15 +4769,15 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 
         while (maxIterations--) {
 
-			// Evaluate and update our best guess (doubling guesses that zero out).
-			// Finish if the scale equals or crosses 1 (making the old*new product non-positive).
-			jQuery.style( elem, prop, initialInUnit + unit );
-			if ( ( 1 - scale ) * ( 1 - ( scale = currentValue() / initial || 0.5 ) ) <= 0 ) {
-				maxIterations = 0;
-			}
-			initialInUnit = initialInUnit / scale;
+            // Evaluate and update our best guess (doubling guesses that zero out).
+            // Finish if the scale equals or crosses 1 (making the old*new product non-positive).
+            jQuery.style(elem, prop, initialInUnit + unit);
+            if ((1 - scale) * (1 - (scale = currentValue() / initial || 0.5)) <= 0) {
+                maxIterations = 0;
+            }
+            initialInUnit = initialInUnit / scale;
 
-		}
+        }
 
 		initialInUnit = initialInUnit * 2;
 		jQuery.style( elem, prop, initialInUnit + unit );
@@ -4866,37 +4866,37 @@ function showHide( elements, show ) {
 		}
 	}
 
-	// Set the display of the elements in a second loop to avoid constant reflow
-	for ( index = 0; index < length; index++ ) {
-		if ( values[ index ] != null ) {
-			elements[ index ].style.display = values[ index ];
-		}
-	}
+    // Set the display of the elements in a second loop to avoid constant reflow
+    for (index = 0; index < length; index++) {
+        if (values[index] != null) {
+            elements[index].style.display = values[index];
+        }
+    }
 
-	return elements;
+    return elements;
 }
 
-jQuery.fn.extend({
-    show: function () {
-        return showHide(this, true);
-    },
-    hide: function () {
-        return showHide(this);
-    },
-    toggle: function (state) {
-        if (typeof state === "boolean") {
-            return state ? this.show() : this.hide();
-        }
-
-        return this.each(function () {
-            if (isHiddenWithinTree(this)) {
-                jQuery(this).show();
-            } else {
-                jQuery(this).hide();
+    jQuery.fn.extend({
+        show: function () {
+            return showHide(this, true);
+        },
+        hide: function () {
+            return showHide(this);
+        },
+        toggle: function (state) {
+            if (typeof state === "boolean") {
+                return state ? this.show() : this.hide();
             }
-        });
-    }
-});
+
+            return this.each(function () {
+                if (isHiddenWithinTree(this)) {
+                    jQuery(this).show();
+                } else {
+                    jQuery(this).hide();
+                }
+            });
+        }
+    });
     var rcheckableType = (/^(?:checkbox|radio)$/i);
 
     var rtagName = (/<([a-z][^\/\0>\x20\t\r\n\f]*)/i);
@@ -5032,22 +5032,22 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
                 wrap = wrapMap[tag] || wrapMap._default;
                 tmp.innerHTML = wrap[1] + jQuery.htmlPrefilter(elem) + wrap[2];
 
-				// Descend through wrappers to the right content
-				j = wrap[ 0 ];
-				while ( j-- ) {
-					tmp = tmp.lastChild;
-				}
+                // Descend through wrappers to the right content
+                j = wrap[0];
+                while (j--) {
+                    tmp = tmp.lastChild;
+                }
 
-				// Support: Android <=4.0 only, PhantomJS 1 only
-				// push.apply(_, arraylike) throws on ancient WebKit
-				jQuery.merge( nodes, tmp.childNodes );
+                // Support: Android <=4.0 only, PhantomJS 1 only
+                // push.apply(_, arraylike) throws on ancient WebKit
+                jQuery.merge(nodes, tmp.childNodes);
 
-				// Remember the top-level container
-				tmp = fragment.firstChild;
+                // Remember the top-level container
+                tmp = fragment.firstChild;
 
-				// Ensure the created nodes are orphaned (#12392)
-				tmp.textContent = "";
-			}
+                // Ensure the created nodes are orphaned (#12392)
+                tmp.textContent = "";
+            }
 		}
 	}
 
@@ -5235,25 +5235,25 @@ jQuery.event = {
 
         // Handle multiple events separated by a space
         types = (types || "").match(rnothtmlwhite) || [""];
-		t = types.length;
-		while ( t-- ) {
-			tmp = rtypenamespace.exec( types[ t ] ) || [];
-			type = origType = tmp[ 1 ];
-			namespaces = ( tmp[ 2 ] || "" ).split( "." ).sort();
+        t = types.length;
+        while (t--) {
+            tmp = rtypenamespace.exec(types[t]) || [];
+            type = origType = tmp[1];
+            namespaces = (tmp[2] || "").split(".").sort();
 
-			// There *must* be a type, no attaching namespace-only handlers
-			if ( !type ) {
-				continue;
-			}
+            // There *must* be a type, no attaching namespace-only handlers
+            if (!type) {
+                continue;
+            }
 
-			// If event changes its type, use the special event handlers for the changed type
-			special = jQuery.event.special[ type ] || {};
+            // If event changes its type, use the special event handlers for the changed type
+            special = jQuery.event.special[type] || {};
 
-			// If selector defined, determine special event api type, otherwise given type
-			type = ( selector ? special.delegateType : special.bindType ) || type;
+            // If selector defined, determine special event api type, otherwise given type
+            type = (selector ? special.delegateType : special.bindType) || type;
 
-			// Update special based on newly reset type
-			special = jQuery.event.special[ type ] || {};
+            // Update special based on newly reset type
+            special = jQuery.event.special[type] || {};
 
 			// handleObj is passed to all event handlers
 			handleObj = jQuery.extend( {
@@ -5730,16 +5730,16 @@ jQuery.event = {
             // Support: Safari <=6 - 7 only
             // Target should not be a text node (#504, #13143)
             this.target = (src.target && src.target.nodeType === 3) ?
-			src.target.parentNode :
-			src.target;
+                src.target.parentNode :
+                src.target;
 
-		this.currentTarget = src.currentTarget;
-		this.relatedTarget = src.relatedTarget;
+            this.currentTarget = src.currentTarget;
+            this.relatedTarget = src.relatedTarget;
 
-	// Event type
-	} else {
-		this.type = src;
-	}
+            // Event type
+        } else {
+            this.type = src;
+        }
 
 	// Put explicitly provided properties onto the event object
 	if ( props ) {
@@ -6913,58 +6913,58 @@ function getWidthOrHeight( elem, dimension, extra ) {
             // Gets hook for the prefixed version, then unprefixed version
             hooks = jQuery.cssHooks[name] || jQuery.cssHooks[origName];
 
-		// Check if we're setting a value
-		if ( value !== undefined ) {
-            type = typeof value;
+            // Check if we're setting a value
+            if (value !== undefined) {
+                type = typeof value;
 
-            // Convert "+=" or "-=" to relative numbers (#7345)
-            if (type === "string" && (ret = rcssNum.exec(value)) && ret[1]) {
-                value = adjustCSS(elem, name, ret);
+                // Convert "+=" or "-=" to relative numbers (#7345)
+                if (type === "string" && (ret = rcssNum.exec(value)) && ret[1]) {
+                    value = adjustCSS(elem, name, ret);
 
-                // Fixes bug #9237
-                type = "number";
-            }
-
-            // Make sure that null and NaN values aren't set (#7116)
-            if (value == null || value !== value) {
-                return;
-            }
-
-            // If a number was passed in, add the unit (except for certain CSS properties)
-            // The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
-            // "px" to a few hardcoded values.
-            if (type === "number" && !isCustomProp) {
-                value += ret && ret[3] || (jQuery.cssNumber[origName] ? "" : "px");
-            }
-
-            // background-* props affect original clone's values
-            if (!support.clearCloneStyle && value === "" && name.indexOf("background") === 0) {
-                style[name] = "inherit";
-            }
-
-            // If a hook was provided, use that value, otherwise just set the specified value
-            if (!hooks || !("set" in hooks) ||
-                (value = hooks.set(elem, value, extra)) !== undefined) {
-
-                if (isCustomProp) {
-                    style.setProperty(name, value);
-                } else {
-                    style[name] = value;
+                    // Fixes bug #9237
+                    type = "number";
                 }
+
+                // Make sure that null and NaN values aren't set (#7116)
+                if (value == null || value !== value) {
+                    return;
+                }
+
+                // If a number was passed in, add the unit (except for certain CSS properties)
+                // The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
+                // "px" to a few hardcoded values.
+                if (type === "number" && !isCustomProp) {
+                    value += ret && ret[3] || (jQuery.cssNumber[origName] ? "" : "px");
+                }
+
+                // background-* props affect original clone's values
+                if (!support.clearCloneStyle && value === "" && name.indexOf("background") === 0) {
+                    style[name] = "inherit";
+                }
+
+                // If a hook was provided, use that value, otherwise just set the specified value
+                if (!hooks || !("set" in hooks) ||
+                    (value = hooks.set(elem, value, extra)) !== undefined) {
+
+                    if (isCustomProp) {
+                        style.setProperty(name, value);
+                    } else {
+                        style[name] = value;
+                    }
+                }
+
+            } else {
+
+                // If a hook was provided get the non-computed value from there
+                if (hooks && "get" in hooks &&
+                    (ret = hooks.get(elem, false, extra)) !== undefined) {
+
+                    return ret;
+                }
+
+                // Otherwise just get the value from the style object
+                return style[name];
             }
-
-        } else {
-
-            // If a hook was provided get the non-computed value from there
-            if (hooks && "get" in hooks &&
-                (ret = hooks.get(elem, false, extra)) !== undefined) {
-
-                return ret;
-            }
-
-            // Otherwise just get the value from the style object
-            return style[name];
-        }
 	},
 
 	css: function( elem, name, extra, styles ) {
@@ -7556,26 +7556,26 @@ function Animation( elem, properties, options ) {
 				length = animation.tweens.length;
 
 			for ( ; index < length; index++ ) {
-				animation.tweens[ index ].run( percent );
-			}
+                animation.tweens[index].run(percent);
+            }
 
-			deferred.notifyWith( elem, [ animation, percent, remaining ] );
+            deferred.notifyWith(elem, [animation, percent, remaining]);
 
-			// If there's more to do, yield
-			if ( percent < 1 && length ) {
-				return remaining;
-			}
+            // If there's more to do, yield
+            if (percent < 1 && length) {
+                return remaining;
+            }
 
-			// If this was an empty animation, synthesize a final progress notification
-			if ( !length ) {
-				deferred.notifyWith( elem, [ animation, 1, 0 ] );
-			}
+            // If this was an empty animation, synthesize a final progress notification
+            if (!length) {
+                deferred.notifyWith(elem, [animation, 1, 0]);
+            }
 
-			// Resolve the animation and report its conclusion
-			deferred.resolveWith( elem, [ animation ] );
-			return false;
-		},
-		animation = deferred.promise({
+            // Resolve the animation and report its conclusion
+            deferred.resolveWith(elem, [animation]);
+            return false;
+        },
+        animation = deferred.promise({
             elem: elem,
             props: jQuery.extend({}, properties),
             opts: jQuery.extend(true, {
@@ -7613,9 +7613,9 @@ function Animation( elem, properties, options ) {
                     deferred.resolveWith(elem, [animation, gotoEnd]);
                 } else {
                     deferred.rejectWith(elem, [animation, gotoEnd]);
-				}
-				return this;
-			}
+                }
+                return this;
+            }
 		} ),
 		props = animation.props;
 
@@ -7813,13 +7813,13 @@ jQuery.fn.extend( {
                 }
             }
 
-			// Start the next in the queue if the last step wasn't forced.
-			// Timers currently will call their complete callbacks, which
-			// will dequeue but only if they were gotoEnd.
-			if ( dequeue || !gotoEnd ) {
-				jQuery.dequeue( this, type );
-			}
-		} );
+            // Start the next in the queue if the last step wasn't forced.
+            // Timers currently will call their complete callbacks, which
+            // will dequeue but only if they were gotoEnd.
+            if (dequeue || !gotoEnd) {
+                jQuery.dequeue(this, type);
+            }
+        } );
 	},
 	finish: function( type ) {
 		if ( type !== false ) {
@@ -9462,25 +9462,25 @@ jQuery.extend( {
                     return completed ? responseHeadersString : null;
                 },
 
-				// Caches the header
-				setRequestHeader: function( name, value ) {
-					if ( completed == null ) {
-						name = requestHeadersNames[ name.toLowerCase() ] =
-							requestHeadersNames[ name.toLowerCase() ] || name;
-						requestHeaders[ name ] = value;
-					}
-					return this;
-				},
+                // Caches the header
+                setRequestHeader: function (name, value) {
+                    if (completed == null) {
+                        name = requestHeadersNames[name.toLowerCase()] =
+                            requestHeadersNames[name.toLowerCase()] || name;
+                        requestHeaders[name] = value;
+                    }
+                    return this;
+                },
 
-				// Overrides response content-type header
-				overrideMimeType: function( type ) {
-					if ( completed == null ) {
-						s.mimeType = type;
-					}
-					return this;
-				},
+                // Overrides response content-type header
+                overrideMimeType: function (type) {
+                    if (completed == null) {
+                        s.mimeType = type;
+                    }
+                    return this;
+                },
 
-				// Status-dependent callbacks
+                // Status-dependent callbacks
 				statusCode: function( map ) {
 					var code;
 					if ( map ) {

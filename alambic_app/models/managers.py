@@ -100,3 +100,7 @@ class LabelRegressionManager(LabelManager):
         kwargs['value'] = float(kwargs['value'])
 
         return super().create_instance(**kwargs)
+
+
+class LabelRelationManager(LabelManager):
+    model = 'RelationLabel'

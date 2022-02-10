@@ -91,6 +91,9 @@ def data_request(request):
     if data == 'performance':
         res = get_performance_chart_formatted_data(data_type)
 
+    elif data == 'model':
+        res = get_list_existing_instances(data_type)
+
     return JsonResponse(res, safe=False)
 
 
@@ -124,6 +127,7 @@ def distilling(request):
 
 
 def tasting(request):
+    cache.set('task', 'RE')
     form, annotation_template = get_form_and_template_annotation()
     manager = cache.get('manager')
     if request.method == 'GET':
@@ -132,12 +136,15 @@ def tasting(request):
         if "pre_labelling" in params:
             id_data = params['pre_labelling']
             cache.set('pre_label', True)
-        else:
-            if manager.check_criterion():
-                return HttpResponseRedirect(f"/spirit")
-            id_data = get_data_to_label()
-        data = get_info_data(id_data)
-        cache.set('current_data_labelled', data)
+        # else:
+        # if manager.check_criterion():
+        #    return HttpResponseRedirect(f"/spirit")
+        # id_data = get_data_to_label()
+        # data = get_info_data(id_data)
+        # cache.set('current_data_labelled', data)
+        data = """
+        3 + years Swift & Objective - C and experience with iOS internals Experience building an entire app from scratch and ideally a portfolio of apps featured in the App Store Someone who knows every trick in the book on UI transitions , network communication and memory / battery efficiency Strong UI / design skill experience is a plus SKILL
+        """
         return render(request, annotation_template, {'to_annotate': data, 'form': form})
 
     elif request.method == "POST":

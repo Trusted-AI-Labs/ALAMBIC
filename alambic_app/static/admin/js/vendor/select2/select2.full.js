@@ -80,26 +80,26 @@
                      * @returns {String} normalized name
                      */
                     function normalize(name, baseName) {
-        var nameParts, nameSegment, mapValue, foundMap, lastIndex,
-            foundI, foundStarMap, starI, i, j, part, normalizedBaseParts,
-            baseParts = baseName && baseName.split("/"),
-            map = config.map,
-            starMap = (map && map['*']) || {};
+                        var nameParts, nameSegment, mapValue, foundMap, lastIndex,
+                            foundI, foundStarMap, starI, i, j, part, normalizedBaseParts,
+                            baseParts = baseName && baseName.split("/"),
+                            map = config.map,
+                            starMap = (map && map['*']) || {};
 
-        //Adjust any relative paths.
-        if (name) {
-            name = name.split('/');
-            lastIndex = name.length - 1;
+                        //Adjust any relative paths.
+                        if (name) {
+                            name = name.split('/');
+                            lastIndex = name.length - 1;
 
-            // If wanting node ID compatibility, strip .js from end
-            // of IDs. Have to do this here, and not in nameToUrl
-            // because node allows either .js or non .js to map
-            // to same file.
-            if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
-                name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
-            }
+                            // If wanting node ID compatibility, strip .js from end
+                            // of IDs. Have to do this here, and not in nameToUrl
+                            // because node allows either .js or non .js to map
+                            // to same file.
+                            if (config.nodeIdCompat && jsSuffixRegExp.test(name[lastIndex])) {
+                                name[lastIndex] = name[lastIndex].replace(jsSuffixRegExp, '');
+                            }
 
-            // Starts with a '.' so need the baseName
+                            // Starts with a '.' so need the baseName
             if (name[0].charAt(0) === '.' && baseParts) {
                 //Convert baseName to array, and lop off the last part,
                 //so that . matches that 'directory' and not name of the baseName's
@@ -1067,12 +1067,12 @@ S2.define('select2/results',[
           var $children = [];
 
           for (var c = 0; c < data.children.length; c++) {
-        var child = data.children[c];
+              var child = data.children[c];
 
-        var $child = this.option(child);
+              var $child = this.option(child);
 
-        $children.push($child);
-      }
+              $children.push($child);
+          }
 
       var $childrenContainer = $('<ul></ul>', {
         'class': 'select2-results__options select2-results__options--nested'
@@ -2044,36 +2044,36 @@ S2.define('select2/selection/search',[
           }
       });
 
-    this.$selection.on('focusin', '.select2-search--inline', function (evt) {
-      self.trigger('focus', evt);
-    });
+      this.$selection.on('focusin', '.select2-search--inline', function (evt) {
+          self.trigger('focus', evt);
+      });
 
-    this.$selection.on('focusout', '.select2-search--inline', function (evt) {
-      self._handleBlur(evt);
-    });
+      this.$selection.on('focusout', '.select2-search--inline', function (evt) {
+          self._handleBlur(evt);
+      });
 
-    this.$selection.on('keydown', '.select2-search--inline', function (evt) {
-      evt.stopPropagation();
+      this.$selection.on('keydown', '.select2-search--inline', function (evt) {
+          evt.stopPropagation();
 
-      self.trigger('keypress', evt);
+          self.trigger('keypress', evt);
 
-      self._keyUpPrevented = evt.isDefaultPrevented();
+          self._keyUpPrevented = evt.isDefaultPrevented();
 
-      var key = evt.which;
+          var key = evt.which;
 
-      if (key === KEYS.BACKSPACE && self.$search.val() === '') {
-          var $previousChoice = self.$searchContainer
-              .prev('.select2-selection__choice');
+          if (key === KEYS.BACKSPACE && self.$search.val() === '') {
+              var $previousChoice = self.$searchContainer
+                  .prev('.select2-selection__choice');
 
-          if ($previousChoice.length > 0) {
-              var item = Utils.GetData($previousChoice[0], 'data');
+              if ($previousChoice.length > 0) {
+                  var item = Utils.GetData($previousChoice[0], 'data');
 
-              self.searchRemoveChoice(item);
+                  self.searchRemoveChoice(item);
 
-              evt.preventDefault();
+                  evt.preventDefault();
+              }
           }
-      }
-    });
+      });
 
       this.$selection.on('click', '.select2-search--inline', function (evt) {
           if (self.$search.val()) {
@@ -2113,23 +2113,23 @@ S2.define('select2/selection/search',[
           'keyup.search input.search',
           '.select2-search--inline',
           function (evt) {
-        // IE will trigger the `input` event when a placeholder is used on a
-        // search box. To get around this issue, we are forced to ignore all
-        // `input` events in IE and keep using `keyup`.
-        if (disableInputEvents && evt.type === 'input') {
-          self.$selection.off('input.search input.searchcheck');
-          return;
-        }
+              // IE will trigger the `input` event when a placeholder is used on a
+              // search box. To get around this issue, we are forced to ignore all
+              // `input` events in IE and keep using `keyup`.
+              if (disableInputEvents && evt.type === 'input') {
+                  self.$selection.off('input.search input.searchcheck');
+                  return;
+              }
 
-        var key = evt.which;
+              var key = evt.which;
 
-        // We can freely ignore events from modifier keys
-        if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
-          return;
-        }
+              // We can freely ignore events from modifier keys
+              if (key == KEYS.SHIFT || key == KEYS.CTRL || key == KEYS.ALT) {
+                  return;
+              }
 
-        // Tabbing will be handled during the `keydown` phase
-        if (key == KEYS.TAB) {
+              // Tabbing will be handled during the `keydown` phase
+              if (key == KEYS.TAB) {
           return;
         }
 
@@ -2502,26 +2502,26 @@ S2.define('select2/diacritics',[
     '\u1E40': 'M',
     '\u1E42': 'M',
     '\u2C6E': 'M',
-    '\u019C': 'M',
-    '\u24C3': 'N',
-    '\uFF2E': 'N',
-    '\u01F8': 'N',
-    '\u0143': 'N',
-    '\u00D1': 'N',
-    '\u1E44': 'N',
-    '\u0147': 'N',
-    '\u1E46': 'N',
-    '\u0145': 'N',
-    '\u1E4A': 'N',
-    '\u1E48': 'N',
-    '\u0220': 'N',
-    '\u019D': 'N',
-    '\uA790': 'N',
-    '\uA7A4': 'N',
-    '\u01CA': 'NJ',
-    '\u01CB': 'Nj',
-    '\u24C4': 'O',
-    '\uFF2F': 'O',
+      '\u019C': 'M',
+      '\u24C3': 'N',
+      '\uFF2E': 'N',
+      '\u01F8': 'N',
+      '\u0143': 'N',
+      '\u00D1': 'N',
+      '\u1E44': 'N',
+      '\u0147': 'N',
+      '\u1E46': 'N',
+      '\u0145': 'N',
+      '\u1E4A': 'N',
+      '\u1E48': 'N',
+      '\u0220': 'N',
+      '\u019D': 'N',
+      '\uA790': 'N',
+      '\uA7A4': 'N',
+      '\u01CA': 'NJ',
+      '\u01CB': 'Nj',
+      '\u24C4': 'O',
+      '\uFF2F': 'O',
       '\u00D2': 'O',
       '\u00D3': 'O',
       '\u00D4': 'O',
@@ -2603,26 +2603,26 @@ S2.define('select2/diacritics',[
       '\u1E64': 'S',
       '\u015C': 'S',
       '\u1E60': 'S',
-    '\u0160': 'S',
-    '\u1E66': 'S',
-    '\u1E62': 'S',
-    '\u1E68': 'S',
-    '\u0218': 'S',
-    '\u015E': 'S',
-    '\u2C7E': 'S',
-    '\uA7A8': 'S',
-    '\uA784': 'S',
-    '\u24C9': 'T',
-    '\uFF34': 'T',
-    '\u1E6A': 'T',
-    '\u0164': 'T',
-    '\u1E6C': 'T',
-    '\u021A': 'T',
-    '\u0162': 'T',
-    '\u1E70': 'T',
-    '\u1E6E': 'T',
-    '\u0166': 'T',
-    '\u01AC': 'T',
+      '\u0160': 'S',
+      '\u1E66': 'S',
+      '\u1E62': 'S',
+      '\u1E68': 'S',
+      '\u0218': 'S',
+      '\u015E': 'S',
+      '\u2C7E': 'S',
+      '\uA7A8': 'S',
+      '\uA784': 'S',
+      '\u24C9': 'T',
+      '\uFF34': 'T',
+      '\u1E6A': 'T',
+      '\u0164': 'T',
+      '\u1E6C': 'T',
+      '\u021A': 'T',
+      '\u0162': 'T',
+      '\u1E70': 'T',
+      '\u1E6E': 'T',
+      '\u0166': 'T',
+      '\u01AC': 'T',
     '\u01AE': 'T',
     '\u023E': 'T',
     '\uA786': 'T',
@@ -2912,26 +2912,26 @@ S2.define('select2/diacritics',[
     '\u1E41': 'm',
     '\u1E43': 'm',
     '\u0271': 'm',
-    '\u026F': 'm',
-    '\u24DD': 'n',
-    '\uFF4E': 'n',
-    '\u01F9': 'n',
-    '\u0144': 'n',
-    '\u00F1': 'n',
-    '\u1E45': 'n',
-    '\u0148': 'n',
-    '\u1E47': 'n',
-    '\u0146': 'n',
-    '\u1E4B': 'n',
-    '\u1E49': 'n',
-    '\u019E': 'n',
-    '\u0272': 'n',
-    '\u0149': 'n',
-    '\uA791': 'n',
-    '\uA7A5': 'n',
-    '\u01CC': 'nj',
-    '\u24DE': 'o',
-    '\uFF4F': 'o',
+      '\u026F': 'm',
+      '\u24DD': 'n',
+      '\uFF4E': 'n',
+      '\u01F9': 'n',
+      '\u0144': 'n',
+      '\u00F1': 'n',
+      '\u1E45': 'n',
+      '\u0148': 'n',
+      '\u1E47': 'n',
+      '\u0146': 'n',
+      '\u1E4B': 'n',
+      '\u1E49': 'n',
+      '\u019E': 'n',
+      '\u0272': 'n',
+      '\u0149': 'n',
+      '\uA791': 'n',
+      '\uA7A5': 'n',
+      '\u01CC': 'nj',
+      '\u24DE': 'o',
+      '\uFF4F': 'o',
       '\u00F2': 'o',
       '\u00F3': 'o',
       '\u00F4': 'o',
@@ -3013,26 +3013,26 @@ S2.define('select2/diacritics',[
       '\u1E65': 's',
       '\u015D': 's',
       '\u1E61': 's',
-    '\u0161': 's',
-    '\u1E67': 's',
-    '\u1E63': 's',
-    '\u1E69': 's',
-    '\u0219': 's',
-    '\u015F': 's',
-    '\u023F': 's',
-    '\uA7A9': 's',
-    '\uA785': 's',
-    '\u1E9B': 's',
-    '\u24E3': 't',
-    '\uFF54': 't',
-    '\u1E6B': 't',
-    '\u1E97': 't',
-    '\u0165': 't',
-    '\u1E6D': 't',
-    '\u021B': 't',
-    '\u0163': 't',
-    '\u1E71': 't',
-    '\u1E6F': 't',
+      '\u0161': 's',
+      '\u1E67': 's',
+      '\u1E63': 's',
+      '\u1E69': 's',
+      '\u0219': 's',
+      '\u015F': 's',
+      '\u023F': 's',
+      '\uA7A9': 's',
+      '\uA785': 's',
+      '\u1E9B': 's',
+      '\u24E3': 't',
+      '\uFF54': 't',
+      '\u1E6B': 't',
+      '\u1E97': 't',
+      '\u0165': 't',
+      '\u1E6D': 't',
+      '\u021B': 't',
+      '\u0163': 't',
+      '\u1E71': 't',
+      '\u1E6F': 't',
     '\u0167': 't',
     '\u01AD': 't',
     '\u0288': 't',
@@ -3081,26 +3081,26 @@ S2.define('select2/diacritics',[
     '\u028C': 'v',
     '\uA761': 'vy',
     '\u24E6': 'w',
-    '\uFF57': 'w',
-    '\u1E81': 'w',
-    '\u1E83': 'w',
-    '\u0175': 'w',
-    '\u1E87': 'w',
-    '\u1E85': 'w',
-    '\u1E98': 'w',
-    '\u1E89': 'w',
-    '\u2C73': 'w',
-    '\u24E7': 'x',
-    '\uFF58': 'x',
-    '\u1E8B': 'x',
-    '\u1E8D': 'x',
-    '\u24E8': 'y',
-    '\uFF59': 'y',
-    '\u1EF3': 'y',
-    '\u00FD': 'y',
-    '\u0177': 'y',
-    '\u1EF9': 'y',
-    '\u0233': 'y',
+      '\uFF57': 'w',
+      '\u1E81': 'w',
+      '\u1E83': 'w',
+      '\u0175': 'w',
+      '\u1E87': 'w',
+      '\u1E85': 'w',
+      '\u1E98': 'w',
+      '\u1E89': 'w',
+      '\u2C73': 'w',
+      '\u24E7': 'x',
+      '\uFF58': 'x',
+      '\u1E8B': 'x',
+      '\u1E8D': 'x',
+      '\u24E8': 'y',
+      '\uFF59': 'y',
+      '\u1EF3': 'y',
+      '\u00FD': 'y',
+      '\u0177': 'y',
+      '\u1EF9': 'y',
+      '\u0233': 'y',
       '\u1E8F': 'y',
       '\u00FF': 'y',
       '\u1EF7': 'y',
@@ -4144,21 +4144,21 @@ S2.define('select2/dropdown/search',[
           self.$search.trigger('blur');
       });
 
-    container.on('focus', function () {
-        if (!container.isOpen()) {
-            self.$search.trigger('focus');
-        }
-    });
+      container.on('focus', function () {
+          if (!container.isOpen()) {
+              self.$search.trigger('focus');
+          }
+      });
 
-    container.on('results:all', function (params) {
-        if (params.query.term == null || params.query.term === '') {
-            var showSearch = self.showSearch(params);
+      container.on('results:all', function (params) {
+          if (params.query.term == null || params.query.term === '') {
+              var showSearch = self.showSearch(params);
 
-            if (showSearch) {
-                self.$searchContainer.removeClass('select2-search--hide');
-            } else {
-                self.$searchContainer.addClass('select2-search--hide');
-            }
+              if (showSearch) {
+                  self.$searchContainer.removeClass('select2-search--hide');
+              } else {
+                  self.$searchContainer.addClass('select2-search--hide');
+              }
         }
     });
 
@@ -4474,14 +4474,14 @@ S2.define('select2/dropdown/attachBody',[
   };
 
   AttachBody.prototype._positionDropdown = function () {
-    var $window = $(window);
+      var $window = $(window);
 
-    var isCurrentlyAbove = this.$dropdown.hasClass('select2-dropdown--above');
-    var isCurrentlyBelow = this.$dropdown.hasClass('select2-dropdown--below');
+      var isCurrentlyAbove = this.$dropdown.hasClass('select2-dropdown--above');
+      var isCurrentlyBelow = this.$dropdown.hasClass('select2-dropdown--below');
 
-    var newDirection = null;
+      var newDirection = null;
 
-    var offset = this.$container.offset();
+      var offset = this.$container.offset();
 
       offset.bottom = offset.top + this.$container.outerHeight(false);
 
@@ -5918,8 +5918,8 @@ S2.define('select2/core',[
 
         var disabled = !args[0];
 
-    this.$element.prop('disabled', disabled);
-  };
+        this.$element.prop('disabled', disabled);
+    };
 
   Select2.prototype.data = function () {
     if (this.options.get('debug') &&

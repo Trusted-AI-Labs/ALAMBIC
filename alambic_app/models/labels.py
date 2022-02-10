@@ -4,7 +4,8 @@
 from django.db import models
 from polymorphic.models import PolymorphicModel
 
-from alambic_app.models.managers import LabelClassificationManager, LabelRegressionManager
+from alambic_app.models.managers import LabelClassificationManager, LabelRegressionManager, LabelRelationManager
+from alambic_app.models.text_mining import Relation
 from alambic_app.constantes import *
 
 
@@ -56,3 +57,9 @@ class RegressionLabel(Label):
             }
         )
         return response
+
+
+class RelationLabel(Label):
+    relations = models.ManyToManyField('Relation')
+
+    objects = LabelRelationManager()
