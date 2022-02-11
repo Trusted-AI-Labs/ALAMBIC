@@ -24,17 +24,24 @@
 
 .card-body-span {
     position: relative;
+    font-size: 14px;
 }
 
-.tag {
-    color: #000;
-    background-color: #fff !important;
+.tooltip-inner {
+    background-color: #fff;
+    color: #000000;
     padding: 2px;
-    border-radius: 2px;
     font-size: 10px;
-    font-weight: 700;
     font-family: Consolas, monospace;
     text-transform: uppercase;
+    border: 1px solid #000 !important;
+}
+
+.tooltip.bs-tooltip-auto[x-placement^=bottom] .arrow::before, .tooltip.bs-tooltip-bottom .arrow::before {
+    margin-left: 0;
+    content: "";
+    border-width: 0 5px 5px;
+    border-bottom: 5px solid #000 !important;
 }
 
 svg.leader-line g > use {
@@ -63,7 +70,6 @@ mark {
     margin-right: 3px;
     margin-bottom: 2px;
     padding: 5px 5px 5px 3px;
-    cursor: pointer;
     border: 1px solid #000;
 }
 

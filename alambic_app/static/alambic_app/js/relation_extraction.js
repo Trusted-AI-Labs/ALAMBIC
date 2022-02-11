@@ -11,6 +11,11 @@ var relationRecord = {};
 
 //UTILS
 
+function enableTooltips() {
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+}
 
 /**
  * Based on the post https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
@@ -84,6 +89,7 @@ function removeEntity() {
     var content = $(this)[0].parentNode;
     var idEntity = content.id.replace('mark-', '')
     var div = content.parentNode;
+    $(content).tooltip('dispose');
     while ((content.firstChild) && (content.firstChild != $(this)[0])) {
         div.insertBefore(content.firstChild, content);
     }
@@ -204,7 +210,10 @@ function tagEntity() {
 
         var tagSpanStart = `<span id="` + idSpanStart + `" class="card-body-span span-` + idSpanStart + `">`;
         var tagSpanEnd = `<span id="` + idSpanEnd + `" class="card-body-span span-` + idSpanEnd + `">` + focusNode.data + `</span>`;
-        var startMark = `<mark id="mark-` + lastIdRelation + `" class="" style="background-color:` + $(this)[0].style['background-color'] + `;" data-toggle="tooltip" data-placement="bottom" title="` + $(this)[0].id.replace("-button", "") + `">` + tagSpanStart;
+        var startMark = `<mark id="mark-` + lastIdRelation + `" class="" style="background-color:`
+            + $(this)[0].style['background-color'] + `;" data-toggle="tooltip" data-placement="bottom" title="`
+            + $(this)[0].id.replace("-button", "") + `">`
+            + tagSpanStart;
         var endMark = tagSpanEnd + `<span class="close mark-` + lastIdRelation + `">x</span></mark>`;
 
 
@@ -225,6 +234,7 @@ function tagEntity() {
         }
         lastIdRelation += 1;
         repositionLines();
+        enableTooltips();
     }
 }
 
