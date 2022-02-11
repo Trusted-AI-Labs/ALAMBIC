@@ -1,12 +1,16 @@
+/**
+ * Inspired by the web tool UBIAI https://ubiai.tools/ + css
+ */
+
 var lastIdRelation = 0;
 var colorMatching = {
     entities: {},
     relations: {}
 };
-var connectedEntities = {}
 var relationRecord = {};
 
 //UTILS
+
 
 /**
  * Based on the post https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
@@ -62,31 +66,44 @@ function generateRandomColour() {
     return 'rgb(' + array[0].toString(10) + ',' + array[1].toString(10) + ',' + array[2].toString(10) + ')'
 }
 
+
+function repositionLines() {
+    for (const [key, value] of Object.entries(relationRecord)) {
+        let line = value[0];
+        let start = document.getElementById(line.start.id);
+        let end = document.getElementById(line.end.id);
+        let color = line.color;
+        let text = value[1];
+        relationRecord[key] = [getRemovableLine(start, end, text, color), text];
+        line.remove();
+    }
+}
+
+
 function removeEntity() {
     var content = $(this)[0].parentNode;
-    var idEntity = parseInt(content.id.replace('mark-', ''), 10);
+    var idEntity = content.id.replace('mark-', '')
     var div = content.parentNode;
-    while ((content.firstChild) && (content.firstChild.nextSibling != $(this)[0])) {
+    while ((content.firstChild) && (content.firstChild != $(this)[0])) {
         div.insertBefore(content.firstChild, content);
     }
     content.remove();
 
-    // remove here the relations
-    connectedEntities[idEntity].forEach(element => {
-        console.log(element);
-        try {
-            element.remove(); // delete line
-        } catch (err) {
-            console.log('already deleted !')
+    var toDelete = [];
+
+    // remove line
+    for (const [key, value] of Object.entries(relationRecord)) {
+        var array = key.split(',');
+        if ((array[0] == idEntity) || (array[1] == idEntity)) {
+            toDelete.push(key);
+            value[0].remove();
         }
+    }
+
+    toDelete.forEach(key => {
+        delete relationRecord[key];
     });
-    relationRecord[idEntity].forEach(element => {
-        relationRecord[element] = relationRecord[element].filter(function (value, index, arr) {
-            return value != idEntity;
-        });
-    });
-    delete relationRecord[idEntity];
-    delete connectedEntities[idEntity];
+    repositionLines();
 }
 
 
@@ -111,7 +128,7 @@ function initializeEntities(divSelectorID) {
     data.done(function (response) {
         response.forEach(element => {
             var button = createButton(element['name'], element['color']);
-            colorMatching.entities[element['name']] = element['color'];
+            colorMatching.entities[element['color']] = element['name'];
             $(button).appendTo($(divSelectorID));
             $(divSelectorID).append(' ');
             document.getElementById(element['name'] + "-button").addEventListener('click', tagEntity, false)
@@ -124,11 +141,8 @@ function initializeRelations(divSelectorID) {
     data.done(function (response) {
         response.forEach(element => {
             var button = createButton(element['name'], element['color']);
-            colorMatching.relations[element['name']] = element['color'];
+            colorMatching.relations[element['color']] = element['name'];
             $(button).appendTo($(divSelectorID))
-            // create button for each element of array
-            // add event listener on click which verifies that two entities are checked (input)
-            // and create a arrow line leader which can be double-clicked to disappear
             document.getElementById(element['name'] + "-button").addEventListener('click', tagRelation, false)
             $(divSelectorID).append(' ');
         });
@@ -165,6 +179,9 @@ function getRemovableLine(start, end, label, color) {
         path: 'arc',
     });
     document.querySelector('.leader-line:last-of-type').addEventListener('dblclick', function () {
+        let start = parseInt(line.start.id.replace("mark-", ""), 10);
+        let end = parseInt(line.end.id.replace("mark-", ""), 10);
+        delete relationRecord[[start, end]];
         line.remove();
     }, false);
     return line;
@@ -187,8 +204,8 @@ function tagEntity() {
 
         var tagSpanStart = `<span id="` + idSpanStart + `" class="card-body-span span-` + idSpanStart + `">`;
         var tagSpanEnd = `<span id="` + idSpanEnd + `" class="card-body-span span-` + idSpanEnd + `">` + focusNode.data + `</span>`;
-        var startMark = `<mark id="mark-` + lastIdRelation + `" class="" style="background-color:` + $(this)[0].style['background-color'] + `;">` + tagSpanStart;
-        var endMark = tagSpanEnd + `<span class="tag mark-` + lastIdRelation + `">` + $(this)[0].id.replace("-button", "") + `</span><span class="close mark-` + lastIdRelation + `">x</span></mark>`;
+        var startMark = `<mark id="mark-` + lastIdRelation + `" class="" style="background-color:` + $(this)[0].style['background-color'] + `;" data-toggle="tooltip" data-placement="bottom" title="` + $(this)[0].id.replace("-button", "") + `">` + tagSpanStart;
+        var endMark = tagSpanEnd + `<span class="close mark-` + lastIdRelation + `">x</span></mark>`;
 
 
         var content = document.getElementById('text-div');
@@ -196,9 +213,6 @@ function tagEntity() {
             .replace(tagSpanStart, startMark)
             .replace(tagSpanEnd, endMark);
 
-        //initialize the relation array
-        connectedEntities[lastIdRelation] = [];
-        relationRecord[lastIdRelation] = [];
 
         // initialize button to close and selection for relation
         var list = document.getElementsByClassName("close");
@@ -210,6 +224,7 @@ function tagEntity() {
             element.addEventListener('click', selectEntity, false);
         }
         lastIdRelation += 1;
+        repositionLines();
     }
 }
 
@@ -223,10 +238,8 @@ function tagRelation() {
         var color = $(this)[0].style['background-color'];
         var text = $(this)[0].innerText;
         var line = getRemovableLine(selection[0], selection[1], text, color);
-        connectedEntities[idOne].push(line);
-        connectedEntities[idTwo].push(line);
-        relationRecord[idOne].push(idTwo);
-        relationRecord[idTwo].push(idOne);
+
+        relationRecord[[idOne, idTwo]] = [line, text];
     }
     // verifies that two entities are pre-selected (class mark)
     // and create a arrow line leader which can be double-clicked to disappear

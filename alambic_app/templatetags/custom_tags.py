@@ -90,7 +90,7 @@ def to_span(text):
     text = text.strip().split()
     text = enumerate(text)
     text = format_html_join(
-        ' ', '<span id="{}" class="card-body-span span-{}">{}</span>',
+        '', '<span id="{}" class="card-body-span span-{}">{} </span>',
         ((word[0], word[0], word[1]) for word in text)
     )
     return text
