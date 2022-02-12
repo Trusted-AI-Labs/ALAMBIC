@@ -4,7 +4,6 @@ from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 
 from alambic_app.models.input_models import *
-from alambic_app.feature_extraction.text_mining import initialize_client
 
 OPERATIONS_MATCH = {
     # global
@@ -19,7 +18,6 @@ OPERATIONS_MATCH = {
     'tfidf': TfidfVectorizer,
     'bow': CountVectorizer,
     'hashing': HashingVectorizer,
-    'client': initialize_client,
     # image
 }
 
@@ -36,7 +34,7 @@ class PreprocessingHandler:
     def get_pipeline(self, operations):
         lst = []
         if "client" in operations:
-            lst = initialize_client(operations['client'])
+            pass
         else:
             for op, params in operations.items():
                 lst.append(
@@ -52,7 +50,7 @@ class PreprocessingHandler:
             pipeline = sklearn.pipeline.Pipeline(self.pipeline)
             features = pipeline.fit_transform(data)
         else:
-            features = [self.pipeline.annotate(text) for text in data]
+            pass
         self.features = {k: v for k, v in zip(data_ids, features)}
 
     def __getitem__(self, id):

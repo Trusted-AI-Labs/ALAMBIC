@@ -17,60 +17,6 @@ function enableTooltips() {
     })
 }
 
-/**
- * Based on the post https://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
- * @returns {string}
- */
-function generateRandomColour() {
-    function hsvToRGB(h, s, v) {
-        var hI = Math.floor(h * 6);
-        var f = h * 6 - hI;
-        var p = v * (1 - s);
-        var q = v * (1 - f * s);
-        var t = v * (1 - (1 - f) * s);
-        switch (hI) {
-            case 0:
-                var r = v;
-                var g = t;
-                var b = p;
-                break;
-            case 1:
-                var r = q;
-                var g = v;
-                var b = p;
-                break;
-            case 2:
-                var r = p;
-                var g = v;
-                var b = t;
-                break;
-            case 3:
-                var r = p;
-                var g = q;
-                var b = v;
-                break;
-            case 4:
-                var r = t;
-                var g = p;
-                var b = v;
-                break;
-            case 5:
-                var r = v;
-                var g = p;
-                var b = q;
-                break;
-        }
-        return [r, g, b];
-    }
-
-    let h = Math.random()
-    let golden_ratio_conjugate = 0.618033988749895;
-    h = h + golden_ratio_conjugate;
-    h %= 1;
-    let array = hsvToRGB(h, 0.5, 0.95)
-    return 'rgb(' + array[0].toString(10) + ',' + array[1].toString(10) + ',' + array[2].toString(10) + ')'
-}
-
 
 function repositionLines() {
     for (const [key, value] of Object.entries(relationRecord)) {
@@ -250,13 +196,65 @@ function tagRelation() {
         var line = getRemovableLine(selection[0], selection[1], text, color);
 
         relationRecord[[idOne, idTwo]] = [line, text];
+
+        while (selection.length) selection[0].classList.remove('preselected');
     }
-    // verifies that two entities are pre-selected (class mark)
-    // and create a arrow line leader which can be double-clicked to disappear
+}
+
+function formatAnnotation() {
+    var entitites = document.getElementsByTagName("MARK");
+    var formattedJson = {
+        tokens: [],
+        relations: []
+    };
+    var entitiesIndex = {};
+    var index = 0;
+
+    for (let entity of entitites) {
+        let startindex = parseInt(entity.firstChild.id, 10);
+        let endindex = 0;
+        let label = entity.getAttribute('data-original-title');
+        let text = "";
+        let entityID = parseInt(entity.id.replace('mark-', ''));
+
+        for (let span of entity.childNodes) {
+            if (!span.classList.contains('close')) {
+                endindex = parseInt(span.id, 10);
+                text += span.innerText;
+            }
+        }
+
+        formattedJson.tokens.push({
+            start_token: startindex,
+            end_token: endindex,
+            content: text.slice(0, -1),
+            EntityType: label
+        });
+
+        entitiesIndex[entityID] = index;
+        index++;
+    }
+
+    for (const [key, value] of Object.entries(relationRecord)) {
+        var array = key.split(',');
+        var components = [];
+
+        array.forEach(element => {
+            components.push(entitiesIndex[parseInt(element, 10)])
+        });
+
+        formattedJson.relations.push({
+            components: components,
+            RelationType: value[1]
+        });
+    }
+
+    return formattedJson;
 }
 
 
 $(document).ready(function () {
     initializeEntities("#entities");
     initializeRelations("#relation");
+    document.getElementById('submit_annotation').addEventListener('click', formatAnnotation, false)
 });

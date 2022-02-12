@@ -5,6 +5,7 @@ from django.apps import apps
 
 from alambic_app.forms import *
 from alambic_app.models.input_models import Data
+from alambic_app.models.labels import RelationLabel
 from alambic_app.utils.exceptions import MissingForm
 
 logger = logging.getLogger(__name__)
@@ -83,3 +84,9 @@ def get_info_data(id):
 def get_list_existing_instances(model_type):
     model = apps.get_model(app_label='alambic_app', model_name=model_type)
     return list(model.objects.all().values())
+
+
+def convert_to_label(data):
+    task = cache.get('task')
+    if task == 'RE':
+        return RelationLabel.objects.create_instance(data=data)

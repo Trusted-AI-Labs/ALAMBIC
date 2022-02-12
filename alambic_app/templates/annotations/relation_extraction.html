@@ -32,7 +32,11 @@
                     <div class="tab-pane fade" id="relation" role="tabpanel" aria-labelledby="relation-tab"></div>
                 </div>
             </div>
-            <div id="text-div" class="card-body">{% to_span to_annotate %}</div>
+            <div id="text-div" class="card-body"><br>{% to_span to_annotate %}
+            </div>
+            <div id="footer-div" class="card-footer">
+                <button id="submit_annotation" type="submit" class="btn btn-primary">Submit</button>
+            </div>
         </div>
     </main>
 {% endblock %}

@@ -142,16 +142,23 @@ def tasting(request):
         # id_data = get_data_to_label()
         # data = get_info_data(id_data)
         # cache.set('current_data_labelled', data)
-        data = """
-        3 + years Swift & Objective - C and experience with iOS internals Experience building an entire app from scratch and ideally a portfolio of apps featured in the App Store Someone who knows every trick in the book on UI transitions , network communication and memory / battery efficiency Strong UI / design skill experience is a plus SKILL
-        """
+        data = """3 + years Swift & Objective - C and experience with iOS internals Experience building an entire app from scratch and ideally a portfolio of apps featured in the App Store Someone who knows every trick in the book on UI transitions , network communication and memory / battery efficiency Strong UI / design skill experience is a plus SKILL"""
         return render(request, annotation_template, {'to_annotate': data, 'form': form})
 
     elif request.method == "POST":
-        completed_form = form(request.POST)
-        if completed_form.is_valid():
+        valid = False
+        cleaned_data = None
+
+        if form is not None:
+            completed_form = form(request.POST)
+            if completed_form.is_valid():
+                cleaned_data = completed_form.cleaned_data['label']
+                valid = True
+        else:
+            cleaned_data = convert_to_label(request.POST)
+        if valid:
             data = cache.get('current_data_labelled')
-            create_label_oracle(completed_form.cleaned_data['label'], data)
+            create_label_oracle(cleaned_data, data)
             if cache.get('pre_label'):
                 manager.update_datasets([data.pk], True)
                 cache.set('manager', manager)

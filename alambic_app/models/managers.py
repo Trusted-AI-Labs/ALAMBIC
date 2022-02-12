@@ -8,6 +8,8 @@ from django.db.utils import OperationalError
 
 from polymorphic.models import PolymorphicManager
 
+from alambic_app.models.text_mining import Entity, EntityType, Relation, RelationType, EntitytoRelation
+
 logger = logging.getLogger(__name__)
 
 
@@ -104,3 +106,34 @@ class LabelRegressionManager(LabelManager):
 
 class LabelRelationManager(LabelManager):
     model = 'RelationLabel'
+
+    def create_instance(self, **kwargs):
+        json = kwargs.get('data')
+        entities = json.get('entities')
+        relations = json.get('relations')
+        id_entitites = []
+
+        label_relation = self.create()
+
+        for entity in entities:
+            entity_type = EntityType.objects.get(name=entity['EntityType'])
+            id_entitites.append(Entity.objects.get_or_create(
+                entity_type=entity_type,
+                start=entity['start_token'],
+                end=entity['end_token'],
+                content=entity['content']
+            )[0])
+
+        for relation in relations:
+            relation_type = RelationType.objects.get(name=relation['RelationType'])
+            relation_obj = Relation.objects.create(relation_type=relation_type)
+
+            for component in relation:
+                EntitytoRelation.objects.create(entity=id_entitites[component], relation=relation_obj)
+
+            relation_obj.save()
+            label_relation.relation.add(relation_obj)
+
+        label_relation.save()
+
+        return label_relation
