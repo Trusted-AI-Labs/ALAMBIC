@@ -100,14 +100,14 @@
                             }
 
                             // Starts with a '.' so need the baseName
-            if (name[0].charAt(0) === '.' && baseParts) {
-                //Convert baseName to array, and lop off the last part,
-                //so that . matches that 'directory' and not name of the baseName's
-                //module. For instance, baseName of 'one/two/three', maps to
-                //'one/two/three.js', but we want the directory, 'one/two' for
-                //this normalization.
-                normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
-                name = normalizedBaseParts.concat(name);
+                            if (name[0].charAt(0) === '.' && baseParts) {
+                                //Convert baseName to array, and lop off the last part,
+                                //so that . matches that 'directory' and not name of the baseName's
+                                //module. For instance, baseName of 'one/two/three', maps to
+                                //'one/two/three.js', but we want the directory, 'one/two' for
+                                //this normalization.
+                                normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
+                                name = normalizedBaseParts.concat(name);
             }
 
             //start trimDots
@@ -1074,9 +1074,9 @@ S2.define('select2/results',[
               $children.push($child);
           }
 
-      var $childrenContainer = $('<ul></ul>', {
-        'class': 'select2-results__options select2-results__options--nested'
-      });
+          var $childrenContainer = $('<ul></ul>', {
+              'class': 'select2-results__options select2-results__options--nested'
+          });
 
       $childrenContainer.append($children);
 
@@ -2130,11 +2130,11 @@ S2.define('select2/selection/search',[
 
               // Tabbing will be handled during the `keydown` phase
               if (key == KEYS.TAB) {
-          return;
-        }
+                  return;
+              }
 
-        self.handleSearch(evt);
-      }
+              self.handleSearch(evt);
+          }
     );
   };
 
@@ -2492,16 +2492,16 @@ S2.define('select2/diacritics',[
     '\u2C62': 'L',
     '\u2C60': 'L',
     '\uA748': 'L',
-    '\uA746': 'L',
-    '\uA780': 'L',
-    '\u01C7': 'LJ',
-    '\u01C8': 'Lj',
-    '\u24C2': 'M',
-    '\uFF2D': 'M',
-    '\u1E3E': 'M',
-    '\u1E40': 'M',
-    '\u1E42': 'M',
-    '\u2C6E': 'M',
+      '\uA746': 'L',
+      '\uA780': 'L',
+      '\u01C7': 'LJ',
+      '\u01C8': 'Lj',
+      '\u24C2': 'M',
+      '\uFF2D': 'M',
+      '\u1E3E': 'M',
+      '\u1E40': 'M',
+      '\u1E42': 'M',
+      '\u2C6E': 'M',
       '\u019C': 'M',
       '\u24C3': 'N',
       '\uFF2E': 'N',
@@ -2623,16 +2623,16 @@ S2.define('select2/diacritics',[
       '\u1E6E': 'T',
       '\u0166': 'T',
       '\u01AC': 'T',
-    '\u01AE': 'T',
-    '\u023E': 'T',
-    '\uA786': 'T',
-    '\uA728': 'TZ',
-    '\u24CA': 'U',
-    '\uFF35': 'U',
-    '\u00D9': 'U',
-    '\u00DA': 'U',
-    '\u00DB': 'U',
-    '\u0168': 'U',
+      '\u01AE': 'T',
+      '\u023E': 'T',
+      '\uA786': 'T',
+      '\uA728': 'TZ',
+      '\u24CA': 'U',
+      '\uFF35': 'U',
+      '\u00D9': 'U',
+      '\u00DA': 'U',
+      '\u00DB': 'U',
+      '\u0168': 'U',
     '\u1E78': 'U',
     '\u016A': 'U',
     '\u1E7A': 'U',
@@ -2902,16 +2902,16 @@ S2.define('select2/diacritics',[
     '\u019A': 'l',
     '\u026B': 'l',
     '\u2C61': 'l',
-    '\uA749': 'l',
-    '\uA781': 'l',
-    '\uA747': 'l',
-    '\u01C9': 'lj',
-    '\u24DC': 'm',
-    '\uFF4D': 'm',
-    '\u1E3F': 'm',
-    '\u1E41': 'm',
-    '\u1E43': 'm',
-    '\u0271': 'm',
+      '\uA749': 'l',
+      '\uA781': 'l',
+      '\uA747': 'l',
+      '\u01C9': 'lj',
+      '\u24DC': 'm',
+      '\uFF4D': 'm',
+      '\u1E3F': 'm',
+      '\u1E41': 'm',
+      '\u1E43': 'm',
+      '\u0271': 'm',
       '\u026F': 'm',
       '\u24DD': 'n',
       '\uFF4E': 'n',
@@ -3033,16 +3033,16 @@ S2.define('select2/diacritics',[
       '\u0163': 't',
       '\u1E71': 't',
       '\u1E6F': 't',
-    '\u0167': 't',
-    '\u01AD': 't',
-    '\u0288': 't',
-    '\u2C66': 't',
-    '\uA787': 't',
-    '\uA729': 'tz',
-    '\u24E4': 'u',
-    '\uFF55': 'u',
-    '\u00F9': 'u',
-    '\u00FA': 'u',
+      '\u0167': 't',
+      '\u01AD': 't',
+      '\u0288': 't',
+      '\u2C66': 't',
+      '\uA787': 't',
+      '\uA729': 'tz',
+      '\u24E4': 'u',
+      '\uFF55': 'u',
+      '\u00F9': 'u',
+      '\u00FA': 'u',
     '\u00FB': 'u',
     '\u0169': 'u',
     '\u1E79': 'u',
@@ -3071,16 +3071,16 @@ S2.define('select2/diacritics',[
     '\u0173': 'u',
     '\u1E77': 'u',
     '\u1E75': 'u',
-    '\u0289': 'u',
-    '\u24E5': 'v',
-    '\uFF56': 'v',
-    '\u1E7D': 'v',
-    '\u1E7F': 'v',
-    '\u028B': 'v',
-    '\uA75F': 'v',
-    '\u028C': 'v',
-    '\uA761': 'vy',
-    '\u24E6': 'w',
+      '\u0289': 'u',
+      '\u24E5': 'v',
+      '\uFF56': 'v',
+      '\u1E7D': 'v',
+      '\u1E7F': 'v',
+      '\u028B': 'v',
+      '\uA75F': 'v',
+      '\u028C': 'v',
+      '\uA761': 'vy',
+      '\u24E6': 'w',
       '\uFF57': 'w',
       '\u1E81': 'w',
       '\u1E83': 'w',
@@ -4159,8 +4159,8 @@ S2.define('select2/dropdown/search',[
               } else {
                   self.$searchContainer.addClass('select2-search--hide');
               }
-        }
-    });
+          }
+      });
 
       container.on('results:focus', function (params) {
           if (params.data._resultId) {

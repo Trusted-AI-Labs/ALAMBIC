@@ -51,11 +51,11 @@ var getProto = Object.getPrototypeOf;
 
 var slice = arr.slice;
 
-    var flat = arr.flat ? function (array) {
-        return arr.flat.call(array);
-    } : function (array) {
-        return arr.concat.apply([], array);
-    };
+var flat = arr.flat ? function (array) {
+    return arr.flat.call(array);
+} : function (array) {
+    return arr.concat.apply([], array);
+};
 
 
     var push = arr.push;
@@ -423,16 +423,16 @@ jQuery.extend( {
     merge: function (first, second) {
         var len = +second.length,
             j = 0,
-			i = first.length;
+            i = first.length;
 
-		for ( ; j < len; j++ ) {
-			first[ i++ ] = second[ j ];
-		}
+        for (; j < len; j++) {
+            first[i++] = second[j];
+        }
 
-		first.length = i;
+        first.length = i;
 
-		return first;
-	},
+        return first;
+    },
 
 	grep: function( elems, callback, invert ) {
 		var callbackInverse,
@@ -3719,7 +3719,7 @@ jQuery.extend( {
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
 
-					return jQuery.Deferred( function( newDefer ) {
+                    return jQuery.Deferred(function (newDefer) {
                         jQuery.each(tuples, function (_i, tuple) {
 
                             // Map tuples (progress, done, fail) to arguments (done, fail, progress)
@@ -4856,15 +4856,15 @@ function showHide( elements, show ) {
 			if ( elem.style.display === "" && isHiddenWithinTree( elem ) ) {
 				values[ index ] = getDefaultDisplay( elem );
 			}
-		} else {
-			if ( display !== "none" ) {
-				values[ index ] = "none";
+        } else {
+            if (display !== "none") {
+                values[index] = "none";
 
-				// Remember what we're overwriting
-				dataPriv.set( elem, "display", display );
-			}
-		}
-	}
+                // Remember what we're overwriting
+                dataPriv.set(elem, "display", display);
+            }
+        }
+    }
 
     // Set the display of the elements in a second loop to avoid constant reflow
     for (index = 0; index < length; index++) {
@@ -5255,15 +5255,15 @@ jQuery.event = {
             // Update special based on newly reset type
             special = jQuery.event.special[type] || {};
 
-			// handleObj is passed to all event handlers
-			handleObj = jQuery.extend( {
-				type: type,
-				origType: origType,
-				data: data,
-				handler: handler,
-				guid: handler.guid,
-				selector: selector,
-				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
+            // handleObj is passed to all event handlers
+            handleObj = jQuery.extend({
+                type: type,
+                origType: origType,
+                data: data,
+                handler: handler,
+                guid: handler.guid,
+                selector: selector,
+                needsContext: selector && jQuery.expr.match.needsContext.test(selector),
 				namespace: namespaces.join( "." )
 			}, handleObjIn );
 
@@ -7551,11 +7551,11 @@ function Animation( elem, properties, options ) {
 				// Support: Android 2.3 only
 				// Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
 				temp = remaining / animation.duration || 0,
-				percent = 1 - temp,
-				index = 0,
-				length = animation.tweens.length;
+                percent = 1 - temp,
+                index = 0,
+                length = animation.tweens.length;
 
-			for ( ; index < length; index++ ) {
+            for (; index < length; index++) {
                 animation.tweens[index].run(percent);
             }
 
@@ -7819,7 +7819,7 @@ jQuery.fn.extend( {
             if (dequeue || !gotoEnd) {
                 jQuery.dequeue(this, type);
             }
-        } );
+        });
 	},
 	finish: function( type ) {
 		if ( type !== false ) {
@@ -9481,14 +9481,14 @@ jQuery.extend( {
                 },
 
                 // Status-dependent callbacks
-				statusCode: function( map ) {
-					var code;
-					if ( map ) {
-						if ( completed ) {
+                statusCode: function (map) {
+                    var code;
+                    if (map) {
+                        if (completed) {
 
-							// Execute the appropriate callbacks
-							jqXHR.always( map[ jqXHR.status ] );
-						} else {
+                            // Execute the appropriate callbacks
+                            jqXHR.always(map[jqXHR.status]);
+                        } else {
 
 							// Lazy-add the new callbacks in a way that preserves old ones
 							for ( code in map ) {
