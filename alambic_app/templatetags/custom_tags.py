@@ -2,6 +2,8 @@ import json
 from io import BytesIO
 import base64
 
+import spacy
+
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html_join
@@ -87,8 +89,9 @@ def convert_image(data):
 
 @register.simple_tag(name='to_span')
 def to_span(text):
-    text = text.strip().split()
-    text = enumerate(text)
+    nlp = spacy.load('en_core_web_sm')
+    doc = nlp(text)  # TODO : maybe tokenize in the import step and add to the object ?
+    text = enumerate(doc)
     text = format_html_join(
         '', '<span id="{}" class="card-body-span span-{}">{} </span>',
         ((word[0], word[0], word[1]) for word in text)

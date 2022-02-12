@@ -53,5 +53,3 @@ AL_ALGORITHMS_CHOICES = [
 ]
 
 DATA_PATH = "/app/data_alambic"
-
-ENDPOINT_CORENLP = "http://corenlp:9000"
