@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 
 class Entity(models.Model):
@@ -14,7 +15,7 @@ class Entity(models.Model):
 
 class EntityType(models.Model):
     name = models.TextField(null=False, blank=False)
-    color = models.CharField(null=False, blank=False, max_length=7)
+    color = ColorField(default='#FF0000')
 
     class Meta:
         app_label = 'alambic_app'
@@ -39,7 +40,7 @@ class Relation(models.Model):
 
 class RelationType(models.Model):
     name = models.TextField(null=False, blank=False)
-    color = models.CharField(null=False, blank=False, max_length=7)
+    color = ColorField(default='#FF0000')
 
     class Meta:
         app_label = 'alambic_app'

@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
+from django.template.context_processors import csrf
+
 from formtools.wizard.views import SessionWizardView
+
+from crispy_forms.utils import render_crispy_form
+
+from celery.result import AsyncResult
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.misc import create_label_oracle, get_data_to_label
@@ -8,9 +14,6 @@ from alambic_app.utils.production_results import get_performance_chart_formatted
     get_last_statistics, get_data_results
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
-
-from celery.result import AsyncResult
-
 
 logger = logging.getLogger(__name__)
 
@@ -170,6 +173,28 @@ def tasting(request):
                     return HttpResponseRedirect(f"/tasting")
             return HttpResponseRedirect('/distilling')
     raise BadRequestError("Invalid server request")
+
+
+def add_type(request):
+    if request.method == 'POST':
+        form_data = request.POST.dict()  # Convert to regular dict to use pop
+        form_type = form_data.pop('formType')
+        print(form_type, form_data)
+
+        form = get_add_form(form_type)(form_data)
+
+        if form.is_valid():
+            create_instance(form_type, form.cleaned_data)
+            return JsonResponse(
+                {'name': form.cleaned_data['name'], 'color': form.cleaned_data['color'], 'success': True})
+
+    elif request.method == 'GET':
+        form_type = request.GET['formType']
+        form = get_add_form(form_type)
+
+    ctx = csrf(request)
+    form_html = render_crispy_form(form, context=ctx)
+    return JsonResponse({'success': False, 'form_html': form_html})
 
 
 def success(request):

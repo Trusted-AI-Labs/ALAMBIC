@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'formtools',
     'celery_progress',
+    'colorfield',
     # apps
     'alambic_app',
 ]

@@ -85,6 +85,9 @@ function initializeEntities(divSelectorID) {
             $(divSelectorID).append(' ');
             document.getElementById(element['name'] + "-button").addEventListener('click', tagEntity, false)
         });
+        var addButton = `<button type="button" id="add_entity" class="btn btn-success btn-sm"><i class="material-icons">add</i></button>`;
+        $(addButton).appendTo($(divSelectorID));
+        document.getElementById('add_entity').addEventListener('click', addEntity, false)
     })
 }
 
@@ -98,11 +101,51 @@ function initializeRelations(divSelectorID) {
             document.getElementById(element['name'] + "-button").addEventListener('click', tagRelation, false)
             $(divSelectorID).append(' ');
         });
+        var addButton = `<button type="button" id="add_relation" class="btn btn-success btn-sm"><i class="material-icons">add</i></button>`;
+        $(addButton).appendTo($(divSelectorID));
+        document.getElementById('add_relation').addEventListener('click', addRelation, false)
     });
 }
 
 function addEntity() {
-    // Form to create new entity, will call also the button create
+    var formDiv = document.getElementById('newentity_div').getElementsByClassName("modal-body")[0];
+    var managerDiv = document.getElementById('newentity_div');
+    $.getJSON("/tasting/add",
+        {
+            formType: 'EntityType'
+        })
+        .done(function (formData) {
+            $(formDiv).html(formData.form_html);
+            $(managerDiv).modal({show: true});
+
+            $('#confirm_add_entity_button').click(function (e) {
+                // Block default submit behaviour, serialize form data and POST to the form view
+                e.preventDefault();
+
+                var data = $(formDiv).find(':input').serialize();
+
+                $(formDiv).empty();
+
+                $.post("/tasting/add", data.concat("&formType=EntityType"))
+                    .done(function (response) {
+
+                        // Update div where form was rendered, disable create button and select created variant
+                        if (response.success) {
+                            var button = createButton(response['name'], reponse['color']);
+                            var divSelectorID = $(this).parentNode[0]
+                            $(button).before($(this))
+                            $(divSelectorID).append(' ');
+                            document.getElementById(response['name'] + "-button").addEventListener('click', tagEntity, false)
+                        } else {
+                            // Render form with errors when it was not validated by the server
+                            $(formDiv).html(response.form_html);
+                        }
+                    })
+                    .fail(function (response) {
+                        alert('Something went wrong when creating this entity.');
+                    });
+            });
+        });
 }
 
 function addRelation() {

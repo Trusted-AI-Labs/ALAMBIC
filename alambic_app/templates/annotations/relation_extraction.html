@@ -4,14 +4,14 @@
 
 {% block javascripts %}
     {{ block.super }}
+    {{ form.media }}
     <script src="{% static 'libs/leader-line/leader-line.min.js' %}"></script>
     <script src="{% static "alambic_app/js/relation_extraction.js" %}"></script>
 {% endblock %}
 
 {% block primary %}
     <main id="home" role="main" class="container-fluid maxWidth90">
-        <div class="chartdiv" id="plots_performance">
-        </div>
+        <div class="chartdiv" id="plots_performance"></div>
         <div id="annotation_div" class="card">
             <div class="card-header">
                 <ul class="nav nav-tabs" id="TabModels" role="tablist">
@@ -28,15 +28,50 @@
                 </ul>
                 <div class="tab-content" id="TabModelsContent">
                     <div class="tab-pane fade show active" id="entities" role="tabpanel"
-                         aria-labelledby="entities-tab"></div>
-                    <div class="tab-pane fade" id="relation" role="tabpanel" aria-labelledby="relation-tab"></div>
+                         aria-labelledby="entities-tab">
+                        <div class="modal fade" id="newentity_div" tabindex="-1" role="dialog"
+                             aria-labelledby="newentity_div" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="cancel_add_entity_button" class="btn btn-secondary"
+                                                data-dismiss="modal">Dismiss
+                                        </button>
+                                        <button type="button" id="confirm_add_entity_button" class="btn btn-primary">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="relation" role="tabpanel" aria-labelledby="relation-tab">
+                        <div class="modal fade" id="newrelattion_div" tabindex="-1" role="dialog"
+                             aria-labelledby="newrelation_div" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="cancel_add_relation_button" class="btn btn-secondary"
+                                                data-dismiss="modal">Dismiss
+                                        </button>
+                                        <button type="button" id="confirm_add_relation_button" class="btn btn-primary">
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="text-div" class="card-body"><br>{% to_span to_annotate %}
-            </div>
-            <div id="footer-div" class="card-footer">
-                <button id="submit_annotation" type="submit" class="btn btn-primary">Submit</button>
-            </div>
+        </div>
+        <div id="text-div" class="card-body"><br>{% to_span to_annotate %}</div>
+        <div id="footer-div" class="card-footer">
+            <button id="submit_annotation" type="submit" class="btn btn-primary">Submit</button>
         </div>
     </main>
 {% endblock %}

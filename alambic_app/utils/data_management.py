@@ -77,6 +77,16 @@ def get_form_and_template_annotation():
     return get_form_annotation(task), get_template_annotation(task)
 
 
+def get_add_form(data_type):
+    form = None
+    if data_type == 'EntityType':
+        form = NewEntityForm
+
+    elif data_type == 'RelationType':
+        form = NewRelationForm
+    return form
+
+
 def get_info_data(id):
     return Data.objects.get(id=id)
 
@@ -90,3 +100,8 @@ def convert_to_label(data):
     task = cache.get('task')
     if task == 'RE':
         return RelationLabel.objects.create_instance(data=data)
+
+
+def create_instance(model_type, data):
+    model = apps.get_model(app_label='alambic_app', model_name=model_type)
+    return model.objects.create(**data)

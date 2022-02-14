@@ -8,6 +8,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML, Field, Submit
 from crispy_forms.bootstrap import InlineCheckboxes, InlineRadios, Accordion, AccordionGroup
 
+from colorfield.widgets import ColorWidget
+
 from csv import DictReader
 
 from alambic_app.constantes import *
@@ -379,3 +381,59 @@ class ClassificationAnnotationForm(forms.Form):
 
     def clean(self):
         return super().clean()
+
+
+class NewRelationForm(forms.Form):
+    name = forms.CharField(
+        required=True
+    )
+
+    color = forms.CharField(
+        required=True,
+        widget=ColorWidget(
+            attrs={
+                'zIndex': 1080
+            }
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h3>Create a new Relation</h3>')
+            ),
+            Div(
+                Field('name'),
+                Field('color')
+            )
+        )
+
+
+class NewEntityForm(forms.Form):
+    name = forms.CharField(
+        required=True
+    )
+
+    color = forms.CharField(
+        required=True,
+        widget=ColorWidget(
+            attrs={
+                'zIndex': 1080
+            }
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h3>Create a new Entity</h3>')
+            ),
+            Div(
+                Field('name'),
+                Field('color'),
+            )
+        )
