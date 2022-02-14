@@ -51,18 +51,18 @@
   $.fn.djangoSelect2 = function (options) {
     var settings = $.extend({}, options)
     $.each(this, function (i, element) {
-        var $element = $(element)
-        if ($element.hasClass('django-select2-heavy')) {
-            initHeavy($element, settings)
-        } else {
-            init($element, settings)
-        }
-        $element.on('select2:select', function (e) {
-            var name = $(e.currentTarget).attr('name')
-            $('[data-select2-dependent-fields=' + name + ']').each(function () {
-                $(this).val('').trigger('change')
-            })
+      var $element = $(element)
+      if ($element.hasClass('django-select2-heavy')) {
+        initHeavy($element, settings)
+      } else {
+        init($element, settings)
+      }
+      $element.on('select2:select', function (e) {
+        var name = $(e.currentTarget).attr('name')
+        $('[data-select2-dependent-fields=' + name + ']').each(function () {
+          $(this).val('').trigger('change')
         })
+      })
     })
     return this
   }

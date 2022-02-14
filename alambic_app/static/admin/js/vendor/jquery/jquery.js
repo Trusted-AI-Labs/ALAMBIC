@@ -434,15 +434,15 @@ jQuery.extend( {
         return first;
     },
 
-	grep: function( elems, callback, invert ) {
-		var callbackInverse,
-			matches = [],
-			i = 0,
-			length = elems.length,
-			callbackExpect = !invert;
+    grep: function (elems, callback, invert) {
+        var callbackInverse,
+            matches = [],
+            i = 0,
+            length = elems.length,
+            callbackExpect = !invert;
 
-		// Go through the array, only saving the items
-		// that pass the validator function
+        // Go through the array, only saving the items
+        // that pass the validator function
 		for ( ; i < length; i++ ) {
 			callbackInverse = !callback( elems[ i ], i );
 			if ( callbackInverse !== callbackExpect ) {
@@ -3717,7 +3717,7 @@ jQuery.extend( {
 
 				// Keep pipe for back-compat
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
-					var fns = arguments;
+                    var fns = arguments;
 
                     return jQuery.Deferred(function (newDefer) {
                         jQuery.each(tuples, function (_i, tuple) {
@@ -4846,16 +4846,16 @@ function showHide( elements, show ) {
 
 			// Since we force visibility upon cascade-hidden elements, an immediate (and slow)
 			// check is required in this first loop unless we have a nonempty display value (either
-			// inline or about-to-be-restored)
-			if ( display === "none" ) {
-				values[ index ] = dataPriv.get( elem, "display" ) || null;
-				if ( !values[ index ] ) {
-					elem.style.display = "";
-				}
-			}
-			if ( elem.style.display === "" && isHiddenWithinTree( elem ) ) {
-				values[ index ] = getDefaultDisplay( elem );
-			}
+            // inline or about-to-be-restored)
+            if (display === "none") {
+                values[index] = dataPriv.get(elem, "display") || null;
+                if (!values[index]) {
+                    elem.style.display = "";
+                }
+            }
+            if (elem.style.display === "" && isHiddenWithinTree(elem)) {
+                values[index] = getDefaultDisplay(elem);
+            }
         } else {
             if (display !== "none") {
                 values[index] = "none";
@@ -5264,16 +5264,16 @@ jQuery.event = {
                 guid: handler.guid,
                 selector: selector,
                 needsContext: selector && jQuery.expr.match.needsContext.test(selector),
-				namespace: namespaces.join( "." )
-			}, handleObjIn );
+                namespace: namespaces.join(".")
+            }, handleObjIn);
 
-			// Init the event handler queue if we're the first
-			if ( !( handlers = events[ type ] ) ) {
-				handlers = events[ type ] = [];
-				handlers.delegateCount = 0;
+            // Init the event handler queue if we're the first
+            if (!(handlers = events[type])) {
+                handlers = events[type] = [];
+                handlers.delegateCount = 0;
 
-				// Only use addEventListener if the special events handler returns false
-				if ( !special.setup ||
+                // Only use addEventListener if the special events handler returns false
+                if (!special.setup ||
 					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 
 					if ( elem.addEventListener ) {
@@ -7545,12 +7545,12 @@ function Animation( elem, properties, options ) {
 			if ( stopped ) {
 				return false;
 			}
-			var currentTime = fxNow || createFxNow(),
-				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+            var currentTime = fxNow || createFxNow(),
+                remaining = Math.max(0, animation.startTime + animation.duration - currentTime),
 
-				// Support: Android 2.3 only
-				// Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
-				temp = remaining / animation.duration || 0,
+                // Support: Android 2.3 only
+                // Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
+                temp = remaining / animation.duration || 0,
                 percent = 1 - temp,
                 index = 0,
                 length = animation.tweens.length;
@@ -9490,11 +9490,11 @@ jQuery.extend( {
                             jqXHR.always(map[jqXHR.status]);
                         } else {
 
-							// Lazy-add the new callbacks in a way that preserves old ones
-							for ( code in map ) {
-								statusCode[ code ] = [ statusCode[ code ], map[ code ] ];
-							}
-						}
+                            // Lazy-add the new callbacks in a way that preserves old ones
+                            for (code in map) {
+                                statusCode[code] = [statusCode[code], map[code]];
+                            }
+                        }
 					}
 					return this;
 				},

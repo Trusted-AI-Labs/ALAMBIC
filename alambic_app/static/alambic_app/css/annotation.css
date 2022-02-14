@@ -95,3 +95,17 @@ mark:hover .close {
 .preselected {
     border: 3px dotted #ffffff !important;
 }
+
+.modal {
+    z-index: 999;
+    overflow-x: visible;
+    overflow-y: visible;
+}
+
+.modal-backdrop {
+    z-index: 995;
+}
+
+.sticky-top {
+    z-index: 990;
+}

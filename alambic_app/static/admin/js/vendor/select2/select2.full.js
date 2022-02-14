@@ -108,16 +108,16 @@
                                 //this normalization.
                                 normalizedBaseParts = baseParts.slice(0, baseParts.length - 1);
                                 name = normalizedBaseParts.concat(name);
-            }
+                            }
 
-            //start trimDots
-            for (i = 0; i < name.length; i++) {
-                part = name[i];
-                if (part === '.') {
-                    name.splice(i, 1);
-                    i -= 1;
-                } else if (part === '..') {
-                    // If at the start, or previous value is still ..,
+                            //start trimDots
+                            for (i = 0; i < name.length; i++) {
+                                part = name[i];
+                                if (part === '.') {
+                                    name.splice(i, 1);
+                                    i -= 1;
+                                } else if (part === '..') {
+                                    // If at the start, or previous value is still ..,
                     // keep them so that when converted to a path it may
                     // still work when converted to a path, even though
                     // as an ID it is less than ideal. In larger point
@@ -1078,11 +1078,11 @@ S2.define('select2/results',[
               'class': 'select2-results__options select2-results__options--nested'
           });
 
-      $childrenContainer.append($children);
+          $childrenContainer.append($children);
 
-      $option.append(label);
-      $option.append($childrenContainer);
-    } else {
+          $option.append(label);
+          $option.append($childrenContainer);
+      } else {
       this.template(data, option);
     }
 
@@ -2482,16 +2482,16 @@ S2.define('select2/diacritics',[
     '\u013F': 'L',
     '\u0139': 'L',
     '\u013D': 'L',
-    '\u1E36': 'L',
-    '\u1E38': 'L',
-    '\u013B': 'L',
-    '\u1E3C': 'L',
-    '\u1E3A': 'L',
-    '\u0141': 'L',
-    '\u023D': 'L',
-    '\u2C62': 'L',
-    '\u2C60': 'L',
-    '\uA748': 'L',
+      '\u1E36': 'L',
+      '\u1E38': 'L',
+      '\u013B': 'L',
+      '\u1E3C': 'L',
+      '\u1E3A': 'L',
+      '\u0141': 'L',
+      '\u023D': 'L',
+      '\u2C62': 'L',
+      '\u2C60': 'L',
+      '\uA748': 'L',
       '\uA746': 'L',
       '\uA780': 'L',
       '\u01C7': 'LJ',
@@ -2633,16 +2633,16 @@ S2.define('select2/diacritics',[
       '\u00DA': 'U',
       '\u00DB': 'U',
       '\u0168': 'U',
-    '\u1E78': 'U',
-    '\u016A': 'U',
-    '\u1E7A': 'U',
-    '\u016C': 'U',
-    '\u00DC': 'U',
-    '\u01DB': 'U',
-    '\u01D7': 'U',
-    '\u01D5': 'U',
-    '\u01D9': 'U',
-    '\u1EE6': 'U',
+      '\u1E78': 'U',
+      '\u016A': 'U',
+      '\u1E7A': 'U',
+      '\u016C': 'U',
+      '\u00DC': 'U',
+      '\u01DB': 'U',
+      '\u01D7': 'U',
+      '\u01D5': 'U',
+      '\u01D9': 'U',
+      '\u1EE6': 'U',
     '\u016E': 'U',
     '\u0170': 'U',
     '\u01D3': 'U',
@@ -2892,16 +2892,16 @@ S2.define('select2/diacritics',[
     '\u0140': 'l',
     '\u013A': 'l',
     '\u013E': 'l',
-    '\u1E37': 'l',
-    '\u1E39': 'l',
-    '\u013C': 'l',
-    '\u1E3D': 'l',
-    '\u1E3B': 'l',
-    '\u017F': 'l',
-    '\u0142': 'l',
-    '\u019A': 'l',
-    '\u026B': 'l',
-    '\u2C61': 'l',
+      '\u1E37': 'l',
+      '\u1E39': 'l',
+      '\u013C': 'l',
+      '\u1E3D': 'l',
+      '\u1E3B': 'l',
+      '\u017F': 'l',
+      '\u0142': 'l',
+      '\u019A': 'l',
+      '\u026B': 'l',
+      '\u2C61': 'l',
       '\uA749': 'l',
       '\uA781': 'l',
       '\uA747': 'l',
@@ -3043,16 +3043,16 @@ S2.define('select2/diacritics',[
       '\uFF55': 'u',
       '\u00F9': 'u',
       '\u00FA': 'u',
-    '\u00FB': 'u',
-    '\u0169': 'u',
-    '\u1E79': 'u',
-    '\u016B': 'u',
-    '\u1E7B': 'u',
-    '\u016D': 'u',
-    '\u00FC': 'u',
-    '\u01DC': 'u',
-    '\u01D8': 'u',
-    '\u01D6': 'u',
+      '\u00FB': 'u',
+      '\u0169': 'u',
+      '\u1E79': 'u',
+      '\u016B': 'u',
+      '\u1E7B': 'u',
+      '\u016D': 'u',
+      '\u00FC': 'u',
+      '\u01DC': 'u',
+      '\u01D8': 'u',
+      '\u01D6': 'u',
     '\u01DA': 'u',
     '\u1EE7': 'u',
     '\u016F': 'u',
@@ -3061,16 +3061,16 @@ S2.define('select2/diacritics',[
     '\u0215': 'u',
     '\u0217': 'u',
     '\u01B0': 'u',
-    '\u1EEB': 'u',
-    '\u1EE9': 'u',
-    '\u1EEF': 'u',
-    '\u1EED': 'u',
-    '\u1EF1': 'u',
-    '\u1EE5': 'u',
-    '\u1E73': 'u',
-    '\u0173': 'u',
-    '\u1E77': 'u',
-    '\u1E75': 'u',
+      '\u1EEB': 'u',
+      '\u1EE9': 'u',
+      '\u1EEF': 'u',
+      '\u1EED': 'u',
+      '\u1EF1': 'u',
+      '\u1EE5': 'u',
+      '\u1E73': 'u',
+      '\u0173': 'u',
+      '\u1E77': 'u',
+      '\u1E75': 'u',
       '\u0289': 'u',
       '\u24E5': 'v',
       '\uFF56': 'v',
