@@ -13,6 +13,7 @@ from colorfield.widgets import ColorWidget
 from csv import DictReader
 
 from alambic_app.constantes import *
+from alambic_app.models.text_mining import RelationType, EntityType
 from alambic_app.annotation.fields import ClassificationLabelSelectField
 
 
@@ -383,19 +384,7 @@ class ClassificationAnnotationForm(forms.Form):
         return super().clean()
 
 
-class NewRelationForm(forms.Form):
-    name = forms.CharField(
-        required=True
-    )
-
-    color = forms.CharField(
-        required=True,
-        widget=ColorWidget(
-            attrs={
-                'zIndex': 1080
-            }
-        )
-    )
+class NewRelationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -410,20 +399,12 @@ class NewRelationForm(forms.Form):
             )
         )
 
+    class Meta:
+        model = RelationType
+        fields = '__all__'
 
-class NewEntityForm(forms.Form):
-    name = forms.CharField(
-        required=True
-    )
 
-    color = forms.CharField(
-        required=True,
-        widget=ColorWidget(
-            attrs={
-                'zIndex': 1080
-            }
-        )
-    )
+class NewEntityForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -437,3 +418,7 @@ class NewEntityForm(forms.Form):
                 Field('color'),
             )
         )
+
+    class Meta:
+        model = EntityType
+        fields = '__all__'

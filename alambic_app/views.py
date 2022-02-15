@@ -184,7 +184,7 @@ def add_type(request):
         form = get_add_form(form_type)(form_data)
 
         if form.is_valid():
-            create_instance(form_type, form.cleaned_data)
+            form.save()
             return JsonResponse(
                 {'name': form.cleaned_data['name'], 'color': form.cleaned_data['color'], 'success': True})
 

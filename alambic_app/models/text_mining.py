@@ -15,7 +15,7 @@ class Entity(models.Model):
 
 class EntityType(models.Model):
     name = models.TextField(null=False, blank=False)
-    color = ColorField(default='#FF0000')
+    color = ColorField(default='#FF0000', format='hex')
 
     class Meta:
         app_label = 'alambic_app'
@@ -40,7 +40,7 @@ class Relation(models.Model):
 
 class RelationType(models.Model):
     name = models.TextField(null=False, blank=False)
-    color = ColorField(default='#FF0000')
+    color = ColorField(default='#FF0000', format='hex')
 
     class Meta:
         app_label = 'alambic_app'

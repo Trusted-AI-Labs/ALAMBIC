@@ -118,6 +118,8 @@ function addEntity() {
             $(formDiv).html(formData.form_html);
             $(managerDiv).modal({show: true});
 
+            jscolor.install();
+
             $('#confirm_add_entity_button').click(function (e) {
                 // Block default submit behaviour, serialize form data and POST to the form view
                 e.preventDefault();
@@ -131,11 +133,11 @@ function addEntity() {
 
                         // Update div where form was rendered, disable create button and select created variant
                         if (response.success) {
-                            var button = createButton(response['name'], reponse['color']);
-                            var divSelectorID = $(this).parentNode[0]
-                            $(button).before($(this))
-                            $(divSelectorID).append(' ');
-                            document.getElementById(response['name'] + "-button").addEventListener('click', tagEntity, false)
+                            var button = createButton(response.name, response.color);
+                            $('#entities > button:last').before($(button));
+                            $('#entities > button:last').before(document.createTextNode(' '));
+                            document.getElementById(response.name + "-button").addEventListener('click', tagEntity, false)
+                            $(managerDiv).modal('hide');
                         } else {
                             // Render form with errors when it was not validated by the server
                             $(formDiv).html(response.form_html);
@@ -149,7 +151,46 @@ function addEntity() {
 }
 
 function addRelation() {
-    // Form to create a new relation
+    var formDiv = document.getElementById('newrelation_div').getElementsByClassName("modal-body")[0];
+    var managerDiv = document.getElementById('newrelation_div');
+    $.getJSON("/tasting/add",
+        {
+            formType: 'RelationType'
+        })
+        .done(function (formData) {
+            $(formDiv).html(formData.form_html);
+            $(managerDiv).modal({show: true});
+
+            jscolor.install();
+
+            $('#confirm_add_relation_button').click(function (e) {
+                // Block default submit behaviour, serialize form data and POST to the form view
+                e.preventDefault();
+
+                var data = $(formDiv).find(':input').serialize();
+
+                $(formDiv).empty();
+
+                $.post("/tasting/add", data.concat("&formType=RelationType"))
+                    .done(function (response) {
+
+                        // Update div where form was rendered, disable create button and select created variant
+                        if (response.success) {
+                            var button = createButton(response.name, response.color);
+                            $('#relation > button:last').before($(button));
+                            $('#relation > button:last').before(document.createTextNode(' '));
+                            document.getElementById(response.name + "-button").addEventListener('click', tagRelation, false)
+                            $(managerDiv).modal('hide');
+                        } else {
+                            // Render form with errors when it was not validated by the server
+                            $(formDiv).html(response.form_html);
+                        }
+                    })
+                    .fail(function (response) {
+                        alert('Something went wrong when creating this entity.');
+                    });
+            });
+        });
 }
 
 
@@ -300,4 +341,8 @@ $(document).ready(function () {
     initializeEntities("#entities");
     initializeRelations("#relation");
     document.getElementById('submit_annotation').addEventListener('click', formatAnnotation, false)
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        repositionLines();
+        enableTooltips();
+    });
 });

@@ -4,8 +4,8 @@
 
 {% block javascripts %}
     {{ block.super }}
-    {{ form.media }}
     <script src="{% static 'libs/leader-line/leader-line.min.js' %}"></script>
+    <script src="{% static 'colorfield/jscolor/jscolor.js' %}"></script>
     <script src="{% static "alambic_app/js/relation_extraction.js" %}"></script>
 {% endblock %}
 
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="relation" role="tabpanel" aria-labelledby="relation-tab">
-                        <div class="modal fade" id="newrelattion_div" tabindex="-1" role="dialog"
+                        <div class="modal fade" id="newrelation_div" tabindex="-1" role="dialog"
                              aria-labelledby="newrelation_div" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">

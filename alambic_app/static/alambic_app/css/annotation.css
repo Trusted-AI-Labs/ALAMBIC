@@ -96,7 +96,7 @@ mark:hover .close {
     border: 3px dotted #ffffff !important;
 }
 
-.modal {
+.modal .modal-open {
     z-index: 999;
     overflow-x: visible;
     overflow-y: visible;
