@@ -130,7 +130,6 @@ def distilling(request):
 
 
 def tasting(request):
-    cache.set('task', 'RE')
     form, annotation_template = get_form_and_template_annotation()
     manager = cache.get('manager')
     if request.method == 'GET':
