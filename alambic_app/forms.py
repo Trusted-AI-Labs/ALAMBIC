@@ -257,6 +257,31 @@ class RFClassification(CrispyWizardStep):
 
 ### ACTIVE LEARNING
 
+class ActiveLearningTaskChoice(CrispyWizardStep):
+    type_learning = forms.ChoiceField(
+        choices=[
+            ('model', 'Train a model'),
+            ('analysis', 'Analyse the active learning process')
+        ]
+    )
+
+    batch_size = forms.IntegerField(
+        min_value=1,
+        required=True,
+        help_text='Number of queries annotated each step of the active learning process'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Type of active learning process and common parameters</h2>'),
+                Field('type_learning'),
+                Field('batch_size')
+            )
+        )
+
+
 class ActiveLearningParameters(CrispyWizardStep):
     query_strategy = forms.ChoiceField(
         choices=AL_ALGORITHMS_CHOICES,
@@ -323,7 +348,7 @@ class ActiveLearningParameters(CrispyWizardStep):
             ),
             Accordion(
                 AccordionGroup(
-                    'Number of labels added',
+                    'Maximum number of labels added',
                     Field('budget')
                 ),
                 AccordionGroup(
@@ -361,6 +386,54 @@ class ActiveLearningParameters(CrispyWizardStep):
                 self.add_error('budget', 'You have to choose one stop criterion')
 
         return data
+
+
+class ActiveLearningAnalysisParameters(CrispyWizardStep):
+    query_strategies = forms.MultipleChoiceField(
+        choices=AL_ALGORITHMS_CHOICES,
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    cross_validation = forms.IntegerField(
+        min_value=5,
+        help_text="Number of folds for the cross-validation"
+    )
+
+    repeat_operations = forms.IntegerField(
+        min_value=3,
+        help_text="Number of times the learning process is repeated with the same test set"
+    )
+
+    ratio_seed = forms.FloatField(
+        min_value=0.1,
+        max_value=1,
+        required=False,
+        help_text='Ratio of the dataset which will be considered as the starting labelled dataset',
+        widget=forms.NumberInput(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0,
+                'step': 0.01
+            }
+        )
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h2>Parameters for the Active learning analysis</h2>')
+            ),
+            Div(
+                InlineCheckboxes('query_strategies'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('cross_validation'),
+                Field('repeat_operations'),
+                Field('ratio_seed')
+            ),
+        )
 
 
 ### ANNOTATION

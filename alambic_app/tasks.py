@@ -80,7 +80,15 @@ def preprocess_and_feature_extraction(form_data: Dict[str, Any]):
     data = form_data.get('data')
     print(form_data)
 
-    chopping_pipeline = [run_preprocess.si(data), create_ML_manager.si(form_data)]
+    chopping_pipeline = [run_preprocess.si(data)]
+
+    type_learning = form_data.get('type_learning')['type_learning']
+    cache.set('type_learning', type_learning)
+
+    if type_learning == "model":
+        chopping_pipeline.append(create_manager_model.si(form_data))
+    else:
+        chopping_pipeline.append(create_manager_analysis.si(form_data))
 
     init_pipeline(chopping_pipeline, task_id, run_pipeline_task_refs, run_pipeline_done)
 
@@ -116,7 +124,7 @@ def run_preprocess(operations: Dict[str, Any]) -> bool:
 
 
 @shared_task
-def create_ML_manager(form_data: Dict[str, Any]):
+def create_manager_model(form_data: Dict[str, Any]):
     """
     Create a manager to handle the training, prediction, query selection and the related dataset
     :param form_data: dict, contained all the information for the active learning process
@@ -130,12 +138,14 @@ def create_ML_manager(form_data: Dict[str, Any]):
     param_stop_criterion = form_data.get('active')['stop_criterion']['param']
     ratio = form_data.get('active')['ratio_test']
     size_seed = form_data.get('active')['size_seed']
+    batch_size = form_data.get('type_learning')['batch_size']
     handler = cache.get('handler')
     cache.delete('handler')
 
     task = cache.get('task')
     if task == 'C':
-        manager = ClassificationManager(handler, model, query_strategy, stop_criterion, param_stop_criterion,
+        manager = ClassificationManager(handler, model, query_strategy, batch_size, stop_criterion,
+                                        param_stop_criterion,
                                         params_model)
     elif task == 'R':
         pass
@@ -143,6 +153,41 @@ def create_ML_manager(form_data: Dict[str, Any]):
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
     cache.set('manager', manager)
     cache.set('to_label', ids_to_label)
+    return True
+
+
+@shared_task
+def create_manager_analysis(form_data: Dict[str, Any]):
+    """
+    Create a manager to handle the training, prediction, query selection and the related dataset
+    :param form_data: dict, contained all the information for the active learning process
+    :param handler: PreprocessingHandler
+    :return: lst, empty or str, containing the ids to label
+    """
+    model = form_data.get('task')['model_choice']
+    params_model = form_data.get('model_settings')
+    stop_criterion = 'final'
+    param_stop_criterion = 0
+    batch_size = form_data.get('type_learning')['batch_size']
+
+    handler = cache.get('handler')
+    cache.delete('handler')
+
+    task = cache.get('task')
+    if task == 'C':
+        manager = ClassificationManager(handler, model, 'RS', batch_size, stop_criterion, param_stop_criterion,
+                                        params_model)
+    elif task == 'R':
+        pass
+
+    cache.set('initial_manager', manager)
+    cache.set('query_strategies', ['RS'] + form_data.get('active')['query_strategies'])
+    cache.set('current_strategy', None)
+    cache.set('folds', manager.create_folds(form_data.get('active')['cross_validation']))
+    cache.set('ratio_seed', form_data.get('active')['ratio_seed'])
+    cache.set('repeats', form_data.get('active')['repeat_operations'])
+    cache.set('current_repeat', None)
+
     return True
 
 

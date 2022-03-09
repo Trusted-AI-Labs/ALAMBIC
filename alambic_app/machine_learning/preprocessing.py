@@ -49,8 +49,6 @@ class PreprocessingHandler:
         if isinstance(self.pipeline, list):
             pipeline = sklearn.pipeline.Pipeline(self.pipeline)
             features = pipeline.fit_transform(data)
-        else:
-            pass
         self.features = {k: v for k, v in zip(data_ids, features)}
 
     def __getitem__(self, id):

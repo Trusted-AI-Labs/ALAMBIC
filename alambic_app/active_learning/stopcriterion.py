@@ -10,3 +10,6 @@ def budget_reached(budget, learner):
 
 def accuracy_reached(accuracy, learner):
     return (accuracy - learner.accuracy) <= 0
+
+def final_reached(param, learner):
+    return learner.unlabelled_dataset == 0

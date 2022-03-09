@@ -9,6 +9,7 @@ urlpatterns = [
     path('job_status', job_status, name='job_status'),
     path('chopping', chopping_ingredients, name='chopping'),
     path('distilling', distilling, name='distilling'),
+    path('distilling/batch', preparing_batch, name='distilling_batch'),
     path('tasting', tasting, name='tasting'),
     path('tasting/add', add_type, name='add_type'),
     path('spirit', success, name='spirit'),

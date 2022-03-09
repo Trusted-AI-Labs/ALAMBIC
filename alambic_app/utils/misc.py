@@ -34,3 +34,23 @@ def convert_id_label_to_value(label_type):
         label_data = list(RegressionLabel.objects.all().values('id', 'value'))
         conversion_dict = {data['id']: float(data['value']) for data in label_data}
     return conversion_dict
+
+
+def get_next_fold():
+    folds = cache.get('folds')
+    fold = folds.pop()
+    cache.set('folds', folds)
+    return fold
+
+
+def update_repeat():
+    repeat = cache.get('current_repeat')
+    repeat += 1
+    cache.set('current_repeat', repeat)
+
+
+def update_strategy(strategies, index):
+    if index == -1 or index == len(strategies) - 1:
+        return strategies[0]
+    else:
+        return strategies[index + 1]

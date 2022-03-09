@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseRedirect
 from django.template.context_processors import csrf
+from django.views.decorators.csrf import csrf_exempt
 
 from formtools.wizard.views import SessionWizardView
 
@@ -9,7 +10,7 @@ from crispy_forms.utils import render_crispy_form
 from celery.result import AsyncResult
 
 from alambic_app.utils.data_management import *
-from alambic_app.utils.misc import create_label_oracle, get_data_to_label
+from alambic_app.utils.misc import create_label_oracle, get_data_to_label, get_next_fold, update_repeat, update_strategy
 from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file, \
     get_last_statistics, get_data_results
 from alambic_app.utils.exceptions import BadRequestError
@@ -129,6 +130,39 @@ def distilling(request):
     raise BadRequestError("Invalid server request")
 
 
+def preparing_batch(request):
+    current_repeat = cache.get('current_repeat')
+    max_repeat = cache.get('repeats')
+
+    # finished the strategies + repeats or initialization
+    if current_repeat is None or current_repeat == max_repeat:
+        if len(cache.get('folds')) > 0:
+            fold = get_next_fold()
+            manager = cache.get('initial_manager')
+            manager.set_test_set(fold)
+            current_repeat = 0
+            cache.set('current_repeat', 0)
+            cache.set('manager', manager)
+
+    if current_repeat < max_repeat:
+        strategies = cache.get('query_strategies')
+        current_strategy = cache.get('current_strategy')
+        index = strategies.find(current_strategy)
+        manager = cache.get('manager')
+
+        # we did all the strategies or initialization and begin a new repetition
+        if current_strategy is None or index == len(strategies) - 1:
+            update_repeat()
+            manager.initialize_dataset_analysis(cache.get('ratio_seed'))
+            cache.set('manager')
+
+        # next strategy
+        current_strategy = update_strategy(strategies, index)
+        cache.set('current_strategy', current_strategy)
+
+    return HttpResponseRedirect('/distilling')
+
+
 def tasting(request):
     form, annotation_template = get_form_and_template_annotation()
     manager = cache.get('manager')
@@ -140,6 +174,9 @@ def tasting(request):
             cache.set('pre_label', True)
         else:
             if manager.check_criterion():
+                if cache.get('type_learning') == 'analysis':
+                    if len(cache.get('folds')) > 0:
+                        return HttpResponseRedirect(f"/distilling/batch")
                 return HttpResponseRedirect(f"/spirit")
             id_data = get_data_to_label()
 
@@ -174,6 +211,7 @@ def tasting(request):
     raise BadRequestError("Invalid server request")
 
 
+@csrf_exempt
 def add_type(request):
     if request.method == 'POST':
         form_data = request.POST.dict()  # Convert to regular dict to use pop
@@ -226,6 +264,7 @@ class SetupView(SessionWizardView):
                 'Data': 'description',
                 'Task': 'display_settings',
                 'Model Settings': 'build',
+                'Type of Active Learning': 'settings_applications',
                 'Active Learning': 'co_present'
             }
         })
@@ -251,8 +290,13 @@ class SetupView(SessionWizardView):
             form_class = get_form_model(model_choice)
             form = form_class(data)
 
+        elif step == "Type of Active Learning":
+            form_class = get_form_AL("choice")
+            form = form_class(data)
+
         elif step == "Active Learning":
-            form_class = get_form_AL()
+            type_AL = self.get_cleaned_data_for_step("Type of Active Learning")['type_learning']
+            form_class = get_form_AL(type_AL)
             form = form_class(data)
 
         else:
@@ -274,7 +318,8 @@ class SetupView(SessionWizardView):
             'data': data_list[0],
             'task': data_list[1],
             'model_settings': data_list[2],
-            'active': data_list[3]
+            'type_learning': data_list[3],
+            'active': data_list[4]
         }
         result = tasks.preprocess_and_feature_extraction(form_data)
         return HttpResponseRedirect("/chopping?id=" + result.id)

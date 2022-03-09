@@ -45,8 +45,15 @@ def get_form_model(model):
         raise MissingForm("Form for the specified model not found")
 
 
-def get_form_AL():
-    return ActiveLearningParameters
+def get_form_AL(step):
+    if step == 'choice':
+        return ActiveLearningTaskChoice
+    elif step == "analysis":
+        return ActiveLearningAnalysisParameters
+    elif step == "model":
+        return ActiveLearningParameters
+    else:
+        raise MissingForm("Form for the specific task not found")
 
 
 def get_template_annotation(task):

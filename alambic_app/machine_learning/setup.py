@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import random
 
@@ -37,7 +39,8 @@ MODELS_MATCH = {
 
 STOP_CRITERION_MATCH = {
     'budget': stopcriterion.budget_reached,
-    'accuracy': stopcriterion.accuracy_reached
+    'accuracy': stopcriterion.accuracy_reached,
+    'final': stopcriterion.final_reached
 }
 
 
@@ -46,7 +49,7 @@ class MLManager:
     Class to handle the performance
     """
 
-    def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, stopcriterion: str,
+    def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, batch_size: int, stopcriterion: str,
                  stopcriterion_param: Any, params: dict):
         self.step = 1
         self.model = self.create_model(model, params)
@@ -54,6 +57,7 @@ class MLManager:
         self.strategy = AL_ALGORITHMS_MATCH[strategy]
         self.stopcriterion = STOP_CRITERION_MATCH[stopcriterion]
         self.goal = stopcriterion_param
+        self.batch_size = batch_size
         self.unlabelled_dataset, self.training_set = self.get_labelled_dataset()
         self.test_set = []
         self.Y_train = []
@@ -70,6 +74,17 @@ class MLManager:
         """
         # TODO add here parameters if necessary according to the model
         return MODELS_MATCH[model](**params)
+
+    def create_folds(self, k):
+        lst_splits = []
+        splits = sklearn.model_selection.StratifiedKFold(k, shuffle=True, random_state=2).split(
+            np.array(self.training_set), np.array(self.get_y(self.training_set)))
+        for _, test_index in splits:
+            lst_splits.append(np.array(self.training_set)[test_index].tolist())
+        return lst_splits
+
+    def set_query_strategy(self, strategy):
+        self.strategy = AL_ALGORITHMS_MATCH[strategy]
 
     def check_criterion(self):
         return self.stopcriterion(self.goal, self)
@@ -137,6 +152,18 @@ class MLManager:
             self.unlabelled_dataset = [data_id for data_id in self.unlabelled_dataset if data_id not in ids_to_add]
 
         return ids_to_add
+
+    def initialize_dataset_analysis(self, ratio_seed: float):
+        # flush out all the annotation
+        Output.objects.filter(annotated_by_human=True).delete()
+        self.step = 1
+        self.training_set = [data_id for data_id in self.training_set if data_id not in self.test_set]
+        training_set = random.sample(self.training_set, math.ceil(len(self.training_set) * ratio_seed))
+        # put remaining data in the unlabelled dataset to be the candidates to be labelled in the active
+        # learning process
+        # assignation to delete the old list
+        self.unlabelled_dataset = [data_id for data_id in self.training_set if data_id not in training_set]
+        self.training_set = training_set
 
     def get_y(self, lst: List[int], annotated_by_human=None) -> QuerySet:
         outputs = filter__in_preserve(Output.objects, 'data_id', lst)
@@ -206,8 +233,7 @@ class MLManager:
 
     def query(self) -> int:
         unlabelled_X, _ = self.get_data(self.unlabelled_dataset)
-        query_index = self.strategy(self.model, unlabelled_X)
-        print(query_index)
+        query_index = self.strategy(self.model, unlabelled_X, self.batch_size)
         return np.array(self.unlabelled_dataset)[query_index].tolist()
 
     def dump(self):
@@ -216,8 +242,8 @@ class MLManager:
 
 class ClassificationManager(MLManager):
 
-    def __init__(self, handler, model, strategy, stopcriterion, stop_criterion_param, params):
-        super().__init__(handler, model, strategy, stopcriterion, stop_criterion_param, params)
+    def __init__(self, handler, model, strategy, batch_size, stopcriterion, stop_criterion_param, params):
+        super().__init__(handler, model, strategy, batch_size, stopcriterion, stop_criterion_param, params)
 
     @staticmethod
     def get_type():
