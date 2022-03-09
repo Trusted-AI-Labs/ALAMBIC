@@ -15,6 +15,7 @@ def get_default_form_list():
     return [('Data', PreprocessingText),
             ('Task', ClassificationModel),
             ('Model Settings', SVCClassification),
+            ('Usage', ActiveLearningTaskChoice),
             ('Active Learning', ActiveLearningParameters)]
 
 

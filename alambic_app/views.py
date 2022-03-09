@@ -10,7 +10,9 @@ from crispy_forms.utils import render_crispy_form
 from celery.result import AsyncResult
 
 from alambic_app.utils.data_management import *
-from alambic_app.utils.misc import create_label_oracle, get_data_to_label, get_next_fold, update_repeat, update_strategy
+from alambic_app.utils.misc import create_label_oracle, get_data_to_label, get_next_fold, update_repeat, \
+    update_strategy, \
+    get_label
 from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file, \
     get_last_statistics, get_data_results
 from alambic_app.utils.exceptions import BadRequestError
@@ -93,12 +95,12 @@ def data_request(request):
     res = None
 
     if data == 'performance':
-        res = get_performance_chart_formatted_data(data_type)
+        res, max_size = get_performance_chart_formatted_data(data_type)
+        return JsonResponse({'data': res, 'size': max_size}, safe=False)
 
     elif data == 'model':
         res = get_list_existing_instances(data_type)
-
-    return JsonResponse(res, safe=False)
+        return JsonResponse(res, safe=False)
 
 
 def chopping_ingredients(request):
@@ -111,7 +113,7 @@ def chopping_ingredients(request):
         if "id" not in params:
             raise BadRequestError("Missing job id")
         task_id = params["id"]
-        return render(request, 'chopping.html', {'token': task_id})
+        return render(request, 'chopping.html', {'token': task_id, 'type_learning': cache.get('type_learning')})
     raise BadRequestError("Invalid server request")
 
 
@@ -147,14 +149,14 @@ def preparing_batch(request):
     if current_repeat < max_repeat:
         strategies = cache.get('query_strategies')
         current_strategy = cache.get('current_strategy')
-        index = strategies.find(current_strategy)
+        index = strategies.index(current_strategy) if current_strategy is not None else -1
         manager = cache.get('manager')
 
         # we did all the strategies or initialization and begin a new repetition
         if current_strategy is None or index == len(strategies) - 1:
             update_repeat()
             manager.initialize_dataset_analysis(cache.get('ratio_seed'))
-            cache.set('manager')
+            cache.set('manager', manager)
 
         # next strategy
         current_strategy = update_strategy(strategies, index)
@@ -168,10 +170,14 @@ def tasting(request):
     manager = cache.get('manager')
     if request.method == 'GET':
         params = request.GET
+
+        # before launching the learner
         cache.set('pre_label', False)
         if "pre_labelling" in params:
             id_data = params['pre_labelling']
             cache.set('pre_label', True)
+
+        # active learning process
         else:
             if manager.check_criterion():
                 if cache.get('type_learning') == 'analysis':
@@ -181,6 +187,19 @@ def tasting(request):
             id_data = get_data_to_label()
 
         data = get_info_data(id_data)
+
+        # we already have the label
+        label = list(get_label([id_data]))
+        if len(label) > 0:
+            create_label_oracle(label.pop(), data)
+            manager.next_step([data.pk], True)
+            cache.set('manager', manager)
+            to_label = len(cache.get('to_label'))
+            if to_label:
+                return HttpResponseRedirect(f"/tasting")
+            else:
+                return HttpResponseRedirect('/distilling')
+
         cache.set('current_data_labelled', data)
         return render(request, annotation_template, {'to_annotate': data, 'form': form})
 
@@ -193,8 +212,12 @@ def tasting(request):
             if completed_form.is_valid():
                 cleaned_data = completed_form.cleaned_data['label']
                 valid = True
+
+        # when it is posting a new instance and did not use a form to do it
+        # special case for RE
         else:
             cleaned_data = convert_to_label(request.POST)
+
         if valid:
             data = cache.get('current_data_labelled')
             create_label_oracle(cleaned_data, data)
@@ -206,7 +229,7 @@ def tasting(request):
                 cache.set('manager', manager)
                 to_label = len(cache.get('to_label'))
                 if to_label:
-                    return HttpResponseRedirect(f"/tasting")
+                    return HttpResponseRedirect("/tasting")
             return HttpResponseRedirect('/distilling')
     raise BadRequestError("Invalid server request")
 
@@ -264,7 +287,7 @@ class SetupView(SessionWizardView):
                 'Data': 'description',
                 'Task': 'display_settings',
                 'Model Settings': 'build',
-                'Type of Active Learning': 'settings_applications',
+                'Usage': 'settings_applications',
                 'Active Learning': 'co_present'
             }
         })
@@ -290,12 +313,12 @@ class SetupView(SessionWizardView):
             form_class = get_form_model(model_choice)
             form = form_class(data)
 
-        elif step == "Type of Active Learning":
+        elif step == "Usage":
             form_class = get_form_AL("choice")
             form = form_class(data)
 
         elif step == "Active Learning":
-            type_AL = self.get_cleaned_data_for_step("Type of Active Learning")['type_learning']
+            type_AL = self.get_cleaned_data_for_step("Usage")['type_learning']
             form_class = get_form_AL(type_AL)
             form = form_class(data)
 

@@ -12,8 +12,10 @@ class Result(models.Model):
     training_size = models.IntegerField()
     test_size = models.IntegerField()
 
+    # model information
+    query_strategy = models.TextField(null=True)
+
     # Performance indicators
-    cross_val = models.BooleanField(default=False)  # done with cross-val ?
     precision = models.FloatField(null=True)
     recall = models.FloatField(null=True)
     accuracy = models.FloatField(null=True)
@@ -27,7 +29,6 @@ class Result(models.Model):
             'Data labelled by human': self.annotated_by_human,
             'Training size': self.training_size,
             'Test size': self.test_size,
-            'Cross-validation': self.cross_val,
             'Precision': self.precision,
             'Recall': self.recall,
             'Accuracy': self.accuracy,

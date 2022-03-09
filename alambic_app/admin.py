@@ -80,7 +80,7 @@ class ResultAdmin(admin.ModelAdmin):
         'annotated_by_human',
         'training_size',
         'test_size',
-        'cross_val',
+        'query_strategy',
         'precision',
         'recall',
         'mcc',

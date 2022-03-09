@@ -51,9 +51,10 @@ class MLManager:
 
     def __init__(self, handler: PreprocessingHandler, model: str, strategy: str, batch_size: int, stopcriterion: str,
                  stopcriterion_param: Any, params: dict):
-        self.step = 1
+        self.step = 0
         self.model = self.create_model(model, params)
         self.handler = handler
+        self.strategy_name = strategy
         self.strategy = AL_ALGORITHMS_MATCH[strategy]
         self.stopcriterion = STOP_CRITERION_MATCH[stopcriterion]
         self.goal = stopcriterion_param
@@ -212,6 +213,7 @@ class MLManager:
             self.get_y_test()
         return {
             'step': self.step,
+            'query_strategy': self.strategy_name,
             'unlabelled_data': len(self.unlabelled_dataset),
             'annotated_by_human': self.get_annotated_by_human(),
             'training_size': len(self.training_set),

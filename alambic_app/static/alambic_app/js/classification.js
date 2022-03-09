@@ -6,7 +6,7 @@ function drawClassificationChart() {
     var data;
     data = requestData('performance', 'classification');
     data.done(function (response) {
-        drawPerformanceChart(response, ['precision', 'recall', 'accuracy', 'mcc', 'f1_score']);
+        drawPerformanceChart(response.data, response.size, ['precision', 'recall', 'accuracy', 'mcc', 'f1_score']);
     });
 }
 

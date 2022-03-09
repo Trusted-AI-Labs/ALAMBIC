@@ -10,7 +10,7 @@ function requestData(reqData, type) {
     });
 }
 
-function drawPerformanceChart(data, fields) {
+function drawPerformanceChart(data, size, fields) {
     /**
      * Based on https://www.amcharts.com/demos/multiple-value-axes/#code and
      * https://jsfiddle.net/api/post/library/pure/
@@ -38,8 +38,8 @@ function drawPerformanceChart(data, fields) {
 
     var xAxis = chart.xAxes.push(
         am5xy.ValueAxis.new(root, {
-                valueXField: "step",
-                max: 100,
+                valueXField: "training_size",
+                max: size,
                 renderer: am5xy.AxisRendererX.new(root, {}),
                 tooltip: am5.Tooltip.new(root, {})
             }
@@ -51,7 +51,7 @@ function drawPerformanceChart(data, fields) {
     }));
 
     fields.forEach(element => {
-        addSeries(data, chart, root, element, "step", xAxis, yAxis)
+        addSeries(data, chart, root, element, "training_size", xAxis, yAxis)
     });
 
 

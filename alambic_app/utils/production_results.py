@@ -5,9 +5,9 @@ from django.core.cache import cache
 from csv import DictWriter
 
 from alambic_app.models.results import Result
-from alambic_app.models.input_models import Data, Output
+from alambic_app.models.input_models import Data
 
-from alambic_app.utils.misc import convert_id_label_to_value, filter__in_preserve
+from alambic_app.utils.misc import convert_id_label_to_value, get_label
 
 
 def get_performance_chart_formatted_data(data_type: str):
@@ -17,6 +17,7 @@ def get_performance_chart_formatted_data(data_type: str):
         results = list(
             Result.objects.values(
                 'step',
+                'training_size',
                 'unlabelled_data',
                 'annotated_by_human',
                 'precision',
@@ -30,6 +31,7 @@ def get_performance_chart_formatted_data(data_type: str):
         results = list(
             Result.objects.values(
                 'step',
+                'training_size',
                 'unlabelled_data',
                 'annotated_by_human',
                 'mse'
@@ -38,12 +40,12 @@ def get_performance_chart_formatted_data(data_type: str):
 
     for i in range(len(results)):
         data_step = results[i]
-        data_step['ratio labelled'] = float(data_step['annotated_by_human'] / data_step['unlabelled_data'])
-        del data_step['annotated_by_human']
+        total_size = data_step['unlabelled_data'] + data_step['training_size']
+        data_step['ratio labelled'] = float(data_step['training_size'] / total_size)
         del data_step['unlabelled_data']
         results[i] = data_step
 
-    return results
+    return results, total_size
 
 
 def generate_results_file(data_type: str):
@@ -51,7 +53,7 @@ def generate_results_file(data_type: str):
         data_type = 'classification'
     elif data_type == 'R':
         data_type = 'regression'
-    results = get_performance_chart_formatted_data(data_type)
+    results, _ = get_performance_chart_formatted_data(data_type)
     with open(f'{settings.MEDIA_ROOT}/statistics.csv', 'w') as infile:
         csvwriter = DictWriter(infile, fieldnames=results[0].keys())
         csvwriter.writeheader()
@@ -61,11 +63,6 @@ def generate_results_file(data_type: str):
 def get_last_statistics():
     res = Result.objects.latest('step').get_nice_format()
     return res
-
-
-def get_label(lst, annotated=False):
-    outputs = filter__in_preserve(Output.objects, 'data_id', lst).filter(annotated_by_human=annotated)
-    return outputs
 
 
 def get_data_results(manager):

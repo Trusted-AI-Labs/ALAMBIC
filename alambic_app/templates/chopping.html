@@ -57,7 +57,11 @@
                     dataType: 'json',
                     success: function (data) {
                         if (data.status === "SUCCESS") {
-                            window.location.replace("/distilling");
+                            if ("{{ type_learning }}" === "model") {
+                                window.location.replace("/distilling");
+                            } else {
+                                window.location.replace("/distilling/batch");
+                            }
                         } else if (data.status === "FAILURE") {
                             $("#job_status").text(data.status);
                             $("#job-failure-message").removeClass("d-none");

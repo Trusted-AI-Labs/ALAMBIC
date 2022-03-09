@@ -26,6 +26,11 @@ def get_data_to_label():
     return id_data
 
 
+def get_label(lst, annotated=False):
+    outputs = filter__in_preserve(Output.objects, 'data_id', lst).filter(annotated_by_human=annotated)
+    return outputs
+
+
 def convert_id_label_to_value(label_type):
     if label_type == 'C':
         label_data = list(ClassificationLabel.objects.all().values('class_id', 'value'))

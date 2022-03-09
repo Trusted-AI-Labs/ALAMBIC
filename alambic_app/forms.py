@@ -400,14 +400,14 @@ class ActiveLearningAnalysisParameters(CrispyWizardStep):
     )
 
     repeat_operations = forms.IntegerField(
-        min_value=3,
+        min_value=1,
         help_text="Number of times the learning process is repeated with the same test set"
     )
 
     ratio_seed = forms.FloatField(
         min_value=0.1,
         max_value=1,
-        required=False,
+        required=True,
         help_text='Ratio of the dataset which will be considered as the starting labelled dataset',
         widget=forms.NumberInput(
             attrs={
