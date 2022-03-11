@@ -41,21 +41,22 @@ def convert_id_label_to_value(label_type):
     return conversion_dict
 
 
-def get_next_fold():
-    folds = cache.get('folds')
-    fold = folds.pop()
-    cache.set('folds', folds)
+def update_fold(folds, index):
+    fold = folds[index]
+    cache.set('current_fold', index + 1)
     return fold
 
 
-def update_repeat():
-    repeat = cache.get('current_repeat')
-    repeat += 1
-    cache.set('current_repeat', repeat)
+def update_repeat(index):
+    index += 1
+    cache.set('current_repeat', index)
 
 
 def update_strategy(strategies, index):
+    # initialization or we did all the strategies for the current repeat
     if index == -1 or index == len(strategies) - 1:
+        cache.set('current_strategy', strategies[0])
         return strategies[0]
     else:
+        cache.set('current_strategy', strategies[index + 1])
         return strategies[index + 1]

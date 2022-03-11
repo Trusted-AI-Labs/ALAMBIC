@@ -52,4 +52,11 @@ AL_ALGORITHMS_CHOICES = [
     ('ES', 'Entropy Sampling')
 ]
 
+AL_ALGORITHMS_MATCH = {
+    'RS': 'Random Sampling',
+    'US': 'Uncertainty Sampling',
+    'MS': 'Margin Sampling',
+    'ES': 'Entropy Sampling'
+}
+
 DATA_PATH = "/app/data_alambic"

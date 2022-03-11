@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_tags %}
 
 {% block title %}
     <title> ALAMBIC | Distilling </title>
@@ -22,6 +23,9 @@
                     <div class="col-9 dtf" id="job_id">{{ token }}</div>
                     <div class="col-3 dtf color-black">Job Status:</div>
                     <div class="col-9 dtf" id="job_status">{{ job_status }}</div>
+                    {% if type_learning == "analysis" %}
+                        {% add_stats_analysis %}
+                    {% endif %}
                 </div>
 
                 <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">

@@ -8,6 +8,9 @@ from django import template
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html_join
 
+from django.core.cache import cache
+from alambic_app.constantes import AL_ALGORITHMS_MATCH
+
 register = template.Library()
 
 
@@ -97,3 +100,13 @@ def to_span(text):
         ((word[0], word[0], word[1]) for word in text)
     )
     return text
+
+
+@register.simple_tag(name='add_stats_analysis')
+def add_stats_analysis():
+    s = f"""
+    <div class="col-3 dtf color-black">Cross-validation:</div><div class="col-9 dtf" id="cross-val">{cache.get('current_fold')} on {len(cache.get('folds'))}</div>
+    <div class="col-3 dtf color-black">Repeat:</div><div class="col-9 dtf" id="repeat">{cache.get('current_repeat')} on {cache.get('repeats')}</div>
+    <div class="col-3 dtf color-black">Current strategy:</div><div class="col-9 dtf" id="strat">{AL_ALGORITHMS_MATCH[cache.get('current_strategy')]}</div>
+    """
+    return mark_safe(s)

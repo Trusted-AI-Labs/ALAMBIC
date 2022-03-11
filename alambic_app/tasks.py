@@ -78,7 +78,6 @@ def upload_form_data(self: celery.Task, filename: str, model: str, task: str):
 def preprocess_and_feature_extraction(form_data: Dict[str, Any]):
     task_id = uuid()
     data = form_data.get('data')
-    print(form_data)
 
     chopping_pipeline = [run_preprocess.si(data)]
 
@@ -184,9 +183,11 @@ def create_manager_analysis(form_data: Dict[str, Any]):
     cache.set('query_strategies', form_data.get('active')['query_strategies'])
     cache.set('current_strategy', None)
     cache.set('folds', manager.create_folds(form_data.get('active')['cross_validation']))
+    cache.set('current_fold', 0)
     cache.set('ratio_seed', form_data.get('active')['ratio_seed'])
     cache.set('repeats', form_data.get('active')['repeat_operations'])
     cache.set('current_repeat', None)
+    cache.set('to_label', [])
 
     return True
 

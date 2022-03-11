@@ -132,3 +132,4 @@ function addSeries(data, chart, root, yfield, xfield, xAxis, yAxis) {
     series.data.setAll(data);
     series.appear();
 }
+

@@ -10,11 +10,10 @@ from crispy_forms.utils import render_crispy_form
 from celery.result import AsyncResult
 
 from alambic_app.utils.data_management import *
-from alambic_app.utils.misc import create_label_oracle, get_data_to_label, get_next_fold, update_repeat, \
-    update_strategy, \
-    get_label
+from alambic_app.utils.misc import create_label_oracle, get_data_to_label, update_fold, update_repeat, \
+    update_strategy, get_label
 from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file, \
-    get_last_statistics, get_data_results
+    get_last_statistics, get_data_results, check_training_result
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
 
@@ -128,7 +127,7 @@ def distilling(request):
                 return HttpResponseRedirect(f"/tasting")
         else:
             chain_id = tasks.pipeline_ML()
-            return render(request, 'distilling.html', {'token': chain_id})
+            return render(request, 'distilling.html', {'token': chain_id, 'type_learning': cache.get('type_learning')})
     raise BadRequestError("Invalid server request")
 
 
@@ -136,15 +135,17 @@ def preparing_batch(request):
     current_repeat = cache.get('current_repeat')
     max_repeat = cache.get('repeats')
 
+    folds = cache.get('folds')
+    current_fold = cache.get('current_fold')
+
     # finished the strategies + repeats or initialization
     if current_repeat is None or current_repeat == max_repeat:
-        if len(cache.get('folds')) > 0:
-            fold = get_next_fold()
-            manager = cache.get('initial_manager')
-            manager.set_test_set(fold)
-            current_repeat = 0
-            cache.set('current_repeat', 0)
-            cache.set('manager', manager)
+        fold = update_fold(folds, current_fold)
+        manager = cache.get('initial_manager')
+        manager.set_test_set(fold)
+        current_repeat = 0
+        cache.set('current_repeat', 0)
+        cache.set('manager', manager)
 
     if current_repeat < max_repeat:
         strategies = cache.get('query_strategies')
@@ -154,13 +155,13 @@ def preparing_batch(request):
 
         # we did all the strategies or initialization and begin a new repetition
         if current_strategy is None or index == len(strategies) - 1:
-            update_repeat()
+            update_repeat(current_repeat)
             manager.initialize_dataset_analysis(cache.get('ratio_seed'))
             cache.set('manager', manager)
 
         # next strategy
         current_strategy = update_strategy(strategies, index)
-        cache.set('current_strategy', current_strategy)
+        manager.set_query_strategy(current_strategy)
 
     return HttpResponseRedirect('/distilling')
 
@@ -181,9 +182,13 @@ def tasting(request):
         else:
             if manager.check_criterion():
                 if cache.get('type_learning') == 'analysis':
-                    if len(cache.get('folds')) > 0:
-                        return HttpResponseRedirect(f"/distilling/batch")
-                return HttpResponseRedirect(f"/spirit")
+                    if cache.get('current_fold') < len(cache.get('folds')):
+                        return HttpResponseRedirect("/distilling/batch")
+
+                if check_training_result(manager):
+                    return HttpResponseRedirect("/distilling")
+
+                return HttpResponseRedirect("/spirit")
             id_data = get_data_to_label()
 
         data = get_info_data(id_data)
@@ -191,14 +196,10 @@ def tasting(request):
         # we already have the label
         label = list(get_label([id_data]))
         if len(label) > 0:
-            create_label_oracle(label.pop(), data)
+            create_label_oracle(label.pop().label, data)
             manager.next_step([data.pk], True)
             cache.set('manager', manager)
-            to_label = len(cache.get('to_label'))
-            if to_label:
-                return HttpResponseRedirect(f"/tasting")
-            else:
-                return HttpResponseRedirect('/distilling')
+            return HttpResponseRedirect('/distilling')
 
         cache.set('current_data_labelled', data)
         return render(request, annotation_template, {'to_annotate': data, 'form': form})
@@ -227,9 +228,6 @@ def tasting(request):
             else:
                 manager.next_step([data.pk], True)
                 cache.set('manager', manager)
-                to_label = len(cache.get('to_label'))
-                if to_label:
-                    return HttpResponseRedirect("/tasting")
             return HttpResponseRedirect('/distilling')
     raise BadRequestError("Invalid server request")
 

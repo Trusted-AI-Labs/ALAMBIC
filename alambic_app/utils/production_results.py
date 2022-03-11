@@ -65,6 +65,14 @@ def get_last_statistics():
     return res
 
 
+def check_training_result(manager):
+    """
+    Boolean to check that the model was trained at least once with all the labelled content
+    :return: True if the model was trained, False in the other case
+    """
+    return (manager.step - Result.objects.latest('step').step) == 0
+
+
 def get_data_results(manager):
     data_ids = list(Data.objects.all().values('id', 'filename'))
 
