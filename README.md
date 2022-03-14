@@ -17,21 +17,20 @@ Django framework for active learning tasks, inspiration from [iepy](https://gith
 
 ## TO DO
 
-- [ ] Implement feature extraction and
-  preprocessing (https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing)
-  - [ ] In the ML pipeline
-  - [ ] In the form as parameters
-- [ ] Implement model choices + parameters (focus on classification at the moment)
-- [ ] Write and implement the annotation part
-  - [ ] Plots
-  - [ ] Submission annotation
-- [ ] Download results
-- [ ] Download annotation
+- [ ] Analyse Active learning
+  - [ ] Plot performance
+  - [ ] Download results
+- [ ] Reimplementation of strategies with ALiPy
+- [ ] (R)elation (E)xtraction
+  - [ ] Separated of NER ?
+  - [ ] Model for classification between identified entities
+  - [ ] Import of Data
 
 ---
 
-## Reflexions
+## References
 
-- NLP Spark looks really nice for text-mining tasks, but would need Apache spark installed, there is a docker
-  version : https://nlp.johnsnowlabs.com/docs/en/install#docker-support
-- Focus at the moment on classification, but do the Relationship extraction as fast as possible
+- Tang, Y.-P.; Li, G.-X.; and Huang, S.-J. 2019. ALiPy: Active learning in python. Technical report, Nanjing University
+  of Aeronautics and Astronautics. available as arXiv preprint https://arxiv.org/abs/1901.03802.
+- Danka, T. and Horvath, P. 2018. modAL: A modular active learning framework for Python. available on arXiv
+  at https://arxiv.org/abs/1805.00979.

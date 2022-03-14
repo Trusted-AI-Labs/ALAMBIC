@@ -1,3 +1,4 @@
+alipy
 amqp==5.0.6
 beautifulsoup4==4.10.0
 billiard==3.6.4.0
@@ -32,7 +33,6 @@ Jinja2==3.0.3
 joblib==1.1.0
 kombu==5.2.2
 matplotlib==3.5.0
-modAL==0.4.1
 numpy==1.21.4
 Pillow==8.4.0
 pip==21.2.4
