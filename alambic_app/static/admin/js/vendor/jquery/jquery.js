@@ -443,25 +443,25 @@ jQuery.extend( {
 
         // Go through the array, only saving the items
         // that pass the validator function
-		for ( ; i < length; i++ ) {
-			callbackInverse = !callback( elems[ i ], i );
-			if ( callbackInverse !== callbackExpect ) {
-				matches.push( elems[ i ] );
-			}
-		}
+        for (; i < length; i++) {
+            callbackInverse = !callback(elems[i], i);
+            if (callbackInverse !== callbackExpect) {
+                matches.push(elems[i]);
+            }
+        }
 
-		return matches;
-	},
+        return matches;
+    },
 
-	// arg is for internal usage only
-	map: function( elems, callback, arg ) {
-		var length, value,
-			i = 0,
-			ret = [];
+    // arg is for internal usage only
+    map: function (elems, callback, arg) {
+        var length, value,
+            i = 0,
+            ret = [];
 
-		// Go through the array, translating each of the items to their new values
-		if ( isArrayLike( elems ) ) {
-			length = elems.length;
+        // Go through the array, translating each of the items to their new values
+        if (isArrayLike(elems)) {
+            length = elems.length;
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
@@ -4842,10 +4842,10 @@ function showHide( elements, show ) {
 		}
 
 		display = elem.style.display;
-		if ( show ) {
+        if (show) {
 
-			// Since we force visibility upon cascade-hidden elements, an immediate (and slow)
-			// check is required in this first loop unless we have a nonempty display value (either
+            // Since we force visibility upon cascade-hidden elements, an immediate (and slow)
+            // check is required in this first loop unless we have a nonempty display value (either
             // inline or about-to-be-restored)
             if (display === "none") {
                 values[index] = dataPriv.get(elem, "display") || null;
@@ -5274,13 +5274,13 @@ jQuery.event = {
 
                 // Only use addEventListener if the special events handler returns false
                 if (!special.setup ||
-					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+                    special.setup.call(elem, data, namespaces, eventHandle) === false) {
 
-					if ( elem.addEventListener ) {
-						elem.addEventListener( type, eventHandle );
-					}
-				}
-			}
+                    if (elem.addEventListener) {
+                        elem.addEventListener(type, eventHandle);
+                    }
+                }
+            }
 
 			if ( special.add ) {
 				special.add.call( elem, handleObj );
@@ -7542,9 +7542,9 @@ function Animation( elem, properties, options ) {
 			delete tick.elem;
 		} ),
 		tick = function() {
-			if ( stopped ) {
-				return false;
-			}
+            if (stopped) {
+                return false;
+            }
             var currentTime = fxNow || createFxNow(),
                 remaining = Math.max(0, animation.startTime + animation.duration - currentTime),
 
