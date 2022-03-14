@@ -119,10 +119,9 @@ def chopping_ingredients(request):
 def distilling(request):
     if request.method == 'GET':
         to_label = len(cache.get('to_label'))
-        if to_label:
-            to_label = get_data_to_label()
+        if to_label > 0:
             if cache.get('pre_label'):
-                return HttpResponseRedirect(f"/tasting?pre_labelling={to_label}")
+                return HttpResponseRedirect(f"/tasting?pre_labelling=True")
             else:
                 return HttpResponseRedirect(f"/tasting")
         else:
@@ -175,7 +174,6 @@ def tasting(request):
         # before launching the learner
         cache.set('pre_label', False)
         if "pre_labelling" in params:
-            id_data = params['pre_labelling']
             cache.set('pre_label', True)
 
         # active learning process
@@ -189,7 +187,7 @@ def tasting(request):
                     return HttpResponseRedirect("/distilling")
 
                 return HttpResponseRedirect("/spirit")
-            id_data = get_data_to_label()
+        id_data = get_data_to_label()
 
         data = get_info_data(id_data)
 

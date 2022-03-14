@@ -13,4 +13,4 @@ def accuracy_reached(accuracy, learner):
 
 
 def final_reached(param, learner):
-    return learner.unlabelled_dataset == 0
+    return len(learner.unlabelled_indices) == 0

@@ -95,7 +95,7 @@ def get_data_results(manager):
             manual_label = outputs_manual.get(data_id, None)
             prediction = predictions.get(data_id)
             test_or_training = None
-            if data_id in manager.training_set:
+            if data_id in manager.labelled_indices:
                 test_or_training = 'training'
             elif data_id in manager.test_set:
                 test_or_training = 'test'

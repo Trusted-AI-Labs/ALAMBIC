@@ -57,18 +57,22 @@ def upload_form_data(self: celery.Task, filename: str, model: str, task: str):
         data_model = apps.get_model(app_label='alambic_app', model_name=model)
 
         data = data_model.objects.create_instance(**data_dict)
+        output_dict = {'data': data}
 
         # create the label with the last column if an output is present
-        if label:
+        if label != '':
             label_model = apps.get_model(app_label='alambic_app', model_name=LABEL_MATCH[task])
             label_data = {
                 'type': task,
                 'value': label
             }
             label = label_model.objects.create_instance(**label_data)
+            output_dict.update({
+                'label': label
+            })
 
         # create output object liking data and labels, with False for annotated by human and False for predicted
-        Output.objects.create(**{'data': data, 'label': label})
+        Output.objects.create(**output_dict)
 
         # update progress observer
         progress_recorder.set_progress(reader.line_num + 1, nb_rows)
@@ -143,13 +147,12 @@ def create_manager_model(form_data: Dict[str, Any]):
 
     task = cache.get('task')
     if task == 'C':
-        manager = ClassificationManager(handler, model, query_strategy, batch_size, stop_criterion,
-                                        param_stop_criterion,
-                                        params_model)
+        manager = ClassificationManager(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
     elif task == 'R':
         pass
 
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
+    manager.set_query_strategy(query_strategy)
     cache.set('manager', manager)
     cache.set('to_label', ids_to_label)
     return True
@@ -174,8 +177,7 @@ def create_manager_analysis(form_data: Dict[str, Any]):
 
     task = cache.get('task')
     if task == 'C':
-        manager = ClassificationManager(handler, model, 'RS', batch_size, stop_criterion, param_stop_criterion,
-                                        params_model)
+        manager = ClassificationManager(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
     elif task == 'R':
         pass
 

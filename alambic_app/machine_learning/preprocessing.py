@@ -1,4 +1,8 @@
+from scipy.sparse import vstack
+import scipy.sparse.csr
+
 import sklearn.feature_extraction.text
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
@@ -47,7 +51,7 @@ class PreprocessingHandler:
         data_ids = [item.id for item in data]
         data = [item.content for item in data]
         if isinstance(self.pipeline, list):
-            pipeline = sklearn.pipeline.Pipeline(self.pipeline)
+            pipeline = Pipeline(self.pipeline)
             features = pipeline.fit_transform(data)
         self.features = {k: v for k, v in zip(data_ids, features)}
 
@@ -59,3 +63,13 @@ class PreprocessingHandler:
 
     def __repr__(self):
         return str(self)
+
+    def get_x(self, lst):
+        x = []
+        for data_id in lst:
+            x.append(self.features[data_id])
+        if isinstance(x[0], scipy.sparse.csr.csr_matrix):
+            x = vstack(x)
+        else:
+            x = np.concatenate(x)
+        return x

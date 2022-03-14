@@ -27,7 +27,8 @@ def get_data_to_label():
 
 
 def get_label(lst, annotated=False):
-    outputs = filter__in_preserve(Output.objects, 'data_id', lst).filter(annotated_by_human=annotated)
+    outputs = filter__in_preserve(Output.objects, 'data_id', lst).filter(annotated_by_human=annotated,
+                                                                         label__isnull=False)
     return outputs
 
 
