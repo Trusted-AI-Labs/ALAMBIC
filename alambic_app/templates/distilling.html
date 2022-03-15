@@ -6,50 +6,14 @@
     <title> ALAMBIC | Distilling </title>
 {% endblock %}
 
-{% block primary %}
-
-    <main id="home" role="main" class="container-fluid maxWidth90">
-        <h1>Distilling the knowledge (and the data)</h1>
-
-        <div class="col-12 form-area py-3">
-            <div id="loading-gif" class="row justify-content-center">
-                <img src="{% static 'images/alambic.gif' %}" alt="experiment"/>
-            </div>
-
-            <div class="row justify-content-center align-items-center">
-
-                <div class="row mt-3">
-                    <div class="col-3 dtf color-black">Job Id:</div>
-                    <div class="col-9 dtf" id="job_id">{{ token }}</div>
-                    <div class="col-3 dtf color-black">Job Status:</div>
-                    <div class="col-9 dtf" id="job_status">{{ job_status }}</div>
-                    {% if type_learning == "analysis" %}
-                        {% add_stats_analysis %}
-                    {% endif %}
-                </div>
-
-                <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">
-                    <div class="col-1 mt-2">
-                        <i class="fas fa-exclamation-triangle fa-2x"></i>
-                    </div>
-                    <div class="col-11">
-                        <p>
-                            An unexpected error happened with your job.<br/>
-                            If the error persists, don't hesitate to post an issue on the repository of ALAMBIC.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-
-    </main>
-
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "alambic_app/css/annotation.css" %}">
 {% endblock %}
 
 {% block javascripts %}
     {{ block.super }}
+    <script src="{% static "alambic_app/js/charts.js" %}"></script>
     <script>
         $(function () {
             function checkJobStatus() {
@@ -93,4 +57,56 @@
             checkJobStatus();
         });
     </script>
+    {% if type_learningg == 'model' %}
+        {% if task == 'C' %}
+            <script src="{% static "alambic_app/js/classification.js" %}"></script>
+        {% endif %}
+    {% else %}
+        <script src="{% static "alambic_app/js/analysis.js" %}"></script>
+    {% endif %}
+{% endblock %}
+
+{% block primary %}
+
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        <h1>Distilling the knowledge (and the data)</h1>
+
+        <div class="chartdiv" id="plots_performance">
+        </div>
+
+        <div class="col-12 form-area py-3">
+            <div id="loading-gif" class="row justify-content-center">
+                <img src="{% static 'images/alambic.gif' %}" alt="experiment"/>
+            </div>
+
+            <div class="row justify-content-center align-items-center">
+
+                <div class="row mt-3">
+                    <div class="col-3 dtf color-black">Job Id:</div>
+                    <div class="col-9 dtf" id="job_id">{{ token }}</div>
+                    <div class="col-3 dtf color-black">Job Status:</div>
+                    <div class="col-9 dtf" id="job_status">{{ job_status }}</div>
+                    {% if type_learning == "analysis" %}
+                        {% add_stats_analysis %}
+                    {% endif %}
+                </div>
+
+                <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">
+                    <div class="col-1 mt-2">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                    <div class="col-11">
+                        <p>
+                            An unexpected error happened with your job.<br/>
+                            If the error persists, don't hesitate to post an issue on the repository of ALAMBIC.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </main>
+
 {% endblock %}

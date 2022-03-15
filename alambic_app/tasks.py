@@ -236,7 +236,10 @@ def register_result():
     Store the result measures in the database
     """
     manager = cache.get('manager')
-    result_id = manager.register_result()
+    if cache.get('type_learning') == "analysis":
+        result_id = manager.register_result(repeat=cache.get('current_repeat'), cross_val=cache.get('current_fold'))
+    else:
+        result_id = manager.register_result()
     return result_id
 
 

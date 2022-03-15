@@ -14,6 +14,8 @@ class Result(models.Model):
 
     # model information
     query_strategy = models.TextField(null=True)
+    repeat = models.IntegerField(null=True)
+    cross_val = models.IntegerField(null=True)
 
     # Performance indicators
     precision = models.FloatField(null=True)

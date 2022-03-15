@@ -50,7 +50,6 @@ class MLManager:
                  stopcriterion_param: Any, params: dict):
         self.step = 0
         self.model = self.create_model(model, params)
-        self.handler = handler
         self.stopcriterion = STOP_CRITERION_MATCH[stopcriterion]
         self.goal = stopcriterion_param
         self.batch_size = batch_size
@@ -86,13 +85,12 @@ class MLManager:
     def create_folds(self, k):
         lst_splits = []
         splits = sklearn.model_selection.StratifiedKFold(k, shuffle=True, random_state=2).split(
-            np.array(self.labelled_indices), np.array(self.get_y(self.labelled_indices)))
+            np.array(self.labelled_indices), np.array(self.get_y(self.convert_to_indices(self.labelled_indices))))
         for _, test_index in splits:
             lst_splits.append(np.array(self.labelled_indices)[test_index].tolist())
         return lst_splits
 
     def set_query_strategy(self, strategy):
-        self.strategy_name = strategy
         kwargs = dict()
         measures = {
             'ES': 'entropy',
@@ -102,6 +100,7 @@ class MLManager:
         if strategy in ('MS', 'ES', 'US'):
             kwargs.update({'measure': measures[strategy]})
 
+        self.strategy_name = strategy
         self.strategy = AL_ALGORITHMS_MATCH[strategy](self.X, self.Y, **kwargs)
 
     def check_criterion(self):
@@ -185,6 +184,7 @@ class MLManager:
         self.labelled_indices, self.unlabelled_indices = sklearn.model_selection.train_test_split(self.labelled_indices,
                                                                                                   train_size=ratio_seed,
                                                                                                   shuffle=True)
+        self.y_test = []
         self.test_set = self.convert_to_indices(self.test_set)
         self.labelled_indices = self.convert_to_indices(self.labelled_indices)
         self.unlabelled_indices = self.convert_to_indices(self.unlabelled_indices)
@@ -221,10 +221,10 @@ class MLManager:
             self.unlabelled_indices.remove(data_id)
             self.Y[data_id] = new_y[i]
 
-    def register_result(self):
+    def register_result(self, repeat=None, cross_val=None):
         if self.y_test == []:  # initialize the y_test
             self.y_test = self.Y[np.asarray(self.test_set)].astype(float)
-        return {
+        result = {
             'step': self.step,
             'query_strategy': self.strategy_name,
             'unlabelled_data': len(self.unlabelled_indices),
@@ -232,6 +232,11 @@ class MLManager:
             'training_size': len(self.labelled_indices),
             'test_size': len(self.test_set)
         }
+        if repeat is not None:
+            result.update({'repeat': repeat})
+        if cross_val is not None:
+            result.update({'cross_val': cross_val})
+        return result
 
     def train(self):
         X_train, Y_train = self.get_data(self.labelled_indices)
@@ -292,7 +297,7 @@ class ClassificationManager(MLManager):
     def mcc(self) -> float:
         return sklearn.metrics.matthews_corrcoef(self.y_test, self.y_predicted)
 
-    def register_result(self) -> int:
+    def register_result(self, repeat=None, cross_val=None) -> int:
         attributes = super().register_result()
         attributes.update({
             'precision': self.precision,

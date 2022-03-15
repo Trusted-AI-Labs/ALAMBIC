@@ -13,7 +13,7 @@ from alambic_app.utils.data_management import *
 from alambic_app.utils.misc import create_label_oracle, get_data_to_label, update_fold, update_repeat, \
     update_strategy, get_label
 from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file, \
-    get_last_statistics, get_data_results, check_training_result
+    get_last_statistics, get_data_results, check_training_result, get_analysis_chart_formatted_data
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
 
@@ -101,6 +101,10 @@ def data_request(request):
         res = get_list_existing_instances(data_type)
         return JsonResponse(res, safe=False)
 
+    elif data == 'analysis':
+        res, max_size, strategies = get_analysis_chart_formatted_data(cache.get('task'))
+        return JsonResponse({'data': res, 'size': max_size, 'strategies': strategies}, safe=False)
+
 
 def chopping_ingredients(request):
     """
@@ -126,7 +130,10 @@ def distilling(request):
                 return HttpResponseRedirect(f"/tasting")
         else:
             chain_id = tasks.pipeline_ML()
-            return render(request, 'distilling.html', {'token': chain_id, 'type_learning': cache.get('type_learning')})
+            return render(request, 'distilling.html', {'token': chain_id,
+                                                       'type_learning': cache.get('type_learning'),
+                                                       'task': cache.get('task')
+                                                       })
     raise BadRequestError("Invalid server request")
 
 
@@ -144,23 +151,24 @@ def preparing_batch(request):
         manager.set_test_set(fold)
         current_repeat = 0
         cache.set('current_repeat', 0)
-        cache.set('manager', manager)
+        cache.set('manager_repeat', manager)
 
     if current_repeat < max_repeat:
         strategies = cache.get('query_strategies')
         current_strategy = cache.get('current_strategy')
         index = strategies.index(current_strategy) if current_strategy is not None else -1
-        manager = cache.get('manager')
+        manager = cache.get('manager_repeat')
 
         # we did all the strategies or initialization and begin a new repetition
         if current_strategy is None or index == len(strategies) - 1:
             update_repeat(current_repeat)
             manager.initialize_dataset_analysis(cache.get('ratio_seed'))
-            cache.set('manager', manager)
+            cache.set('manager_repeat', manager)
 
         # next strategy
         current_strategy = update_strategy(strategies, index)
         manager.set_query_strategy(current_strategy)
+        cache.set('manager', manager)
 
     return HttpResponseRedirect('/distilling')
 
@@ -187,20 +195,26 @@ def tasting(request):
                     return HttpResponseRedirect("/distilling")
 
                 return HttpResponseRedirect("/spirit")
-        id_data = get_data_to_label()
 
-        data = get_info_data(id_data)
+        # when we don't have to label manually, it is just done in the while loop
+        # if manual, it will pass with POST and redirect to distilling
+        while len(cache.get('to_label')) > 0:
+            id_data = get_data_to_label()
 
-        # we already have the label
-        label = list(get_label([id_data]))
-        if len(label) > 0:
-            create_label_oracle(label.pop().label, data)
-            manager.next_step([data.pk], True)
-            cache.set('manager', manager)
-            return HttpResponseRedirect('/distilling')
+            data = get_info_data(id_data)
 
-        cache.set('current_data_labelled', data)
-        return render(request, annotation_template, {'to_annotate': data, 'form': form})
+            # we already have the label
+            label = list(get_label([id_data]))
+            if len(label) > 0:
+                create_label_oracle(label.pop().label, data)
+                manager.next_step([data.pk], True)
+                cache.set('manager', manager)
+            else:
+                cache.set('current_data_labelled', data)
+                return render(request, annotation_template, {'to_annotate': data, 'form': form})
+
+        # only if we have annotated everything automatically
+        return HttpResponseRedirect('/distilling')
 
     elif request.method == "POST":
         valid = False

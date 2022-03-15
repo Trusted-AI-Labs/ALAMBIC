@@ -1,6 +1,7 @@
 from typing import List, Any, Dict
 from django.conf import settings
 from django.core.cache import cache
+from django.db.models import Avg
 
 from csv import DictWriter
 
@@ -46,6 +47,39 @@ def get_performance_chart_formatted_data(data_type: str):
         results[i] = data_step
 
     return results, total_size
+
+
+def get_analysis_chart_formatted_data(data_type):
+    results = dict()
+    final_results = []
+    res = []
+
+    if data_type == 'C':
+        res = list(Result.objects
+                   .values('training_size', 'query_strategy')
+                   .annotate(average_performance=Avg('accuracy'))
+                   .order_by('training_size')
+                   )
+
+    for result in res:
+        if result['training_size'] not in results:
+            results[result['training_size']] = dict()
+        results[result['training_size']][result['query_strategy']] = result['average_performance']
+
+    for k, v in results.items():
+        res_dict = {
+            'training_size': k
+        }
+        res_dict.update(v)
+        final_results.append(res_dict)
+
+    print(set(final_results[0].keys()))
+
+    strategies = list(set(final_results[0].keys()) - {'training_size'})
+    info = Result.objects.first()
+    max_size = info.training_size + info.unlabelled_data
+
+    return final_results, max_size, strategies
 
 
 def generate_results_file(data_type: str):
