@@ -6,7 +6,6 @@ function drawAnalysisChart() {
     var data;
     data = requestData('analysis', 'None');
     data.done(function (response) {
-        console.log(data);
         drawPerformanceChart(response.data, response.size, response.strategies);
     });
 }

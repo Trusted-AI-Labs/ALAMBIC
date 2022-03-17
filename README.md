@@ -17,9 +17,9 @@ Django framework for active learning tasks, inspiration from [iepy](https://gith
 
 ## TO DO
 
-- [ ] Analyse Active learning
+- [X] Analyse Active learning
   - [X] Plot performance
-  - [ ] Download results
+  - [X] Download results
 - [X] Reimplementation of strategies with ALiPy
 - [ ] (R)elation (E)xtraction
   - [ ] Separated of NER ?

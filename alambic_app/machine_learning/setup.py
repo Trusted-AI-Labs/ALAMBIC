@@ -57,7 +57,7 @@ class MLManager:
         self.indices_to_ids = {k: v for k, v in enumerate(self.labelled_indices + self.unlabelled_indices)}
         self.ids_to_indices = {v: k for k, v in self.indices_to_ids.items()}
         self.test_set = []
-        self.X = self.handler.get_x(self.labelled_indices + self.unlabelled_indices)
+        self.X = handler.get_x(self.labelled_indices + self.unlabelled_indices)
         self.Y = np.array(self.get_y(self.convert_to_indices(self.labelled_indices + self.unlabelled_indices)))
         self.y_train = []
         self.y_test = []

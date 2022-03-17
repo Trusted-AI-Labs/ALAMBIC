@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> ALAMBIC | The Spirit</title>
+{% endblock %}
+
+{% block css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static "alambic_app/css/annotation.css" %}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="{% static "alambic_app/js/charts.js" %}"></script>
+    <script src="{% static "alambic_app/js/analysis.js" %}"></script>
+{% endblock %}
+
+{% block primary %}
+
+    <main id="home" role="main" class="container-fluid maxWidth90">
+        <h1>Getting the results</h1>
+
+        <div class="col-12 justify-content-center align-items-center">
+            <div class="chartdiv" id="plots_performance">
+            </div>
+            <h2 class="text-center">Download the results</h2>
+            <div class="col-12 vertical-align">
+                <a href="{{ MEDIA_URL }}statistics_analysis.csv" download class="btn btn-dark float-right"><i
+                        class="fa fa-download"></i> Download the statistics</a>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

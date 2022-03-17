@@ -61,3 +61,7 @@ def update_strategy(strategies, index):
     else:
         cache.set('current_strategy', strategies[index + 1])
         return strategies[index + 1]
+
+
+def flush_outputs():
+    Output.objects.filter(annotated_by_human=True).delete()

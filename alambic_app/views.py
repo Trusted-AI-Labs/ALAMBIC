@@ -11,9 +11,10 @@ from celery.result import AsyncResult
 
 from alambic_app.utils.data_management import *
 from alambic_app.utils.misc import create_label_oracle, get_data_to_label, update_fold, update_repeat, \
-    update_strategy, get_label
-from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file, \
-    get_last_statistics, get_data_results, check_training_result, get_analysis_chart_formatted_data
+    update_strategy, get_label, flush_outputs
+from alambic_app.utils.production_results import get_performance_chart_formatted_data, generate_results_file_model, \
+    get_last_statistics, get_data_results, get_analysis_chart_formatted_data, \
+    generate_results_file_analysis
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
 
@@ -167,6 +168,7 @@ def preparing_batch(request):
 
         # next strategy
         current_strategy = update_strategy(strategies, index)
+        flush_outputs()
         manager.set_query_strategy(current_strategy)
         cache.set('manager', manager)
 
@@ -190,9 +192,6 @@ def tasting(request):
                 if cache.get('type_learning') == 'analysis':
                     if cache.get('current_fold') < len(cache.get('folds')):
                         return HttpResponseRedirect("/distilling/batch")
-
-                if check_training_result(manager):
-                    return HttpResponseRedirect("/distilling")
 
                 return HttpResponseRedirect("/spirit")
 
@@ -273,12 +272,16 @@ def success(request):
     download the model and the results (csv + plots)
     """
     if request.method == 'GET':
-        manager = cache.get('manager')
-        manager.dump()
-        generate_results_file(cache.get('task'))
-        statistics = get_last_statistics()
-        get_data_results(manager)
-        return render(request, 'spirit.html', {'stats': statistics})
+        if cache.get('type_learning') == "model":
+            manager = cache.get('manager')
+            manager.dump()
+            generate_results_file_model(cache.get('task'))
+            statistics = get_last_statistics()
+            get_data_results(manager)
+            return render(request, 'success/spirit.html', {'stats': statistics})
+        else:
+            generate_results_file_analysis()
+            return render(request, 'success/spirit_batch.html')
     raise BadRequestError("Invalid server request")
 
 

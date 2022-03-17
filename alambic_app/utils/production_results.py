@@ -52,14 +52,16 @@ def get_performance_chart_formatted_data(data_type: str):
 def get_analysis_chart_formatted_data(data_type):
     results = dict()
     final_results = []
-    res = []
+    measure = ''
 
     if data_type == 'C':
-        res = list(Result.objects
-                   .values('training_size', 'query_strategy')
-                   .annotate(average_performance=Avg('accuracy'))
-                   .order_by('training_size')
-                   )
+        measure = 'accuracy'
+
+    res = list(Result.objects
+               .values('training_size', 'query_strategy')
+               .annotate(average_performance=Avg(measure))
+               .order_by('training_size')
+               )
 
     for result in res:
         if result['training_size'] not in results:
@@ -73,8 +75,6 @@ def get_analysis_chart_formatted_data(data_type):
         res_dict.update(v)
         final_results.append(res_dict)
 
-    print(set(final_results[0].keys()))
-
     strategies = list(set(final_results[0].keys()) - {'training_size'})
     info = Result.objects.first()
     max_size = info.training_size + info.unlabelled_data
@@ -82,7 +82,15 @@ def get_analysis_chart_formatted_data(data_type):
     return final_results, max_size, strategies
 
 
-def generate_results_file(data_type: str):
+def generate_results_file_analysis():
+    results = list(Result.objects.all())
+    with open(f'{settings.MEDIA_ROOT}/statistics_analysis.csv', 'w') as infile:
+        csvwriter = DictWriter(infile, fieldnames=results[0].keys())
+        csvwriter.writeheader()
+        csvwriter.writerows(results)
+
+
+def generate_results_file_model(data_type: str):
     if data_type == 'C':
         data_type = 'classification'
     elif data_type == 'R':
@@ -97,14 +105,6 @@ def generate_results_file(data_type: str):
 def get_last_statistics():
     res = Result.objects.latest('step').get_nice_format()
     return res
-
-
-def check_training_result(manager):
-    """
-    Boolean to check that the model was trained at least once with all the labelled content
-    :return: True if the model was trained, False in the other case
-    """
-    return (manager.step - Result.objects.latest('step').step) == 0
 
 
 def get_data_results(manager):

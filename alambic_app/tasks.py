@@ -258,10 +258,18 @@ def get_pipeline_task_refs(pipeline_chain_id: int, timeout=100.0) -> Any:
     Shamelessly found in ORVAL code, by Alexandre Renaud
     Get the list of tasks references
     """
-    try:
-        return run_pipeline_task_refs.AsyncResult(get_task_ref_id(pipeline_chain_id)).get(timeout=timeout)
-    except TimeoutError as e:
-        raise TaskIdNotFoundError(e)
+    attempt = 1
+    MAX_ATTEMPTS = 2
+    while True:
+        try:
+            return run_pipeline_task_refs.AsyncResult(get_task_ref_id(pipeline_chain_id)).get(timeout=timeout)
+        except TimeoutError as e:
+            # retry once, apparently it is a common problem with redis as broker (https://github.com/celery/celery/issues/4039)
+            if attempt == MAX_ATTEMPTS:
+                raise TaskIdNotFoundError(e)
+            else:
+                attempt += 1
+                logger.log(1, "Retrying to get the info...")
 
 
 def get_pipeline_result(pipeline_chain_id: int, target_task: Any) -> Any:
