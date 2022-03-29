@@ -462,16 +462,16 @@ jQuery.extend( {
         // Go through the array, translating each of the items to their new values
         if (isArrayLike(elems)) {
             length = elems.length;
-			for ( ; i < length; i++ ) {
-				value = callback( elems[ i ], i, arg );
+            for (; i < length; i++) {
+                value = callback(elems[i], i, arg);
 
-				if ( value != null ) {
-					ret.push( value );
-				}
-			}
+                if (value != null) {
+                    ret.push(value);
+                }
+            }
 
-		// Go through every key on the object,
-		} else {
+            // Go through every key on the object,
+        } else {
 			for ( i in elems ) {
 				value = callback( elems[ i ], i, arg );
 

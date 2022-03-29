@@ -129,11 +129,11 @@
                                         i -= 2;
                                     }
                                 }
-            }
-            //end trimDots
+                            }
+                            //end trimDots
 
-            name = name.join('/');
-        }
+                            name = name.join('/');
+                        }
 
         //Apply map config if available.
         if ((baseParts || starMap) && map) {
@@ -2452,16 +2452,16 @@ S2.define('select2/diacritics',[
     '\u0130': 'I',
     '\u00CF': 'I',
     '\u1E2E': 'I',
-    '\u1EC8': 'I',
-    '\u01CF': 'I',
-    '\u0208': 'I',
-    '\u020A': 'I',
-    '\u1ECA': 'I',
-    '\u012E': 'I',
-    '\u1E2C': 'I',
-    '\u0197': 'I',
-    '\u24BF': 'J',
-    '\uFF2A': 'J',
+      '\u1EC8': 'I',
+      '\u01CF': 'I',
+      '\u0208': 'I',
+      '\u020A': 'I',
+      '\u1ECA': 'I',
+      '\u012E': 'I',
+      '\u1E2C': 'I',
+      '\u0197': 'I',
+      '\u24BF': 'J',
+      '\uFF2A': 'J',
       '\u0134': 'J',
       '\u0248': 'J',
       '\u24C0': 'K',
@@ -2663,16 +2663,16 @@ S2.define('select2/diacritics',[
       '\u24CB': 'V',
       '\uFF36': 'V',
       '\u1E7C': 'V',
-    '\u1E7E': 'V',
-    '\u01B2': 'V',
-    '\uA75E': 'V',
-    '\u0245': 'V',
-    '\uA760': 'VY',
-    '\u24CC': 'W',
-    '\uFF37': 'W',
-    '\u1E80': 'W',
-    '\u1E82': 'W',
-    '\u0174': 'W',
+      '\u1E7E': 'V',
+      '\u01B2': 'V',
+      '\uA75E': 'V',
+      '\u0245': 'V',
+      '\uA760': 'VY',
+      '\u24CC': 'W',
+      '\uFF37': 'W',
+      '\u1E80': 'W',
+      '\u1E82': 'W',
+      '\u0174': 'W',
     '\u1E86': 'W',
     '\u1E84': 'W',
     '\u1E88': 'W',
@@ -2862,16 +2862,16 @@ S2.define('select2/diacritics',[
     '\u1E2F': 'i',
     '\u1EC9': 'i',
     '\u01D0': 'i',
-    '\u0209': 'i',
-    '\u020B': 'i',
-    '\u1ECB': 'i',
-    '\u012F': 'i',
-    '\u1E2D': 'i',
-    '\u0268': 'i',
-    '\u0131': 'i',
-    '\u24D9': 'j',
-    '\uFF4A': 'j',
-    '\u0135': 'j',
+      '\u0209': 'i',
+      '\u020B': 'i',
+      '\u1ECB': 'i',
+      '\u012F': 'i',
+      '\u1E2D': 'i',
+      '\u0268': 'i',
+      '\u0131': 'i',
+      '\u24D9': 'j',
+      '\uFF4A': 'j',
+      '\u0135': 'j',
       '\u01F0': 'j',
       '\u0249': 'j',
       '\u24DA': 'k',
