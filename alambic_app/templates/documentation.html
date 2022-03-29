@@ -53,7 +53,7 @@
                     <li class="toc-entry toc-h2"><a href="#activelearning"><b>Active learning</b></a>
                         <ul>
                             <li class="toc-entry toc-h3"><a href="#querystrat">Query Strategies</a></li>
-                            <li class="toc-entry toc-h3"><a href="#training">Training after user labelling</a></li>
+                            <li class="toc-entry toc-h3"><a href="#stopcriterion">Stopping criteria</a></li>
                         </ul>
                     </li>
                     <li class="toc-entry toc-h2"><a href="#tutorials"><b>Tutorials</b></a>
@@ -93,7 +93,25 @@
                     <div id="summary">
                         <h1 class="display-4 ttf mt-4">Summary</h1>
                         <p class="dtf mt-4" itemprop="about">
-                            TBA
+                            ALAMBIC is a no-code Artificial Intelligence (AI) platform using an Active learning (AL)
+                            approach.
+                        </p>
+                        <p>
+                            It allows for the development of a machine learning model with data partially (or even not)
+                            labelled
+                            where the model is able to communicate to the human which data point (or <b>query</b>) it
+                            would like
+                            to learn the true label of according to a specific strategy, such as choosing the query the
+                            most different
+                            from all the other queries or the query being the most representative of a population of
+                            queries. The model
+                            stops asking for true labels when reaching a criterion (also called the <b>stopping
+                            criterion</b>), like reaching
+                            a desired accuracy for the model performance or a specific number of annotated queries.
+                        </p>
+                        <p>
+                            ALAMBIC also allows the study of the performance of different query strategies in an active
+                            learning setting for a specific model.
                         </p>
 
                         <h3 class="display-4 ssttf text-center mt-5">What can you do with ALAMBIC ?</h3>
@@ -105,7 +123,8 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <p class="dtf pt-3">
-                                        TBA.
+                                        Annotations tools are available for diverse type of tasks and integrated in the
+                                        active learning process.
                                     </p>
                                 </div>
                             </div>
@@ -118,7 +137,12 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <p class="dtf pt-3">
-                                        TBA.
+                                        Develop a model with little to no data labelled and optimize the labelling
+                                        of your data by having the model telling you which data point it is most
+                                        interested
+                                        to know the true label of. You have the control on the model, its settings, the
+                                        features used,
+                                        as well as the settings of the active learning.
                                     </p>
                                 </div>
                             </div>
@@ -131,7 +155,10 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <p class="dtf pt-3">
-                                        TBA.
+                                        You can track either the performance of the model during its training or at the
+                                        labelling step, or
+                                        even study the impact of different active learning approaches for a specific
+                                        model.
                                     </p>
                                 </div>
                             </div>
@@ -176,7 +203,7 @@
                             TBA.
                         </p>
 
-                        <h2 id="training" class="display-4 sttf mt-5">Training after the user labelling</h2>
+                        <h2 id="stopcriterion" class="display-4 sttf mt-5">Stopping criteria</h2>
                         <p class="dtf mt-4">
                             TBA.
                         </p>

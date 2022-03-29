@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_default_form_list():
-    return [('Data', PreprocessingText),
-            ('Task', ClassificationModel),
+    return [('Task', ClassificationModel),
             ('Model Settings', SVCClassification),
+            ('Data', PreprocessingText),
             ('Usage', ActiveLearningTaskChoice),
             ('Active Learning', ActiveLearningParameters)]
 

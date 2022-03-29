@@ -313,17 +313,17 @@ class SetupView(SessionWizardView):
         if step is None:
             step = self.steps.current
 
-        if step == "Data" and cache.get('data', 0) > 0:
-            form_class = get_form_data()
-            form = form_class(data)
-
-        elif step == "Task":
+        if step == "Task":
             form_class = get_form_task()
             form = form_class(data)
 
         elif step == "Model Settings":
             model_choice = self.get_cleaned_data_for_step("Task")['model_choice']
             form_class = get_form_model(model_choice)
+            form = form_class(data)
+
+        elif step == "Data" and cache.get('data', 0) > 0:
+            form_class = get_form_data()
             form = form_class(data)
 
         elif step == "Usage":
@@ -340,20 +340,12 @@ class SetupView(SessionWizardView):
 
         return form
 
-    def process_step(self, form):
-        step_data = super().process_step(form)
-
-        if self.steps.current == 'Data':
-            pass
-
-        return step_data
-
     def done(self, form_list, **kwargs):
         data_list = [form.cleaned_data for form in form_list]
         form_data = {
-            'data': data_list[0],
-            'task': data_list[1],
-            'model_settings': data_list[2],
+            'task': data_list[0],
+            'model_settings': data_list[1],
+            'data': data_list[2],
             'type_learning': data_list[3],
             'active': data_list[4]
         }
