@@ -1,0 +1,2 @@
+from .classification import ClassificationAnnotationForm
+from .text_mining_entities import NewEntityForm, NewRelationForm

@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.apps import apps
 
 from alambic_app.forms import *
+
 from alambic_app.models.input_models import Data
 from alambic_app.models.labels import RelationLabel
 from alambic_app.utils.exceptions import MissingForm
