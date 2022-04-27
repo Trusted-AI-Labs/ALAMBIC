@@ -9,6 +9,10 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, Ha
 
 from alambic_app.models.input_models import *
 
+# Custom functions
+from alambic_app.feature_extraction.images import *
+from alambic_app.feature_extraction.text_mining import *
+
 OPERATIONS_MATCH = {
     # global
     ## scaler
@@ -22,7 +26,14 @@ OPERATIONS_MATCH = {
     'tfidf': TfidfVectorizer,
     'bow': CountVectorizer,
     'hashing': HashingVectorizer,
+    'lemma': tokenizer_lemmatizer,
+    'tree': dependency_tree
     # image
+}
+
+CUSTOM_FUNCTIONS = {
+    'lemma',
+    'tree'
 }
 
 
@@ -37,10 +48,12 @@ class PreprocessingHandler:
 
     def get_pipeline(self, operations):
         lst = []
-        if "client" in operations:
-            pass
-        else:
-            for op, params in operations.items():
+        for op, params in operations.items():
+            if op in CUSTOM_FUNCTIONS:
+                lst.append(
+                    (op, pipelinize(OPERATIONS_MATCH[op], kwargs=params))
+                )
+            else:
                 lst.append(
                     (op, OPERATIONS_MATCH[op](**params))
                 )

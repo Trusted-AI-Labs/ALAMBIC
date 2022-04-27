@@ -64,7 +64,7 @@ def job_status(request):
     if request.method == 'GET':
         params = request.GET
         if "token" not in params:
-            raise ValidationError("Invalid or missing job id.")
+            raise Exception("Invalid or missing job id.")
         job_id = params["token"]
         result = AsyncResult(job_id)
         if result.status == "SUCCESS":
