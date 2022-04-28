@@ -7,6 +7,4 @@ nav_order: 3
 
 # For text
 
-# For images
-
-Coming soon{: .label .label-yellow }
+<h1>For images <p class='label label-yellow'>Coming soon</p></h1>
