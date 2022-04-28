@@ -1,6 +1,7 @@
 theme: "just-the-docs"
+
 color_scheme: alambic
-logo: "assets/images/alambic_transparent.png"
+logo: "assets/images/alambic_title.png"
 
 title: ALAMBIC
 description: Active Learning Automation with Methods to Battle Insufficient Curation
