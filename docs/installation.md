@@ -1,5 +1,7 @@
 ---
-layout: default title: Installation nav_order: 2
+layout: default
+title: Installation
+nav_order: 2
 ---
 
 # Prerequisites
