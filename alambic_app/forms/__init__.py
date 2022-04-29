@@ -3,4 +3,4 @@ from .annotation import *
 from .data import *
 from .task import *
 
-from forms import GeneralInfoInputForm
+from .forms import GeneralInfoInputForm
