@@ -1,4 +1,6 @@
 remote_theme: just-the-docs/just-the-docs
+ga_tracking: G-94CDFXRBRT
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true by default)
 
 
 color_scheme: alambic
