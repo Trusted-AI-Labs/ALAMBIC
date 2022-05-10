@@ -92,9 +92,9 @@ class PreprocessingText(CrispyWizardStep):
         # tree = cleaned_data.get('annotators')
         vector = cleaned_data.get('vectorizer')
         preprocess = cleaned_data.get('preprocessing_steps')
-        if vector != '':
+        if vector == '':
             # self.add_error('annotators', 'Only one type of features can be selected')
-            self.add_error('vectorizer', 'Only one type of features can be selected')
+            self.add_error('vectorizer', 'You have to select a feature')
 
         if 'lemma' in preprocess:
             operations['lemma'] = {'stop': 'stop_words' in preprocess}
