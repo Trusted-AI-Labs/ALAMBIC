@@ -116,9 +116,14 @@ def get_data_results(manager):
     outputs = convert_labels(get_label([data['id'] for data in data_ids]), conversion_dict)
     outputs_manual = convert_labels(get_label([data['id'] for data in data_ids], True), conversion_dict)
 
-    predictions = {label[0]: conversion_dict[label[1]] for label in zip([data['id'] for data in data_ids],
-                                                                        manager.predict(
-                                                                            [data['id'] for data in data_ids]))}
+    predictions = {label[0]: conversion_dict[label[1]] for label in zip(
+        [data['id'] for data in data_ids],
+        manager.predict(
+            manager.convert_to_indices(
+                [data['id'] for data in data_ids]
+            )
+        )
+    )}
 
     with open(f'{settings.MEDIA_ROOT}/data_informations.csv', 'w') as outfile:
         outfile.write('id,filename,existing_label,manual_label,prediction,test_or_training\n')
@@ -129,9 +134,9 @@ def get_data_results(manager):
             manual_label = outputs_manual.get(data_id, None)
             prediction = predictions.get(data_id)
             test_or_training = None
-            if data_id in manager.labelled_indices:
+            if data_id in manager.convert_to_ids(manager.labelled_indices):
                 test_or_training = 'training'
-            elif data_id in manager.test_set:
+            elif data_id in manager.convert_to_ids(manager.test_set):
                 test_or_training = 'test'
 
             outfile.write(f'{data_id},{filename},{existing_label},{manual_label},{prediction},{test_or_training}\n')
