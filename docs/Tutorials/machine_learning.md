@@ -11,6 +11,8 @@ Once the data is imported, you can launch the setup process where you can choose
 
 The first choice is the learner, the model which will be trained.
 
-ALAMBIC is currently able to support any kind of [sklearn](https://scikit-learn.org/stable/) model. However, all of them are not necessarily implemented.
+ALAMBIC is currently able to support any kind of [sklearn](https://scikit-learn.org/stable/) model. However, not all of them are currently implemented.
 
-You can find for each task the implemented models and link to their documentation. Most of the settings related to the model are available for customization in the 
+<p><p class='label label-yellow'>Coming soon</p> Deep learning models will be implemented in a later version.</p>
+
+You can find for each task the implemented models and link to their documentation. Most of the parameters related to the model are available for customization during the setup process.
