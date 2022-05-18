@@ -45,6 +45,13 @@ FEATURES_TEXT_CHOICES = [
     ('hashing', 'Token occurrences with hashing'),
 ]
 
+KERNELS_CHOICES = [
+    ('linear','Linear'),
+    ('poly','Polynomial'),
+    ('rbf', 'Radial Basis Function'),
+    ('sigmoid','Sigmoid')
+]
+
 AL_ALGORITHMS_CHOICES = [
     ('RS', 'Random Sampling'),
     ('US', 'Uncertainty Sampling'),
