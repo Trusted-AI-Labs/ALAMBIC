@@ -12,7 +12,7 @@ nav_order: 3
 You select any number of currently implemented query strategies (see [here](/Tutorials/query_strategy.html/) for their list) to analyse.
 
 ## Cross-validation
-Cross-validation is a resampling method that uses different portions of the data to test and train a model on different iterations. The dataset is partitioned into complementary subsets, where the data is trained on one subset and its performance is evaluated on the other. Performance is averaged over several rounds of cross-validations.
+Cross-validation is a resampling method that uses different portions of the data to test and train a model on different iterations. The dataset is partitioned into complementary subsets, where the data is trained on one subset and its performance is evaluated on the other. Resulting metrics are averaged over several rounds of cross-validation.
 
 In this case, we implement a k-fold cross-validation, meaning that the dataset is split in k parts, where for each round one part is considered as the test set and all the other k-1 parts are combined as the training set.
 
