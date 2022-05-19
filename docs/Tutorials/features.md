@@ -6,8 +6,21 @@ nav_order: 3
 math: mathjax2
 ---
 
+<details close markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
+
 # For text
 First, it must be noted that only english language is supported.
+
+![](../assets/images/features.png)
+
 ## Optional preprocessing parameters
 ### Removal of stop words
 Stop words, such as "a", "the", "is", are communly used words in a language. They can be removedd as they are generally considered to carry little useful information.

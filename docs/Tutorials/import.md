@@ -25,7 +25,7 @@ On the Upload page, you can select the task and the type of data you manage. You
 
 ![](../assets/images/pouring.png)
 
-<span class="text-red-300 fs-5 fw-700">IMPORTANT :</span> All the data you want to upload MUST BE in the `data_alambic` folder before you build the docker-compose and mount the volumes !
+<p><p class="label label-red">Important</p> All the data you want to upload MUST BE in the `data_alambic` folder before you build the docker-compose and mount the volumes ! </p>
 
 # Classification
 ## For text & 2D images
