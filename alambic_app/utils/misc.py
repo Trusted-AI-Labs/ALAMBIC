@@ -53,14 +53,9 @@ def update_repeat(index):
     cache.set('current_repeat', index)
 
 
-def update_strategy(strategies, index):
+def update_strategy(index):
     # initialization or we did all the strategies for the current repeat
-    if index == -1 or index == len(strategies) - 1:
-        cache.set('current_strategy', strategies[0])
-        return strategies[0]
-    else:
-        cache.set('current_strategy', strategies[index + 1])
-        return strategies[index + 1]
+    cache.set('current_index', index + 1)
 
 
 def flush_outputs():

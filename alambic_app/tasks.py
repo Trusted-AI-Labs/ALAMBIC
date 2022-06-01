@@ -183,7 +183,7 @@ def create_manager_analysis(form_data: Dict[str, Any]):
 
     cache.set('initial_manager', manager)
     cache.set('query_strategies', form_data.get('active')['query_strategies'])
-    cache.set('current_strategy', None)
+    cache.set('current_index', -1)
     cache.set('folds', manager.create_folds(form_data.get('active')['cross_validation']))
     cache.set('current_fold', 0)
     cache.set('ratio_seed', form_data.get('active')['ratio_seed'])

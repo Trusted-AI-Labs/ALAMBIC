@@ -83,7 +83,7 @@ def get_analysis_chart_formatted_data(data_type):
 
 
 def generate_results_file_analysis():
-    results = list(Result.objects.all())
+    results = list(Result.objects.all().values())
     with open(f'{settings.MEDIA_ROOT}/statistics_analysis.csv', 'w') as infile:
         csvwriter = DictWriter(infile, fieldnames=results[0].keys())
         csvwriter.writeheader()

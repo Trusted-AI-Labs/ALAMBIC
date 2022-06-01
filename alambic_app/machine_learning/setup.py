@@ -175,8 +175,10 @@ class MLManager:
 
         return ids_to_add
 
-    def initialize_dataset_analysis(self, ratio_seed: float):
+    def initialize_dataset_analysis(self, ratio_seed: float, first: bool):
         # flush out all the annotation
+        if not first:
+            self.test_set = self.convert_to_ids(self.test_set)
         Output.objects.filter(annotated_by_human=True).delete()
         self.step = 1
         self.labelled_indices = list(
@@ -298,7 +300,7 @@ class ClassificationManager(MLManager):
         return sklearn.metrics.matthews_corrcoef(self.y_test, self.y_predicted)
 
     def register_result(self, repeat=None, cross_val=None) -> int:
-        attributes = super().register_result()
+        attributes = super().register_result(repeat, cross_val)
         attributes.update({
             'precision': self.precision,
             'recall': self.recall,

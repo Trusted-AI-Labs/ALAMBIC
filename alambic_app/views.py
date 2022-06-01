@@ -145,8 +145,13 @@ def preparing_batch(request):
     folds = cache.get('folds')
     current_fold = cache.get('current_fold')
 
+    strategies = cache.get('query_strategies')
+    current_strategy = cache.get('current_index')
+
+    last_repeat_over = (current_repeat == max_repeat and current_strategy == len(strategies)-1)
+
     # finished the strategies + repeats or initialization
-    if current_repeat is None or current_repeat == max_repeat:
+    if current_repeat is None or (last_repeat_over):
         fold = update_fold(folds, current_fold)
         manager = cache.get('initial_manager')
         manager.set_test_set(fold)
@@ -154,23 +159,30 @@ def preparing_batch(request):
         cache.set('current_repeat', 0)
         cache.set('manager_repeat', manager)
 
-    if current_repeat < max_repeat:
-        strategies = cache.get('query_strategies')
-        current_strategy = cache.get('current_strategy')
-        index = strategies.index(current_strategy) if current_strategy is not None else -1
+        current_strategy = -1
+        print(f"Fold {cache.get('current_fold')} : {fold}")
+
+    if current_repeat < max_repeat or not last_repeat_over:
         manager = cache.get('manager_repeat')
 
         # we did all the strategies or initialization and begin a new repetition
-        if current_strategy is None or index == len(strategies) - 1:
+        if current_strategy in [-1, len(strategies) - 1]:
             update_repeat(current_repeat)
-            manager.initialize_dataset_analysis(cache.get('ratio_seed'))
+            manager.initialize_dataset_analysis(cache.get('ratio_seed'), current_repeat == 0)
             cache.set('manager_repeat', manager)
+            current_strategy = -1
 
         # next strategy
-        current_strategy = update_strategy(strategies, index)
+        update_strategy(current_strategy)
+        current_strategy = strategies[cache.get('current_index')]
+        cache.set('current_strategy', current_strategy)
         flush_outputs()
         manager.set_query_strategy(current_strategy)
         cache.set('manager', manager)
+
+        print(f"Repeat {cache.get('current_repeat')} - Strategy {current_strategy}")
+        print(f"Labelled data : {manager.labelled_indices}")
+        print(f"Test data : {manager.test_set}")
 
     return HttpResponseRedirect('/distilling')
 
@@ -188,9 +200,11 @@ def tasting(request):
 
         # active learning process
         else:
+            print('end_manager',manager.check_criterion())
             if manager.check_criterion():
                 if cache.get('type_learning') == 'analysis':
-                    if cache.get('current_fold') < len(cache.get('folds')):
+                    over = (cache.get('current_fold') == len(cache.get('folds')) and cache.get('current_repeat') == cache.get('repeats') and cache.get('current_index') == len(cache.get('query_strategies')) - 1)
+                    if not over :
                         return HttpResponseRedirect("/distilling/batch")
 
                 return HttpResponseRedirect("/spirit")
