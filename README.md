@@ -35,7 +35,7 @@ docker-compose down -v
 ```
 
 ## Acknowledgements
-This project was realised at the <a href="http://ibsquare.be"
+This project was realised at the <a href="http://ibsquare.be" target="_blank"><span class="ltf">Interuniversity Institute of Bioinformatics in Brussels (IB2)</a>, a collaborative
 bioinformatics research initiative between Université Libre de Bruxelles (ULB) and Vrije Universiteit Brussel (VUB).
 Basic architecture and design was largely inspired by the work done by Alexandre Renaux for ORVAl (<a href="https://orval.ibsquare.be" target="_blank"><span class="ltf">https://orval.ibsquare.be</span></a>).
 This work was supported by Service Public de Wallonie Recherche under grant n° 2010235 -ARIAC by DIGITALWALLONIA4.AI.
