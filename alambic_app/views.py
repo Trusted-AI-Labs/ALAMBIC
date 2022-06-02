@@ -200,7 +200,6 @@ def tasting(request):
 
         # active learning process
         else:
-            print('end_manager',manager.check_criterion())
             if manager.check_criterion():
                 if cache.get('type_learning') == 'analysis':
                     over = (cache.get('current_fold') == len(cache.get('folds')) and cache.get('current_repeat') == cache.get('repeats') and cache.get('current_index') == len(cache.get('query_strategies')) - 1)

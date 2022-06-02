@@ -110,3 +110,8 @@ def add_stats_analysis():
     <div class="col-3 dtf color-black">Current strategy:</div><div class="col-9 dtf" id="strat">{AL_ALGORITHMS_MATCH[cache.get('current_strategy')]}</div>
     """
     return mark_safe(s)
+
+@register.simple_tag(name="get_task")
+def get_task():
+    print(cache.get('task'))
+    return cache.get('task')
