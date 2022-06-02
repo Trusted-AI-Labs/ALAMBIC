@@ -22,7 +22,7 @@ services:
     links:
       - postgres:postgres
       - redis:redis
-    build: .
+    image: cnachteg/alambic:0.1
     volumes:
       - .:/app
       - ~/data_alambic:/app/data_alambic
@@ -37,8 +37,7 @@ services:
     links:
       - postgres:postgres
       - redis:redis
-    build:
-      context: .
+    image: cnachteg/alambic:0.1
     command: celery -A alambic worker -l info
     volumes:
       - .:/app
