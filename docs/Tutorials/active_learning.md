@@ -26,3 +26,10 @@ A large batch size has the advantage of labelling more examples at once, thus re
 On another hand, this could be also a parameter to test in the case of the analysis task.
 
 More information and discussion found on [this github website](https://dsgissin.github.io/DiscriminativeActiveLearning/2018/07/05/Batch-AL.html). You can also find different strategies affecting the batch size.
+
+# The process
+Once you have chosen either the analysis or the model development, you can submit and everything will be launched.
+
+You can keep track of the progress of the process on the `/distilling` page where it indicates if the learner is either training, predicting or selecting a query.
+
+You won't have anything to do except label queries if the label is not available in the development mode (See [Annotation](/Tutorials/annotation.html/) for more information)
