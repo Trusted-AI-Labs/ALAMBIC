@@ -1,36 +1,47 @@
 # ALAMBIC
-Django framework for active learning tasks, inspiration from [iepy](https://github.com/machinalis/iepy/) and [ORVAL](https://github.com/oligogenic/ORVAL/)
+ALAMBIC, or **A**ctive **L**earning **A**utomation with **M**ethods to **B**attle **I**nsufficient **C**uration, is an open-source Dockerized web platform for the study
+and development of machine learning models with the help of active learning.
 
-## Structure proposed :
+## Documentation
+Available on https://trusted-ai-labs.github.io/ALAMBIC/
 
-- machine_learning for the machine learning models implementation (training and prediction)
-- active_learning for the query strategies and user inquiry (and eventually the strategy for the model
-  retraining/correction ?)
-- annotations for importing the data, the user annotation/labelling part, all the different tasks (classification, image
-  labelling, text annotation, etc.)
-  - text-mining (relationship extraction, NER)
-  - Image labelling (?)
-  - Classification
-- plots for all the analyses that can be done during active learning
+## Installation
+## 1. Clone the repository
+In the terminal, navigate to the folder of your choice and then type
 
----
+```
+git clone https://github.com/cnachteg/ALAMBIC.git
+```
 
-## TO DO
+## 2. Build the Docker
+Go inside the GitHub repository newly created of ALAMBIC and type
 
-- [X] Analyse Active learning
-  - [X] Plot performance
-  - [X] Download results
-- [X] Reimplementation of strategies with ALiPy
-- [ ] (R)elation (E)xtraction
-  - [ ] Separated of NER ?
-  - [ ] Model for classification between identified entities
-  - [ ] Import of Data
+```
+docker-compose up
+```
 
----
+For the more expert, you can add options to that command ([see here](https://docs.docker.com/compose/reference/up/))
 
-## References
+Note that you need to have all your data contained in the folder `data_alambic` situated in your user directory.
 
-- Tang, Y.-P.; Li, G.-X.; and Huang, S.-J. 2019. ALiPy: Active learning in python. Technical report, Nanjing University
-  of Aeronautics and Astronautics. available as arXiv preprint https://arxiv.org/abs/1901.03802.
-- Danka, T. and Horvath, P. 2018. modAL: A modular active learning framework for Python. available on arXiv
-  at https://arxiv.org/abs/1805.00979.
+## 3. Launch the browser
+You can find ALAMBIC at the adress <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> !
+
+# Shutdown
+You can stop the docker and flush the database of all the data and results by typing in the terminal
+
+```
+docker-compose down -v
+```
+
+## Acknowledgements
+This project was realised at the <a href="http://ibsquare.be"
+bioinformatics research initiative between Université Libre de Bruxelles (ULB) and Vrije Universiteit Brussel (VUB).
+Basic architecture and design was largely inspired by the work done by Alexandre Renaux for ORVAl (<a href="https://orval.ibsquare.be" target="_blank"><span class="ltf">https://orval.ibsquare.be</span></a>).
+This work was supported by Service Public de Wallonie Recherche under grant n° 2010235 -ARIAC by DIGITALWALLONIA4.AI.
+
+## License
+This work is under a BSD-3-Clause license.
+
+## Cite us
+See above by clicking on "Cite this repository"

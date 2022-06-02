@@ -30,7 +30,7 @@ docker-compose up
 
 For the more expert, you can add options to that command ([see here](https://docs.docker.com/compose/reference/up/))
 
-Note that you need to have all your data contained in the folder `data_alambic` situated on your user folder.
+Note that you need to have all your data contained in the folder `data_alambic` situated in your user directory.
 
 ## 3. Launch the browser
 You can find ALAMBIC at the adress <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> !
