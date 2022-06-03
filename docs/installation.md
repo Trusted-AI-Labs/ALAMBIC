@@ -15,7 +15,7 @@ In the terminal, navigate to the folder of your choice and then type
 
 <div class="highlighter-rouge">
 <code>
-git clone https://github.com/cnachteg/ALAMBIC.git
+git clone https://github.com/Trusted-AI-Labs/ALAMBIC.git
 </code>
 </div>
 
