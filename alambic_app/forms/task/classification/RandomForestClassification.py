@@ -5,7 +5,6 @@ from alambic_app.forms.forms import CrispyWizardStep
 
 
 class RFClassification(CrispyWizardStep):
-    # TODO Inheritance for the different models and then specialize according to task ?
 
     number_trees = forms.IntegerField(
         max_value=100,
