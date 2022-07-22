@@ -33,12 +33,12 @@ Additional models must have the `fit` and `predict` methods implemented, the fir
 ## Location
 Implemented models must be implemented in the `alambic_app > machine_learning` folder.
 
-Once implemented, the model must be imported and added to the `MODELS_MATCH` dictionary in the `alambic_app > machine_learning > setup.py` script with their corresponding `acronym` (see Model Choice in the previous section).
+Once implemented, the model must be imported and added to the `MODELS_MATCH` dictionary in the `alambic_app > machine_learning > setup.py` script with their corresponding `acronym` (see [Model Choice](/ForDevelopers/new_model.html#model-choice) in the previous section).
 
-Models from existing librairies (such as models in sklearn) can simply be directly imported.
+Models from existing libraries (such as models in sklearn) can simply be directly imported.
 
 ## Parametrization
-If specific parameters must be added to the model (outside to what can be selected in a form, see next section), you can add the code in the `alambic_app > machine_learning > setup.py` script, in the `create_model` method.
+If specific parameters must be added to the model (outside to what can be selected in a form), you can add the code in the `alambic_app > machine_learning > setup.py` script, in the `create_model` method.
 
 # Documentation
 Update the documentation ! It is present in the folder `docs` as children of the `machine_learning.md` document.

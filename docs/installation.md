@@ -13,33 +13,27 @@ You need to have Docker, Docker compose and Git installed and know how to use th
 ## 1. Clone the repository
 In the terminal, navigate to the folder of your choice and then type
 
-<div class="highlighter-rouge">
-<code>
+{% highlight bash %}
 git clone https://github.com/Trusted-AI-Labs/ALAMBIC.git
-</code>
-</div>
+{% endhighlight %}
 
 ## 2. Build the Docker
 Go inside the GitHub repository newly created of ALAMBIC and type
 
-<div class="highlighter-rouge">
-<code>
+{% highlight bash %}
 docker-compose up
-</code>
-</div>
+{% endhighlight %}
 
 For the more expert, you can add options to that command ([see here](https://docs.docker.com/compose/reference/up/))
 
 Note that you need to have all your data contained in the folder `data_alambic` situated in your user directory.
 
 ## 3. Launch the browser
-You can find ALAMBIC at the adress <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> !
+You can find ALAMBIC at the address <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> !
 
 # Shutdown
 You can stop the docker and flush the database of all the data and results by typing in the terminal
 
-<div class="highlighter-rouge">
-<code>
+{% highlight bash %}
 docker-compose down -v
-</code>
-</div>
+{% endhighlight %}
