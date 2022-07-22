@@ -10,6 +10,8 @@ from alambic_app.models.input_models import Data
 
 from alambic_app.utils.misc import convert_id_label_to_value, get_label
 
+from alambic_app.constantes import AL_ALGORITHMS_MATCH
+
 
 def get_performance_chart_formatted_data(data_type: str):
     results = None
@@ -66,7 +68,7 @@ def get_analysis_chart_formatted_data(data_type):
     for result in res:
         if result['training_size'] not in results:
             results[result['training_size']] = dict()
-        results[result['training_size']][result['query_strategy']] = result['average_performance']
+        results[result['training_size']][AL_ALGORITHMS_MATCH[result['query_strategy']]] = result['average_performance']
 
     for k, v in results.items():
         res_dict = {
@@ -144,6 +146,7 @@ def get_data_results(manager):
 
 def convert_labels(queryset, conversion_dict):
     task = cache.get('task')
+    query = None
 
     if task == 'C':
         query = 'label__classificationlabel__class_id'

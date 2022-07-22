@@ -92,7 +92,6 @@ def job_status(request):
 def data_request(request):
     data = request.GET.get('data')
     data_type = request.GET.get('data_type')
-    res = None
 
     if data == 'performance':
         res, max_size = get_performance_chart_formatted_data(data_type)
