@@ -17,9 +17,9 @@ Currently, the query strategies do not have parametrization available. Thus, no 
 
 # Strategy implementation
 ## Preface
-Our framework is currently based on the library `ALiPy` (repository [here](https://github.com/NUAA-AL/ALiPyhttps://github.com/NUAA-AL/ALiPy)).
+Our framework is currently based on the library `ALiPy` (repository [here](https://github.com/NUAA-AL/ALiPy)).
 
-Additional strategy must be built with the `BaseQueryIndex` class from that vvery same library and implement the `select` method.
+Additional strategy must be built with the `BaseQueryIndex` class from that very same library and implement the `select` method.
 
 ## Location
 Implemented strategies must be implemented in the `alambic_app > active_learning > strategies.py` file.
