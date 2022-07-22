@@ -6,7 +6,7 @@ nav_order: 3
 math: mathjax2
 ---
 
-<details close markdown="block">
+<details open markdown="block">
   <summary>
     Table of contents
   </summary>

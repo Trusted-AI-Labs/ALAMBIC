@@ -54,7 +54,7 @@ Update the documentation ! It is present in the folder `docs` in the `import.md`
 
 # Checklist
 - [ ] Add the (acronym, full name) tuple in the DATA_CHOICES list in the constantes.py script
-- [ ] (Opt.) Modifiy the GeneralInfoInputForm in alambic_app > forms > forms.py to add any check of the import file as needed.
+- [ ] (Opt.) Modify the GeneralInfoInputForm in alambic_app > forms > forms.py to add any check of the import file as needed.
 - [ ] Create a form in alambic_app > forms > data folder for the processing/features linked to the data
 - [ ] Add the form in the init script for import
 - [ ] Add the acronym and form correspondence in the function get_form_data in alambic_app > utils > data_management.py

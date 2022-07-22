@@ -14,7 +14,7 @@ We decided to currently integrate query strategies :
 - for instance selection
 - which do not require more than the developed model
 
-# Currently available strategies
+# Strategies currently available
 ## Random sampling
 Base method used to compare with the performance of other query strategies. It just selects the required number of queries in a random manner.
 

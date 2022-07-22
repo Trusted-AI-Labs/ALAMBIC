@@ -31,7 +31,7 @@ Once implemented, the features must be imported and added to the `OPERATIONS_MAT
 
 Features from existing libraries (such as sklearn) can simply be directly imported and included in the dictionary with their corresponding `acronym`.
 
-If the feature is custom and do not follow the structure of the functions in sklearn in order to be incluuded in a pipeline (see [Pipeline in sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html), their acronym must be added to the set of `CUSTOM_FUNCTIONS` so that they can be transformed to be used as such.
+If the feature is custom and do not follow the structure of the functions in sklearn in order to be included in a pipeline (see [Pipeline in sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html), their acronym must be added to the set of `CUSTOM_FUNCTIONS` so that they can be transformed to be used as such.
 
 ## Parametrization
 If specific parameters must be added to the features process (outside to what can be selected in a form), you can add the code in the `alambic_app > machine_learning > preprocessing.py` script, in the `get_pipeline` method.
