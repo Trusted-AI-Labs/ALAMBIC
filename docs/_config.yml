@@ -20,7 +20,6 @@ last_edit_time_format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https:/
 
 gh_edit_link: false
 
-kramdown:
-  syntax_highlighter_opts:
-    block:
-      line_numbers: true
+compress_html:
+  ignore:
+    envs: all
