@@ -40,6 +40,9 @@ Models from existing librairies (such as models in sklearn) can simply be direct
 ## Parametrization
 If specific parameters must be added to the model (outside to what can be selected in a form, see next section), you can add the code in the `alambic_app > machine_learning > setup.py` script, in the `create_model` method.
 
+# Documentation
+Update the documentation ! It is present in the folder `docs` as children of the `machine_learning.md` document.
+
 # Checklist
 - [ ] Add the (acronym, full name) tuple in the TASK_MODELS_CHOICES list in the constantes.py script
 - [ ] Create a form in alambic_app > forms > task folder with the parameters of the model
@@ -48,4 +51,5 @@ If specific parameters must be added to the model (outside to what can be select
 - [ ] (Opt.) Implement the model if not existing in the alambic_app > machine_learning folder.
 - [ ] Import in alambic_app > machine_learning > setup.py and add to MODELS_MATCH with the acronym as key and the model function as value
 - [ ] Modify the create_model method if needed for the parameters of the model.
+- [ ] Update the documentation (it's important too !)
 - [ ] Be proud of yourself, you did it ! (Well, after tons of debug and testing, of course)
