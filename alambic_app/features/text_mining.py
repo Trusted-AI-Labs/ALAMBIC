@@ -2,7 +2,7 @@
 
 import spacy
 
-from alambic_app.feature_extraction.misc import pipelinize
+from alambic_app.features.misc import pipelinize
 from alambic_app.models.input_models import Text
 
 

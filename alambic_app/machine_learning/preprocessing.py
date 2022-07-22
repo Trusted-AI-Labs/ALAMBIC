@@ -10,8 +10,8 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, Ha
 from alambic_app.models.input_models import *
 
 # Custom functions
-from alambic_app.feature_extraction.images import *
-from alambic_app.feature_extraction.text_mining import *
+from alambic_app.features.images import *
+from alambic_app.features.text_mining import *
 
 OPERATIONS_MATCH = {
     # global
