@@ -105,3 +105,50 @@
     font-style: italic;
 
 }
+
+#tutorial-accordion p, #tutorial-accordion ol.overview {
+    font-size: 1rem;
+}
+
+#tutorial-accordion .card {
+    background-color: transparent;
+}
+
+.carousel {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+}
+.carousel-inner {
+    padding-top: 6em;
+}
+
+.carousel .carousel-control-next,
+.carousel .carousel-control-prev {
+    color: darkgray;
+    text-align: center;
+    width: 20%;
+}
+
+.carousel .carousel-control-next-icon,
+.carousel .carousel-control-prev-icon {
+    font-size: 5em !important;
+    background-image: none;
+    width: auto;
+    height: auto;
+}
+
+.carousel .carousel-caption {
+    color: rgb(88, 87, 87);
+    top: -8.5em;
+    bottom: auto;
+    width: 90%;
+    left: 5%;
+    right: 5%;
+}
+
+.carousel-control-next{
+    justify-content: right;
+}
+
+.carousel-control-prev {
+    justify-content: left;
+}

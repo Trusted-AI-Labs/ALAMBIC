@@ -21,7 +21,7 @@ Base method used to compare with the performance of other query strategies. It j
 ## Uncertainty sampling
 The uncertainty sampling is the way the learner will select queries for whom it is the most uncertain in their label. This uncertainty can be measured in different ways.
 
-Let's define $$x$$ as an instance, $$\hat{y_i}$$ corresponds to the $$i$$th most likely class predicted for the the instance $$x$$.
+Let's define $$x$$ as an instance, $$\hat{y_i}$$ corresponds to the $$i$$th most likely class predicted for the instance $$x$$.
 
 ### Least confident
 The simplest measure calculate the difference between 100% confidence and the most confident prediction obtained for the instance $$x$$

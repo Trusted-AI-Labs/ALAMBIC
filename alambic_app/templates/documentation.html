@@ -10,6 +10,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'alambic_app/css/documentation.css' %}"/>
 {% endblock %}
 
+{%  block javascripts %}
+    {{ block.super }}
+    <script id="MathJax-script" async src={% static "libs/mathjax/es5/tex-mml-chtml.js" %}></script>
+{%  endblock %}
+
 {% block navbar %}
     {{ block.super }}
     <div class="navbar-collapse collapse dual-collapse2">
@@ -165,65 +170,201 @@
                         </div>
                     </div>
 
-                    <hr/>
+                    <div class="alert alert-success pb-0 pb-0 mt-4 pt-0 border-success" role="alert">
+                        <div class="container-fluid d-inline-block">
+                            <div class="row">
+                                <div class="col-1">
+                                    <span class="mt-2"><br><i class="fas fa-thumbs-up fa-2x"></i></span>
+                                </div>
+                                <div class="col-11 mt-2">
+                                    <p class="mt-2"> <b>DISCLAIMER:</b> The following information is only a part of the full documentation that can be found <a href="https://trusted-ai-labs.github.io/ALAMBIC/" target="_blank">here</a>. Don't hesitate to consult this documentation if you cannot find the answers to your questions in this lightweight version !</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
 
                     <div id="annot">
 
                         <h1 class="display-4 ttf mt-5">Annotation</h1>
-                        <br>
+                        <h2 id="annot_classification" class="display-4 sttf mt-5">Classification</h2>
 
-                        <p class="dtf">
-                            TBA
-                        </p>
 
                     </div>
-
-                    <hr/>
-
-                    <div id="models">
-
-                        <h1 class="display-4 ttf mt-5">Available models </h1>
-                        <p class="dtf mt-4">
-                            TBA.
-                        </p>
-
-                    </div>
-
-                    <hr/>
 
 
                     <div id="activelearning">
                         <h1 class="display-4 ttf mt-5">Active learning</h1>
                         <p class="dtf mt-4">
-                            TBA.
+                            With ALAMBIC, you can either develop a model with the help of active learning, meaning that you can also label in an optimized way (according to your chosen strategy) your data at the same time as you train a chosen model, or you can analyse the impact of different query strategies on the performance of a model.
                         </p>
+                        <p class="dtf mt-4 color-black">
+                            Which one should I choose ?
+                        </p>
+                        <p class="dtf mt-4">
+                            If you are working with a partially labelled dataset and you want to label the rest, while still optimizing the amount of labels you have to provide, then developing a model is the task to choose. The obtained labels are enriching your dataset and the obtained model can label the rest of your data with a specified accuracy based on the given information.
+                        </p>
+                        <p class="dtf mt-4">
+                            If you want to study which query strategy would be more convenient for your dataset (prior to the task of developing a model, for example), or you want to compare the performance of a new query strategy your developed with other commonly used query strategies, then the analysis task is the way to go.
+                        </p>
+                        <div class="alert alert-warning pt-1 pb-0 h-45 mt-4" role="alert">
+                            <div class="container-fluid h-45 d-inline-block">
+                                <div class="row">
+                                    <div class="col-1">
+                                        <span class="mt-2"><br><i class="fas fa-exclamation-triangle fa-2x"></i></span>
+                                    </div>
+                                    <div class="col-11 mt-2">
+                                        <p class="mt-2"> <b>NOTE:</b> In order to be performed successfully, the analysis must be performed with a dataset fully labelled. While we allow the annotation process to be done during the analysis, you would have to relabel for each repeat of the process the annotation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <h2 id="querystrat" class="display-4 sttf mt-5">Query strategies</h2>
+                        <h3 class="display-4 ssttf mt-4">Random sampling</h3>
                         <p class="dtf mt-4">
-                            TBA.
+                            Base method used to compare with the performance of other query strategies. It just selects the required number of queries in a random manner.
+                        </p>
+                        <h3 id="uncertaintysampling" class="display-4 ssttf mt-4">Uncertainty Sampling</h3>
+                        <p class="dtf mt-4">
+                            The uncertainty sampling is the way the learner will select queries for whom it is the most uncertain in their label. This uncertainty can be measured in different ways.
+                            Let's define \(x\) as an instance, \(\hat{y_i}\) corresponds to the \(i\)th most likely class predicted for the instance \(x\).
+                        </p>
+                        <h4 class="display-4 sssttf mt-4">Least confident</h4>
+                        <p class="dtf mt-4">
+                            The simplest measure calculate the difference between 100% confidence and the most confident prediction obtained for the instance \(x\)
+                            $$LC(x) = 1 - P(\hat{y_1}|x)$$
+                        </p>
+                        <h4 class="display-4 sssttf mt-4">Margin</h4>
+                        <p class="dtf mt-4">
+                            Calculates the difference between the top two most confident predictions.
+                            $$M(x) = P(\hat{y_1}|x) - P(\hat{y_2}|x)$$
+
+                            In that case, the strategy will select the instance with the smallest margin, since the smaller the margin is, the most unsure the decision.
+                        </p>
+                        <h4 class="display-4 sssttf mt-4">Entropy</h4>
+                        <p class="dtf mt-4">
+                            Calculates the difference between all the prediction, as defined by information theory.
+                            $$H(x) = -\sum_{k}P(y_k|x)\log(P(y_k|x))$$
                         </p>
 
                         <h2 id="stopcriterion" class="display-4 sttf mt-5">Stopping criteria</h2>
                         <p class="dtf mt-4">
-                            TBA.
+                            Stopping criteria are only used in the model development of the active learning framework. It will stop the active loop once a specific criterion has been reached.
                         </p>
+
+                        <p class="dtf mt-4">
+                            You can find below the criteria currently available.
+                        </p>
+                        <div class="container-fluid h-50 d-inline-block mt-4">
+                            <div class="row">
+                                <div class="col-sm-3 border-right">
+                                    <p class="dft pt-3 color-black">
+                                        BUDGET
+                                    </p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="dtf pt-3">
+                                        You can choose the amount of data labeled by the oracle
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container-fluid h-50 d-inline-block mt-4">
+                            <div class="row">
+                                <div class="col-sm-3 border-right">
+                                    <p class="dtf pt-3 color-black">ACCURACY</p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="dtf pt-3">
+                                      The active loop will stop once the minimum accuracy desired is reached.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
 
                     </div>
 
-                    <hr/>
 
                     <div id="tutorials">
 
                         <h1 class="display-4 ttf mt-5">Tutorials</h1>
+                        <div id="tutorial-accordion">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne"
+                                                aria-expanded="true" aria-controls="collapseOne">
+                                            Setup of the machine learning model
+                                        </button>
+                                    </h2>
+                                </div>
 
-                        <p class="dtf mt-4">
-                            TBA.
-                        </p>
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#tutorial-accordion">
+                                    <div class="card-body">
+                                        <div id="carousel-setup" class="carousel slide pb-1 mx-5" data-ride="carousel" data-interval="false" data-wrap="false">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active" data-details="#setup-model">
+                                                    <img class="d-block w-100"
+                                                         src="{% static 'images/tutorials/setup_model.png' %}"
+                                                         alt="Model Choice">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h3 class="display-4 ssttf mt-4">Choice of the model</h3>
+                                                        <p class="dtf mt-4">
+                                                            You will have to choose here the model you want to use for the learning process. Only the models related to your task will be available.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item" data-details="#setup-model-params">
+                                                    <img class="d-block w-100"
+                                                         src="{% static 'images/tutorials/setup_model_param.png' %}"
+                                                         alt="Model parameters">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h3 class="display-4 ssttf mt-4">Parameters of the model</h3>
+                                                        <p class="dtf mt-4">
+                                                            Some parameters are available to parametrize the model
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="carousel-item" data-details="#setup-features">
+                                                    <img class="d-block w-100"
+                                                         src="{% static 'images/tutorials/setup_features.png' %}"
+                                                         alt="Features">
+                                                    <div class="carousel-caption d-none d-md-block">
+                                                        <h3 class="display-4 ssttf mt-4">Choice of preprocessing and features</h3>
+                                                        <p class="dtf mt-4">
+                                                            Choose here which transormation to applyy on your data and which features will be the input of your model
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <a class="carousel-control-prev" href="#carousel-setup" role="button" data-slide="prev">
+                                                <span class="carousel-control-prev-icon material-icons" aria-hidden="true">
+                                                    keyboard_arrow_left
+                                                </span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                            <a class="carousel-control-next" href="#carousel-setup" role="button" data-slide="next">
+                                                <span class="carousel-control-next-icon material-icons" aria-hidden="true">
+                                                    keyboard_arrow_right
+                                                </span>
+                                                <span class="sr-only">
+                                                    Next
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
-                    <hr/>
 
                     <div id="faq">
                         <h1 class="display-4 ttf mt-5">Frequently Asked Questions</h1>
