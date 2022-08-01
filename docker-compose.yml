@@ -22,32 +22,37 @@ services:
     links:
       - postgres:postgres
       - redis:redis
-    image: cnachteg/alambic:0.1
+    build: .
     volumes:
-      - .:/app
-      - ~/data_alambic:/app/data_alambic
+      - ~/docker_volume:/home/$USER/shared_data
+      - ~/docker_volume/data_alambic:/app/data_alambic
     command: bash entrypoint.sh
     env_file:
       - ./.env.dev
     ports:
-      - "8000:8000"
+      - "9208:8000"
 
   celery:
     restart: always
     links:
       - postgres:postgres
       - redis:redis
-    image: cnachteg/alambic:0.1
+    build: .
     command: celery -A alambic worker -l info
-    volumes:
-      - .:/app
-      - ~/data_alambic:/app/data_alambic
     env_file:
       - ./.env.dev
     depends_on:
       - postgres
       - redis
       - web
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1','2','3','4']
+              capabilities: [gpu]
+
 
 volumes:
   pgdata:

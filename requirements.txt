@@ -1,3 +1,4 @@
+accelerate==0.10.0
 alipy
 amqp==5.0.6
 beautifulsoup4==4.10.0
@@ -9,7 +10,9 @@ colorama==0.4.4
 coloredlogs==15.0.1
 coverage==6.2
 cycler==0.11.0
+datasets==2.3.2
 decorator==5.1.0
+deepspeed==0.6.5
 Django==4.0
 django-appconf==1.0.5
 django-bootstrap4==21.1
@@ -26,6 +29,7 @@ django-rest-polymorphic==0.1.9
 django-select2==7.9.0
 django-widget-tweaks==1.4.9
 djangorestframework==3.12.4
+evaluate==0.1.2
 fake-useragent==0.1.11
 fonttools==4.28.3
 inflection==0.5.1
@@ -33,7 +37,10 @@ Jinja2==3.0.3
 joblib==1.1.0
 kombu==5.2.2
 matplotlib==3.5.0
-numpy==1.21.4
+multipledispatch==0.6.0
+numba==0.55.2
+numpy==1.22.4
+pandas==1.4.3
 Pillow==8.4.0
 pip==21.2.4
 pluggy==1.0.0
@@ -49,14 +56,16 @@ PyYAML==6.0
 redis==3.5.3
 requests==2.26.0
 scikit-image==0.19.0
-scikit-learn==1.0.1
-scipy==1.7.3
+scikit-learn==1.1.1
+scipy==1.8.1
 scispacy==0.5.0
 setuptools==57.5.0
 setuptools-scm==6.3.2
 soupsieve==2.3.1
 spacy[transformers]==3.2.2
 threadpoolctl==3.0.0
+transformers==4.20.1
+tqdm==4.64.0
 typing_extensions==4.0.1
 vine==5.0.0
 wheel==0.37.0
