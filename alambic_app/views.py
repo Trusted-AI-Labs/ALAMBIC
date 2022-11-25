@@ -301,8 +301,6 @@ class SetupView(SessionWizardView):
     template_name = "setup.html"
     form_list = get_default_form_list()
 
-    # print(form_list)
-
     def get_context_data(self, form, **kwargs):
         context = super(SetupView, self).get_context_data(
             form=form, **kwargs)
@@ -327,6 +325,8 @@ class SetupView(SessionWizardView):
 
         if step == "Task":
             form_class = get_form_task()
+            if form is None:
+                form_class = self.form_list['Task']
             form = form_class(data)
 
         elif step == "Model Settings":

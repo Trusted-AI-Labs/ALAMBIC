@@ -34,6 +34,8 @@ def get_form_task():
 
     if task == 'C':
         return ClassificationModel
+    elif task is None:
+        return None
     else:
         raise MissingForm("Form for the specified task not found")
 
