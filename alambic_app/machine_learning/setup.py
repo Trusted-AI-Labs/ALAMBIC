@@ -26,6 +26,7 @@ AL_ALGORITHMS_MATCH = {
     'US': query_labels.QueryInstanceUncertainty,
     'MS': query_labels.QueryInstanceUncertainty,
     'ES': query_labels.QueryInstanceUncertainty,
+    'CS': query_labels.QueryInstanceCoresetGreedy
 }
 
 MODELS_MATCH = {

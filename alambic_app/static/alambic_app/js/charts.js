@@ -57,7 +57,7 @@ function drawPerformanceChart(data, size, fields) {
 
     var legend = chart.rightAxesContainer.children.push(
         am5.Legend.new(root, {
-            width: 200,
+            width: 250,
             paddingLeft: 15,
             height: am5.percent(100)
         }));
