@@ -40,3 +40,8 @@ class RFClassification(CrispyWizardStep):
                 Field('criterion')
             )
         )
+    
+    def clean(self):
+        clean_data = super().clean()
+        clean_data['n_estimators'] = clean_data.pop('number_trees')  # to be able to use predict_proba in the query strategies
+        return clean_data
