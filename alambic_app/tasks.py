@@ -168,6 +168,7 @@ def create_manager_analysis(form_data: Dict[str, Any]):
     """
     model = form_data.get('task')['model_choice']
     params_model = form_data.get('model_settings')
+    params_model['random_state'] = 1 #when doing analysis, we fix the model
     stop_criterion = 'final'
     param_stop_criterion = 0
     batch_size = form_data.get('type_learning')['batch_size']
