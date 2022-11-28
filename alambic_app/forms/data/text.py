@@ -25,6 +25,35 @@ class PreprocessingText(CrispyWizardStep):
         required=False,
         initial=1
     )
+
+    min_df = forms.FloatField(
+        min_value=0.1,
+        max_value=1,
+        required=False,
+        help_text='Maximum document frequency',
+        widget=forms.NumberInput(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0,
+                'step': 0.1
+            }
+        )
+    )
+
+    max_df = forms.FloatField(
+        min_value=0.1,
+        max_value=1,
+        required=False,
+        help_text='Maximum document frequency',
+        widget=forms.NumberInput(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0,
+                'step': 0.1
+            }
+        )
+    )
+
     max_features = forms.IntegerField(
         label='Maximum number of features',
         help_text='Build a vocabulary that only consider the top max_features ordered by term frequency across the corpus',
@@ -77,6 +106,20 @@ class PreprocessingText(CrispyWizardStep):
                         Div('ngram_max', css_class='col-3'),
                         css_class='form-row'
                     ),
+                    Div(
+                        Div(
+                            HTML(
+                                '<span class="align-bottom"> For the TF-IDF, with a document frequency of minimum </span>'),
+                            css_class='col-3'
+                        ),
+                        Div('min_df', css_class='col-3'),
+                        Div(
+                            HTML('<span class="align-bottom"> to </span>'),
+                            css_class='col-3'
+                        ),
+                        Div('max_df', css_class='col-3'),
+                        css_class='form-row'
+                    ),
                     Field('max_features')
                 ),
                 # AccordionGroup(
@@ -105,6 +148,15 @@ class PreprocessingText(CrispyWizardStep):
                 operations[vector]['stop_words'] = 'english'
             if cleaned_data.get('max_features') is not None:
                 operations[vector]['max_features'] = cleaned_data.get('max_features')
+            if vector == 'tfidf':
+                if cleaned_data.get('min_df') is not None:
+                    operations[vector].update({
+                        'min_df' : cleaned_data.get('min_df'),
+                    })
+                if cleaned_data.get('max_df') is not None:
+                    operations[vector].update({
+                        'max_df' : cleaned_data.get('max_df'),
+                    })
 
         # if tree:
         #    operations['client'] = f'tokenize,mwt,pos,lemma,{tree}'

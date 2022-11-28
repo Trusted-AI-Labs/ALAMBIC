@@ -98,8 +98,11 @@ class MLManager:
             'MS': 'margin',
             'US': 'least_confident'
         }
-        if strategy in ('MS', 'ES', 'US'):
+        if strategy in measures:
             kwargs.update({'measure': measures[strategy]})
+        
+        elif strategy == 'CS':
+            kwargs.update({'train_idx' : np.array(self.labelled_indices + self.unlabelled_indices)})
 
         self.strategy_name = strategy
         self.strategy = AL_ALGORITHMS_MATCH[strategy](self.X, self.Y, **kwargs)
@@ -170,7 +173,7 @@ class MLManager:
 
         else:
             nb_ids_to_add = int(size_seed - len(self.labelled_indices))
-            ids_to_add = random.sample(self.unlabelled_indices, nb_ids_to_add)
+            ids_to_add = random.sample(np.asarray(self.unlabelled_indices, nb_ids_to_add))
             self.labelled_indices += ids_to_add
             self.unlabelled_indices = [data_id for data_id in self.unlabelled_indices if data_id not in ids_to_add]
 
@@ -252,7 +255,10 @@ class MLManager:
         self.y_predicted = self.predict(self.test_set)
 
     def query(self):
-        query_index = self.strategy.select(label_index=self.labelled_indices,
+        if self.batch_size >= len(self.unlabelled_indices):
+            query_index = self.unlabelled_indices
+        else:
+            query_index = self.strategy.select(label_index=self.labelled_indices,
                                            unlabel_index=self.unlabelled_indices,
                                            model=self.model,
                                            batch_size=self.batch_size)
