@@ -190,8 +190,12 @@
 
                         <h1 class="display-4 ttf mt-5">Annotation</h1>
                         <h2 id="annot_classification" class="display-4 sttf mt-5">Classification</h2>
-
-
+                        <p class="dtf mt-4">
+                            <img class="d-block w-100"
+                                                         src="{% static 'images/annotation_classification.png' %}"
+                                                         alt="Features">
+                            You can see the data shown and just have to either select an existing label in the dropdown list or type the new label to create a new label.
+                        </p>
                     </div>
 
 
@@ -248,6 +252,11 @@
                         <p class="dtf mt-4">
                             Calculates the difference between all the prediction, as defined by information theory.
                             $$H(x) = -\sum_{k}P(y_k|x)\log(P(y_k|x))$$
+                        </p>
+
+                        <h3 class="display-4 ssttf mt-4">Core-set</h3>
+                        <p class="dtf mt-4">
+                            It is a diversity-based method which select in a greedy manner instances so that they are as different as possible from the training instances, but also as diverse as possible among each other. Based on the <a href=https://openreview.net/forum?id=H1aIuk-RW>paper</a> of Sener and Savarese (2018).
                         </p>
 
                         <h2 id="stopcriterion" class="display-4 sttf mt-5">Stopping criteria</h2>

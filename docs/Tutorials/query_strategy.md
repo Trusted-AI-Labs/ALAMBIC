@@ -38,3 +38,6 @@ In that case, the strategy will select the instance with the smallest margin, si
 Calculates the difference between all the prediction, as defined by information theory.
 
 $$H(x) = -\sum_{k}P(y_k|x)\log(P(y_k|x))$$
+
+## Coreset
+A diversity-based method where the unlabelled instances are selected so that they are the most different from the training set, but also the most diverse among themselves. Based on the [paper](https://openreview.net/forum?id=H1aIuk-RW) of Sener (2018).
