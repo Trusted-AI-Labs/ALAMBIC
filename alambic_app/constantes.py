@@ -35,8 +35,8 @@ ANNOTATORS_CHOICES = [
 ]
 
 PREPROCESSING_TEXT_CHOICES = [
-    # ('lemma', 'Lemma'),
     ('stop_word', 'Ignore stop words'),
+    ('lemma', 'Lemmatize'),
 ]
 
 FEATURES_TEXT_CHOICES = [

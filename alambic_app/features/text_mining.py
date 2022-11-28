@@ -6,14 +6,15 @@ from alambic_app.models.input_models import Text
 
 def tokenizer_lemmatizer(text, stop=False):
     nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
-    tokens = nlp(text)
-
-    if not stop:
-        lemma_list = [token.lemma_ for token in tokens]
-    else:
-        lemma_list = [token.lemma_ for token in tokens if not token.is_stop]
-
-    return (lemma_list)
+    docs = list(nlp.pipe(text))
+    for i in range(len(docs)):
+        tokens = docs[i]
+        if not stop:
+            lemma_list = [token.lemma_ for token in tokens]
+        else:
+            lemma_list = [token.lemma_ for token in tokens if not token.is_stop]
+        docs[i] = ' '.join(lemma_list)
+    return docs
 
 
 def dependency_tree(text):
