@@ -7,7 +7,7 @@ nav_order: 1
 # General Overview
 
 ALAMBIC, or **A**{: .fs-5 }ctive **L**{: .fs-5 }earning **A**{: .fs-5 }utomation with **M**{: .fs-5 }ethods to **B**{:
-.fs-5 }attle **I**{: .fs-5 }nsufficient **C**{: .fs-5 }uration, is an open-source Dockerized web platform for the study
+.fs-5 }attle **I**{: .fs-5 }nefficient **C**{: .fs-5 }uration, is an open-source Dockerized web platform for the study
 and development of machine learning models with the help of active learning.
 
 ## What is Active Learning ?
