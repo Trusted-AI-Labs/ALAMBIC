@@ -25,19 +25,19 @@ This project was realised at the Interuniversity Institute of Bioinformatics in 
 If you used our tool (and liked it), please cite us with :
 
 {% highlight s %}
-Nachtegael, C. (2022). ALAMBIC (Version 0.1) [Computer software]. https://doi.org/TBA
+Nachtegael, C., De Stefani, J., & Lenaerts, T. (2022). ALAMBIC (Version 0.1.0-alpha) [Computer software]. https://doi.org/10.5281/zenodo.7394114
 {% endhighlight %}
 
 or in the format Bibtex : 
 
 {% highlight bibtex %}
 @software{Nachtegael_ALAMBIC_2022,
-author = {Nachtegael, Charlotte},
-doi = {TBA},
-month = {6},
-title = {ALAMBIC},
+author = {Nachtegael, Charlotte and De Stefani, Jacopo and Lenaerts, Tom},
+doi = {10.5281/zenodo.7394114},
+month = {12},
+title = {{ALAMBIC}},
 url = {https://github.com/Trusted-AI-Labs/ALAMBIC},
-version = {0.1},
+version = {0.1.0-alpha},
 year = {2022}
 }
 {% endhighlight %}
