@@ -29,7 +29,7 @@ For the more expert, you can add options to that command ([see here](https://doc
 Note that you need to have all your data contained in the folder `data_alambic` situated in your user directory.
 
 ## 3. Launch the browser
-You can find ALAMBIC at the address <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> !
+You can find ALAMBIC at the address <a href="http://0.0.0.0:8000/" target="_blank">http://0.0.0.0:8000/</a> ! However be careful, according to your OS, you could also find it at <a href="http://localhost:8000/" target="_blank">http://localhost:8000/</a>
 
 # Shutdown
 You can stop the docker and flush the database of all the data and results by typing in the terminal
