@@ -4,8 +4,14 @@ authors:
 - family-names: "Nachtegael"
   given-names: "Charlotte"
   orcid: "https://orcid.org/0000-0002-5034-8975"
+- family-names: "De Stefani"
+  given-names: "Jacopo"
+  orcid: "https://orcid.org/0000-0003-0257-4537"
+- family-names: "Lenaerts"
+  given-names: "Tom"
+  orcid: "https://orcid.org/0000-0003-3645-1455"
 title: "ALAMBIC"
-version: 0.1
-doi: TBA
-date-released: 2022-06-02
+version: 0.1.0-alpha
+doi: 10.5281/zenodo.7394114
+date-released: 2022-12-02
 url: "https://github.com/Trusted-AI-Labs/ALAMBIC"
