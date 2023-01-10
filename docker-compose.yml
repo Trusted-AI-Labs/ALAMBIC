@@ -7,6 +7,8 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
+    env_file:
+      - ./.env.dev
     volumes:
       - pgdata:/var/lib/postgresql/data/
 
@@ -45,6 +47,10 @@ services:
       - postgres
       - redis
       - web
+    tty: true
+    stdin_open: true
+    volumes:
+      - ~/docker_volume/data_alambic:/app/data_alambic
     deploy:
       resources:
         reservations:
