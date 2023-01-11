@@ -40,7 +40,7 @@ services:
       - postgres:postgres
       - redis:redis
     build: .
-    command: accelerate launch --config_file config_accelerate.yaml alambic/celery.py
+    command: accelerate launch --config_file config_accelerate.yaml alambic/celery_script.py
     env_file:
       - ./.env.dev
     depends_on:
