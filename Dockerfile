@@ -24,17 +24,16 @@ ENV PATH=/home/$userName/.local/bin:$PATH
 #RUN echo "alias notebook=\"jupyter notebook --ip='0.0.0.0' --NotebookApp.iopub_data_rate_limit=2147483647 --no-browser \" " >> /home/$userName/.bashrc
 WORKDIR /home/$userName
 
-# Create app dir
-RUN mkdir /home/$userName/app
-COPY . /app
-WORKDIR /app
-
 COPY requirements.txt /home/$userName
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 RUN pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ submodlib
+
+RUN mkdir /home/$userName/app
+COPY . /app
+WORKDIR /app
 
 # Add volume to allow data exchange with the host machine
 RUN mkdir /home/$userName/shared_data
