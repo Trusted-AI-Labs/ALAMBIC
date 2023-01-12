@@ -2,18 +2,18 @@ import csv
 
 import logging
 
-import celery
-
 from typing import Any, Dict, List
 
 from django.apps import apps
 from django.core.cache import cache
 
-from celery import shared_task, chain, signature, uuid
+from celery import shared_task, chain, signature, uuid, Task
 from celery.exceptions import TimeoutError
 from celery.result import AsyncResult
 
 from celery_progress.backend import ProgressRecorder
+
+from alambic import OneAccelerator
 
 from alambic_app.models.input_models import Output
 from alambic_app.constantes import *
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True)
-def upload_form_data(self: celery.Task, filename: str, model: str, task: str):
+def upload_form_data(self: Task, filename: str, model: str, task: str):
     """
     Read the file containing all the info for the data instances
     and creates the model instances corresponding to the model
