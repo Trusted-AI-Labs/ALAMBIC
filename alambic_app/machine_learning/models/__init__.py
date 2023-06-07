@@ -1,1 +1,1 @@
-from wrapper_model import ModelFactory
+from .wrapper_model import ModelFactory
