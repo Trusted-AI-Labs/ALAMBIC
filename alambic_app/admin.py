@@ -34,13 +34,13 @@ class DataParentAdmin(PolymorphicParentModelAdmin):
 
 class DataChildAdmin(PolymorphicChildModelAdmin):
     """
-    Child model admin that is used as base class by the concrete admin classes for variants
+    Child model admin that is used as base class by the concrete admin classes
     """
 
     search_fields = ('id', 'filename')
 
     def add_view(self, request, form_url='', extra_context=None):
-        self.exclude = self.readonly_fields.copy()
+        self.exclude = self.readonly_fields
         self.readonly_fields = []
         return super().add_view(request, form_url, extra_context)
 

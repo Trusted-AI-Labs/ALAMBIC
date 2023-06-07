@@ -44,7 +44,7 @@ class PreprocessingText(CrispyWizardStep):
 
     max_length = forms.IntegerField(
         label='Maximum length',
-        help_text="Maximum number of tokens for input"
+        help_text="Maximum number of tokens for input",
         initial= 512
     )
 
