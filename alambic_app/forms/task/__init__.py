@@ -1,1 +1,1 @@
-from .classification import ClassificationModel, SVCClassification, RFClassification
+from .classification import ClassificationModel, SVCClassification, RFClassification, DeepLearningTransformers

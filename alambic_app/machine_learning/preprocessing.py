@@ -7,6 +7,11 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, Normalizer
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 
+# DL
+from transformers import AutoTokenizer, DefaultDataCollator
+from datasets import Dataset
+from torch.utils.data import DataLoader
+
 from alambic_app.models.input_models import *
 
 # Custom functions
@@ -26,13 +31,15 @@ OPERATIONS_MATCH = {
     'bow': CountVectorizer,
     'hashing': HashingVectorizer,
     'lemma': tokenizer_lemmatizer,
-    'tree': dependency_tree
+    'tree': dependency_tree,
+    'masking': masking
     # image
 }
 
 CUSTOM_FUNCTIONS = {
     'lemma',
-    'tree'
+    'tree',
+    'masking'
 }
 
 
@@ -85,3 +92,64 @@ class PreprocessingHandler:
         else:
             x = np.concatenate(x)
         return x
+    
+
+class DeepLearningTextHandler(PreprocessingHandler):
+    def __init__(self, origin, max_seq_length):
+        self.tokenizer = self.get_tokenizer(origin)
+        self.max_seq_length = max_seq_length
+        self.features = self.import_data()
+
+    def create_features(self):
+        self.features = self.features.map(
+            self.process_data,
+            batched=True,
+            remove_columns=['sentence']
+        )
+
+
+    def get_x(self, indices = None):
+        if indices is None:
+            return self.data
+        return self.data.filter(lambda x : x['id'] in indices).sort('id').remove_columns('id')
+
+    def get_dataloader(self, data, labels, batch_size, shuffle=False):
+        #collator = DataCollatorWithPadding(tokenizer=self.tokenizer)
+        if labels is not None:
+            data = data.add_column(name = 'label', column=labels)
+        collator = DefaultDataCollator()
+        return DataLoader(
+            data,
+            batch_size = batch_size,
+            shuffle = shuffle,
+            collate_fn=collator,
+            pin_memory=True
+        )
+
+    def get_tokenizer(self, origin):
+        return AutoTokenizer.from_pretrained(origin)
+
+
+    def process_data(self, example):
+        # we have to do it padding full here and not dynamic because the predict function in
+        # strategy does not do the collate_fn
+        tokenized = self.tokenizer(
+            example["sentence"],
+            truncation = True,
+            max_length = self.max_seq_length,
+            padding="max_length"
+        )
+        return tokenized
+
+    @staticmethod
+    def import_data():
+        data = Data.objects.all()
+        data_ids = [item.id for item in data]
+        data = [item.content for item in data]
+
+        data = Dataset.from_dict({
+            "sentence" : data,
+            'id' : data_ids
+        })
+
+        return data

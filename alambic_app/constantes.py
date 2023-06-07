@@ -15,6 +15,7 @@ LABEL_MATCH = {
 CLASSIFICATION_MODELS_CHOICES = [
     ('SVC', 'SVM'),
     ('RF', 'Random Forest'),
+    ('DL', 'Deep Learning Transformers')
 ]
 
 REGRESSION_MODELS_CHOICES = [
@@ -42,7 +43,7 @@ PREPROCESSING_TEXT_CHOICES = [
 FEATURES_TEXT_CHOICES = [
     ('tfidf', 'TF-IDF'),
     ('bow', 'Bag Of Words'),
-    ('hashing', 'Token occurrences with hashing'),
+    ('hashing', 'Token occurrences with hashing')
 ]
 
 KERNELS_CHOICES = [

@@ -11,11 +11,11 @@ from polymorphic.models import PolymorphicModel
 from django.contrib.postgres.fields import ArrayField
 
 from alambic_app.models.managers import TextManager, ImageManager
-from alambic_app.models.labels import Label
+from alambic_app.models.labels import Label, ClassificationLabel,RegressionLabel
 
 
 class Data(PolymorphicModel):
-    filename = models.TextField()  # unique for vector data, different for images and text
+    filename = models.TextField(blank=True)  # unique for vector data, different for images and text
 
     @property
     def name(self):
@@ -40,6 +40,7 @@ class Data(PolymorphicModel):
 
 class Text(Data):
     content = models.TextField()
+    misc = models.TextField(blank=True)
     objects = TextManager()
 
     @property
@@ -47,7 +48,8 @@ class Text(Data):
         response = super().data
         response.update(
             {
-                'content': self.content
+                'content': self.content,
+                'misc' : self.misc
             }
         )
         return response

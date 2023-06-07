@@ -22,3 +22,8 @@ def dependency_tree(text):
     tokens = nlp(text)
 
     return [(token.dep_, token.head.text, [child for child in token.children]) for token in tokens]
+
+
+def masking(text):
+    # mask the entities in the text
+    return text

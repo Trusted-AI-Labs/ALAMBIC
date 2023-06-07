@@ -361,5 +361,8 @@ class SetupView(SessionWizardView):
             'type_learning': data_list[3],
             'active': data_list[4]
         }
+        if form_data['task']['model_choice'] == 'DL':
+            form_data['data']['origin'] = form_data['model_settings']['origin']
+
         result = tasks.preprocess_and_feature_extraction(form_data)
         return HttpResponseRedirect("/chopping?id=" + result.id)

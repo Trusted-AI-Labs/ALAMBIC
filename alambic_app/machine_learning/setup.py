@@ -3,10 +3,17 @@ import math
 import numpy as np
 import random
 import sklearn
+import torch
+import gc
+
+from typing import Tuple
 
 from sklearn.ensemble import RandomForestClassifier
 from joblib import dump, load
 from alipy.query_strategy import query_labels
+from torch.nn.functional import softmax
+from transformers import get_scheduler
+from accelerate import Accelerator
 
 from typing import List, Dict, Any
 
@@ -16,6 +23,7 @@ from django.conf import settings
 from alambic_app.active_learning import stopcriterion
 from alambic_app.active_learning import strategies
 from alambic_app.machine_learning.preprocessing import PreprocessingHandler
+from alambic_app.machine_learning.models import *
 from alambic_app.utils.misc import filter__in_preserve
 
 from alambic_app.models.input_models import Output, Data, Label
@@ -26,6 +34,7 @@ AL_ALGORITHMS_MATCH = {
     'US': query_labels.QueryInstanceUncertainty,
     'MS': query_labels.QueryInstanceUncertainty,
     'ES': query_labels.QueryInstanceUncertainty,
+    'CS': strategies.QueryInstanceCoresetGreedy
 }
 
 MODELS_MATCH = {
@@ -200,7 +209,7 @@ class MLManager:
     def set_test_set(self, lst: List[int]):
         self.test_set = lst
 
-    def get_data(self, lst: List[int]) -> (np.ndarray, np.ndarray):
+    def get_data(self, lst: List[int]) -> Tuple[np.ndarray, np.ndarray]:
         x = self.X[np.asarray(lst)]
         y = self.Y[np.asarray(lst)].astype(float)
         return x, y
@@ -310,3 +319,193 @@ class ClassificationManager(MLManager):
         })
         result_id = Result.objects.create(**attributes)
         return result_id
+
+
+class DeepLearningClassification(ClassificationManager):
+    
+    def __init__(self, handler, model, batch_size, stopcriterion, stop_criterion_param, params):
+        super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
+        self.params = params
+        self.handler = handler
+        self.accelerator = Accelerator(split_batches = True)
+        self.factory = ModelFactory(params)
+        self.labelled_indices.sort()
+        self.unlabelled_indices.sort()
+
+    
+    def get_x(self, lst):
+        return self.handler.get_x(self.convert_to_ids(lst))
+    
+    def get_data(self, lst: List[int]):
+        x = self.get_x(lst)
+        y = self.get_y(lst)
+
+        return self.handler.get_dataloader(
+            data=x, 
+            labels=y, 
+            batch_size=self.params['train_batch_size'], 
+            shuffle=False
+        )
+    
+    def update_datasets(self, data: List[int], annotated_by_human=None):
+        super().update_datasets(data, annotated_by_human)
+        self.labelled_indices.sort()
+        self.unlabelled_indices.sort()
+
+        # reset the model
+        self.model = self.create_model()
+    
+    def create_model(self, cv):
+        with self.accelerator.main_process_first():
+            self.accelerator.clear()
+            self.model = self.factory.produce(self.model, cv)
+            gc.collect()
+            torch.cuda.empty_cache()
+
+        self.accelerator.wait_for_everyone()
+
+    def train(self):
+        self.create_model()
+
+        dataloader = self.get_data(self.labelled_indices)
+        optimizer = torch.optim.AdamW(self.model.parameters(), lr=self.params['learning_rate'])
+        num_training_steps = self.params['num_epochs'] * len(dataloader)
+        num_warm_steps = int(num_training_steps * self.params['warmup_proportion'])
+        lr_scheduler = get_scheduler(
+            "linear",
+            optimizer=optimizer,
+            num_warmup_steps=num_warm_steps,
+            num_training_steps=num_training_steps,
+        )
+
+        self.model, optimizer, dataloader, lr_scheduler = self.accelerator.prepare(
+            self.model, optimizer, dataloader, lr_scheduler
+        )
+
+        for _ in range(self.FLAGS.num_epochs):
+            self.model.train()
+            for batch in dataloader:
+                self.model.zero_grad(set_to_none=True)
+                outputs = self.model(**batch)
+                loss = outputs.loss
+                self.accelerator.backward(loss)
+
+                optimizer.step()
+                lr_scheduler.step()
+
+        del optimizer, dataloader, lr_scheduler
+        gc.collect()
+        torch.cuda.empty_cache()
+
+    def predict(self, lst, predictions_only=False):
+        self.model.eval()
+        dataloader = self.handler.get_dataloader(
+            data=self.get_x(lst), 
+            batch_size=self.params['predict_batch_size'], 
+            shuffle=False)
+        dataloader = self.accelerator.prepare(dataloader)
+
+        results = []
+        ids_added = set()
+        for batch in dataloader:
+            with torch.no_grad():
+                outputs = self.model(**batch)
+                probabilities = softmax(outputs.logits, dim=1)
+                predictions = torch.argmax(probabilities, dim=-1)
+                if predictions_only:
+                    predictions, indices = self.accelerator.gather((predictions, indices))
+                    predictions, indices = predictions.tolist(), indices.tolist()
+                    # to avoid adding information about indices already present, due to the loop of indices in the dataloader
+                    new_predictions = []
+                    for i in range(len(predictions)):
+                        if indices[i] not in ids_added:
+                            new_predictions.append(predictions[i])
+                            ids_added.add(indices[i])
+                    results.extend(new_predictions)
+                else:
+                    probabilities, predictions, indices = self.accelerator.gather((probabilities, predictions, indices))
+                    probabilities, predictions, indices = probabilities.tolist(), predictions.tolist(), indices.tolist()
+                    # to avoid adding information about indices already present, due to the loop of indices in the dataloader
+                    new_predictions, new_probabilities = [], []
+                    for i in range(len(predictions)):
+                        if indices[i] not in ids_added:
+                            new_predictions.append(predictions[i])
+                            new_probabilities.append(probabilities[i])
+                            ids_added.add(indices[i])
+                    results.extend(zip(new_probabilities, new_predictions))
+
+                    del new_probabilities
+
+                del probabilities, predictions, outputs, new_predictions
+                gc.collect()
+
+        return results
+
+    def predict_proba(self, lst):
+        self.model.eval()
+        dataloader = self.handler.get_dataloader(
+            data=self.get_x(lst), 
+            batch_size=self.params['predict_batch_size'], 
+            shuffle=False)
+        dataloader = self.accelerator.prepare(dataloader)
+
+        results = []
+        ids_added = set()
+        for batch in dataloader:
+            with torch.no_grad():
+                outputs = self.model(**batch)
+                probabilities = softmax(outputs.logits, dim=1)
+                probabilities, indices = self.accelerator.gather((probabilities, indices))
+                probabilities, indices = probabilities.tolist(), indices.tolist()
+
+                # to avoid duplicates due to dataloader looping
+                new_probabilities, new_indices = [],[]
+                for i in range(len(probabilities)):
+                    index = indices[i]
+                    if index not in ids_added:
+                        new_probabilities.append(probabilities[i])
+                        ids_added.add(index)
+                        new_indices.append(index)
+                results.extend(zip(new_probabilities,new_indices))
+
+                del probabilities, outputs, indices, new_indices, new_probabilities
+                gc.collect()
+
+
+        return results
+
+    def get_embeddings(self, lst):
+        self.model.eval()
+        dataloader = self.handler.get_dataloader(
+            data=self.get_x(lst), 
+            batch_size=self.params['predict_batch_size'], 
+            shuffle=False)
+        dataloader = self.accelerator.prepare(dataloader)
+       
+        embeddings = []
+        ids_added = set()
+        for batch in dataloader:
+            with torch.no_grad():
+                outputs = self.model(**batch)
+                embedding = torch.mean(outputs.hidden_states[-1], dim=1).squeeze()
+                embedding, indices = self.accelerator.gather((embedding, indices))
+                embedding, indices = embedding.tolist(), indices.tolist()
+
+                new_embeddings, new_indices = [], []
+                for i in range(len(embedding)):
+                    index = indices[i]
+                    if index not in ids_added:
+                        new_embeddings.append(embedding[i])
+                        ids_added.add(index)
+                        new_indices.append(index)
+                embeddings.extend(zip(new_embeddings, new_indices))
+
+                del embedding, outputs, indices, new_embeddings, new_indices
+                gc.collect()
+
+        embeddings = np.asarray(embeddings)
+
+        return embeddings
+    
+    def dump(self):
+        self.factory.save_model(self.model)

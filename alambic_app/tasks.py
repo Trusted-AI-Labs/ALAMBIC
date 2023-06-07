@@ -17,8 +17,8 @@ from alambic import OneAccelerator
 
 from alambic_app.models.input_models import Output
 from alambic_app.constantes import *
-from alambic_app.machine_learning.preprocessing import PreprocessingHandler
-from alambic_app.machine_learning.setup import MLManager, ClassificationManager
+from alambic_app.machine_learning.preprocessing import PreprocessingHandler, DeepLearningTextHandler
+from alambic_app.machine_learning.setup import MLManager, ClassificationManager, DeepLearningClassification
 from alambic_app.utils.exceptions import TaskIdNotFoundError
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,11 @@ def upload_form_data(self: Task, filename: str, model: str, task: str):
             data_dict = {'filename': f"{DATA_PATH}/{line['file']}"}
         else:
             data_dict = {'content': line['content']}
+
+        if 'misc' in reader.fieldnames:
+            data_dict.update({
+                'misc' : line['misc']
+            })
 
         # create the data instance
         data_model = apps.get_model(app_label='alambic_app', model_name=model)
@@ -120,8 +125,11 @@ def run_preprocess(operations: Dict[str, Any]) -> bool:
     :param operations: list of str, names of the different operations to do
     :return: the handler containing all the features
     """
-    handler = PreprocessingHandler(operations)
-    handler.create_features()
+    if 'max_seq_length' in operations:
+        handler = DeepLearningTextHandler(**operations)
+    else:
+        handler = PreprocessingHandler(operations)
+        handler.create_features()
     cache.set('handler', handler)
     return True
 
@@ -147,7 +155,10 @@ def create_manager_model(form_data: Dict[str, Any]):
 
     task = cache.get('task')
     if task == 'C':
-        manager = ClassificationManager(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
+        if model == 'DL':
+            manager = DeepLearningClassification(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
+        else:
+            manager = ClassificationManager(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
     elif task == 'R':
         pass
 

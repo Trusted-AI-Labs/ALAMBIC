@@ -30,6 +30,8 @@
                     {% convert_image to_annotate %}
                 {% elif to_annotate|get_class == "Text" %}
                     {{ to_annotate.content }}
+                    <br>
+                    {{ to_annotate.misc }}
                 {% endif %}
             </div>
 

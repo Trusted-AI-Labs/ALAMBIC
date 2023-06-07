@@ -38,6 +38,16 @@ class PreprocessingText(CrispyWizardStep):
         help_text="Available preprocessing that can be done on the text before feature extraction"
     )
 
+    tokenizer = forms.BooleanField(
+        help_text="Settings for using a tokenizer in case of deep learning"
+    )
+
+    max_length = forms.IntegerField(
+        label='Maximum length',
+        help_text="Maximum number of tokens for input"
+        initial= 512
+    )
+
     # annotators = forms.ChoiceField(
     #    widget=forms.RadioSelect,
     #    choices=ANNOTATORS_CHOICES,
@@ -79,6 +89,11 @@ class PreprocessingText(CrispyWizardStep):
                     ),
                     Field('max_features')
                 ),
+                AccordionGroup(
+                    'Tokenizer for Deep Learning',
+                    InlineCheckboxes('tokenizer'),
+                    Div('max_length')
+                )
                 # AccordionGroup(
                 #    'Convert in a tree',
                 #    InlineCheckboxes('annotators'),
@@ -92,19 +107,25 @@ class PreprocessingText(CrispyWizardStep):
         # tree = cleaned_data.get('annotators')
         vector = cleaned_data.get('vectorizer')
         preprocess = cleaned_data.get('preprocessing_steps')
-        if vector == '':
-            # self.add_error('annotators', 'Only one type of features can be selected')
-            self.add_error('vectorizer', 'You have to select a feature')
+        tokenizer = cleaned_data.get('tokenizer')
+        
 
         if 'lemma' in preprocess:
             operations['lemma'] = {'stop': 'stop_words' in preprocess}
 
+        if vector == '' and tokenizer == '':
+            # self.add_error('annotators', 'Only one type of features can be selected')
+            self.add_error('vectorizer', 'You have to select a feature')
+        
         if vector:
             operations[vector] = {'ngram_range': (cleaned_data['ngram_min'], cleaned_data['ngram_max'])}
             if 'stop_words' in preprocess:
                 operations[vector]['stop_words'] = 'english'
             if cleaned_data.get('max_features') is not None:
                 operations[vector]['max_features'] = cleaned_data.get('max_features')
+        
+        if tokenizer:
+            operations['tokenizer'] = {'max_seq_length': cleaned_data.get('max_length')}
 
         # if tree:
         #    operations['client'] = f'tokenize,mwt,pos,lemma,{tree}'

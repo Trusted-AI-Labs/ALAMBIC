@@ -16,8 +16,9 @@ logger = logging.getLogger(__name__)
 class TextManager(PolymorphicManager):
 
     def create_instance(self, **kwargs):
-        with open(kwargs['filename']) as infile:
-            kwargs['content'] = ' '.join(infile.readlines())  # just a big long string
+        if "filename" in kwargs:
+            with open(kwargs['filename']) as infile:
+                kwargs['content'] = ' '.join(infile.readlines())  # just a big long string
 
         done = False
         while not done:
@@ -85,6 +86,14 @@ class LabelClassificationManager(LabelManager):
         instance = self.filter(value=value)
         if len(instance) > 0:
             return instance[0].class_id
+        
+        # Force evaluation
+        if instance.lower() in ['yes', 'positive','true']:
+            return 1
+        elif instance.lower() in ['no', 'none', 'false']:
+            return 0
+        elif instance.isnumeric():
+            return int(instance)
 
         last_id = self.get_queryset().order_by('class_id').last().class_id if len(self.get_queryset()) > 0 else -1
         return last_id + 1
