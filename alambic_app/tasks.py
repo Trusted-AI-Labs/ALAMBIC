@@ -13,8 +13,6 @@ from celery.result import AsyncResult
 
 from celery_progress.backend import ProgressRecorder
 
-from alambic import OneAccelerator
-
 from alambic_app.models.input_models import Output
 from alambic_app.constantes import *
 from alambic_app.machine_learning.preprocessing import PreprocessingHandler, DeepLearningTextHandler

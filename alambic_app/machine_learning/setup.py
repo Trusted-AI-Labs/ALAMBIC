@@ -13,7 +13,6 @@ from joblib import dump, load
 from alipy.query_strategy import query_labels
 from torch.nn.functional import softmax
 from transformers import get_scheduler
-from accelerate import Accelerator
 
 from typing import List, Dict, Any
 
@@ -28,6 +27,7 @@ from alambic_app.utils.misc import filter__in_preserve
 
 from alambic_app.models.input_models import Output, Data, Label
 from alambic_app.models.results import Result
+from alambic import OneAccelerator
 
 AL_ALGORITHMS_MATCH = {
     'RS': strategies.QueryInstanceRandom,
@@ -327,7 +327,7 @@ class DeepLearningClassification(ClassificationManager):
         super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.params = params
         self.handler = handler
-        self.accelerator = Accelerator(split_batches = True)
+        self.accelerator = OneAccelerator()
         self.factory = ModelFactory(params)
         self.labelled_indices.sort()
         self.unlabelled_indices.sort()
