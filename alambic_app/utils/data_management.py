@@ -44,7 +44,7 @@ def get_form_model(model):
     elif model == "RF":
         return RFClassification
     elif model == "DL":
-        return DeepLearningTransformers
+        return DeepLearningClassification
     else:
         raise MissingForm("Form for the specified model not found")
 
