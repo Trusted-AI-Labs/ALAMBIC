@@ -93,7 +93,7 @@ class LabelClassificationManager(LabelManager):
         elif value.lower() in ['no', 'none', 'false']:
             return 0
         elif value.isnumeric():
-            return int(instance)
+            return int(value)
 
         last_id = self.get_queryset().order_by('class_id').last().class_id if len(self.get_queryset()) > 0 else -1
         return last_id + 1
