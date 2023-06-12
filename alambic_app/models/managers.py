@@ -88,11 +88,11 @@ class LabelClassificationManager(LabelManager):
             return instance[0].class_id
         
         # Force evaluation
-        if instance.lower() in ['yes', 'positive','true']:
+        if value.lower() in ['yes', 'positive','true']:
             return 1
-        elif instance.lower() in ['no', 'none', 'false']:
+        elif value.lower() in ['no', 'none', 'false']:
             return 0
-        elif instance.isnumeric():
+        elif value.isnumeric():
             return int(instance)
 
         last_id = self.get_queryset().order_by('class_id').last().class_id if len(self.get_queryset()) > 0 else -1
