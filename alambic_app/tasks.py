@@ -127,7 +127,8 @@ def run_preprocess(operations: Dict[str, Any]) -> bool:
         handler = DeepLearningTextHandler(**operations)
     else:
         handler = PreprocessingHandler(operations)
-        handler.create_features()
+    
+    handler.create_features()
     cache.set('handler', handler)
     return True
 
@@ -159,6 +160,8 @@ def create_manager_model(form_data: Dict[str, Any]):
             manager = ClassificationManager(handler, model, batch_size, stop_criterion, param_stop_criterion, params_model)
     elif task == 'R':
         pass
+
+    logger.log(0, "Learner created")
 
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
     manager.set_query_strategy(query_strategy)

@@ -355,7 +355,7 @@ class DeepLearningClassification(ClassificationManager):
         # reset the model
         self.model = self.create_model()
     
-    def create_model(self, model, params):
+    def create_model(self, model=None, params=None):
         with self.accelerator.main_process_first():
             self.accelerator.clear()
             self.model = self.factory.produce(self.model)
