@@ -325,6 +325,7 @@ class DeepLearningClassification(ClassificationManager):
     def __init__(self, handler, model, batch_size, stopcriterion, stop_criterion_param, params):
         self.factory = ModelFactory(params)
         self.accelerator = OneAccelerator()
+        self.model = None
         super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.params = params
         self.handler = handler
