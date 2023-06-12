@@ -93,7 +93,7 @@ class PreprocessingText(CrispyWizardStep):
                 ),
                 AccordionGroup(
                     'Tokenizer for Deep Learning',
-                    InlineCheckboxes('tokenizer'),
+                    Field('tokenizer'),
                     Div('max_length')
                 )
                 # AccordionGroup(
