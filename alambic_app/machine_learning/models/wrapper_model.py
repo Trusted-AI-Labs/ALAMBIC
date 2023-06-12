@@ -1,11 +1,14 @@
 import os.path
 
 import torch
+import logging
 
 from django.conf import settings
 from transformers import AutoModelForSequenceClassification
 
 from alambic_app.models.labels import ClassificationLabel
+
+logger = logging.getLogger(__name__)
 
 class ModelFactory:
 
@@ -43,6 +46,8 @@ class ModelFactory:
             model.gradient_checkpointing_enable()
         else:
             model = model.module
+
+        logger.info("---- Saving the model created ----")
 
         if not os.path.exists(f"{self.save_dir}/pytorch_model.bin"):
             torch.save(model.state_dict(), f"{self.save_dir}/pytorch_model.bin")
