@@ -374,8 +374,6 @@ class DeepLearningClassification(ClassificationManager):
             gc.collect()
             torch.cuda.empty_cache()
 
-        self.accelerator.wait_for_everyone()
-
     def train(self):
         self.create_model()
 
