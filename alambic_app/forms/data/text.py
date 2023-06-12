@@ -39,7 +39,9 @@ class PreprocessingText(CrispyWizardStep):
     )
 
     tokenizer = forms.BooleanField(
-        help_text="Settings for using a tokenizer in case of deep learning"
+        help_text="Settings for using a tokenizer in case of deep learning",
+        widget = forms.CheckboxInput,
+        required = False
     )
 
     max_length = forms.IntegerField(

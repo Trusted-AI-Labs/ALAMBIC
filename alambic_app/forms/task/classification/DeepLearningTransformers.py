@@ -20,7 +20,7 @@ class DeepLearningClassification(CrispyWizardStep):
             attrs={
                 'theme': 'material',
                 'data-minimum-input-length': 0,
-                'step': 0.0001
+                'step': 0.000001
             }
         )
     )
