@@ -127,7 +127,7 @@ class PreprocessingText(CrispyWizardStep):
                 operations[vector]['max_features'] = cleaned_data.get('max_features')
         
         if tokenizer:
-            operations['tokenizer'] = {'max_seq_length': cleaned_data.get('max_length')}
+            operations = {'max_seq_length': cleaned_data.get('max_length')}
 
         # if tree:
         #    operations['client'] = f'tokenize,mwt,pos,lemma,{tree}'
