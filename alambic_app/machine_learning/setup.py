@@ -338,9 +338,9 @@ class DeepLearningClassification(ClassificationManager):
         self.factory = ModelFactory(params['origin'])
         self.accelerator = OneAccelerator()
         self.model = None
-        super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.params = params
         self.handler = handler
+        super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.labelled_indices.sort()
         self.unlabelled_indices.sort()
 
@@ -368,11 +368,11 @@ class DeepLearningClassification(ClassificationManager):
         self.model = self.create_model()
     
     def create_model(self, model=None, params=None):
-        with self.accelerator.main_process_first():
-            self.accelerator.clear()
-            self.model = self.factory.produce(self.model)
-            gc.collect()
-            torch.cuda.empty_cache()
+        #with self.accelerator.main_process_first():
+        self.accelerator.clear()
+        self.model = self.factory.produce(self.model)
+        gc.collect()
+        torch.cuda.empty_cache()
 
     def train(self):
         self.create_model()
