@@ -80,8 +80,7 @@ class MLManager:
     def convert_to_indices(self, lst):
         return [self.ids_to_indices[ids] for ids in lst]
 
-    @staticmethod
-    def create_model(model: str, params: Dict[str, Any]):
+    def create_model(self,model: str, params: Dict[str, Any]):
         """
         Create the model to train with the chosen parameters
         :param model: name of the model found in MODELS_MATCH as key
@@ -324,11 +323,11 @@ class ClassificationManager(MLManager):
 class DeepLearningClassification(ClassificationManager):
     
     def __init__(self, handler, model, batch_size, stopcriterion, stop_criterion_param, params):
+        self.factory = ModelFactory(params)
         super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.params = params
         self.handler = handler
         self.accelerator = OneAccelerator()
-        self.factory = ModelFactory(params)
         self.labelled_indices.sort()
         self.unlabelled_indices.sort()
 
@@ -355,10 +354,10 @@ class DeepLearningClassification(ClassificationManager):
         # reset the model
         self.model = self.create_model()
     
-    def create_model(self, cv):
+    def create_model(self, model, params):
         with self.accelerator.main_process_first():
             self.accelerator.clear()
-            self.model = self.factory.produce(self.model, cv)
+            self.model = self.factory.produce(self.model)
             gc.collect()
             torch.cuda.empty_cache()
 
