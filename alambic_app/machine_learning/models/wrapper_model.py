@@ -16,12 +16,12 @@ class ModelFactory:
         self.get_labels_config()
 
     def get_labels_config(self):
-        labels = list(ClassificationLabel.objects.all().values('value'))
+        labels = ClassificationLabel.objects.all().values()
 
         if len(labels) == 0:
-            labels = ['0','1']
+            labels = [{'class_id': 0,'value':0}, {'class_id':1, 'value':1}]
 
-        self.label2id = {v: i for i, v in enumerate(labels)}
+        self.label2id = {label['value']: label['class_id'] for label in labels}
         self.id2label = {id: label for label, id in self.label2id.items()}
 
     def get_num_classes(self):
