@@ -1,4 +1,5 @@
 import math
+import logging
 
 import numpy as np
 import random
@@ -49,6 +50,7 @@ STOP_CRITERION_MATCH = {
     'final': stopcriterion.final_reached
 }
 
+logger = logging.getLogger(__name__)
 
 class MLManager:
     """
@@ -58,16 +60,26 @@ class MLManager:
     def __init__(self, handler: PreprocessingHandler, model: str, batch_size: int, stopcriterion: str,
                  stopcriterion_param: Any, params: dict):
         self.step = 0
+
+        logger.info("----- Create model -----")
         self.model = self.create_model(model, params)
+        logger.info("----- Model created -----")
+
         self.stopcriterion = STOP_CRITERION_MATCH[stopcriterion]
         self.goal = stopcriterion_param
         self.batch_size = batch_size
+
         self.unlabelled_indices, self.labelled_indices = self.get_labelled_dataset()
         self.indices_to_ids = {k: v for k, v in enumerate(self.labelled_indices + self.unlabelled_indices)}
         self.ids_to_indices = {v: k for k, v in self.indices_to_ids.items()}
         self.test_set = []
+
+        logger.info("----- Get data -----")
+
         self.X = handler.get_x(self.labelled_indices + self.unlabelled_indices)
         self.Y = np.array(self.get_y(self.convert_to_indices(self.labelled_indices + self.unlabelled_indices)))
+
+        logger.info("----- Got data -----")
         self.y_train = []
         self.y_test = []
         self.y_predicted = []
