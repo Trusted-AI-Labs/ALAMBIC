@@ -361,7 +361,7 @@ class DeepLearningClassification(ClassificationManager):
     def get_x(self, lst, format='np'):
         if self.first:
             return []
-        return super().get_x(lst, format)
+        return super().get_x(self.convert_to_indices(lst), format)
     
     def get_y(self, lst, annotated_by_human=None):
         if self.first:
