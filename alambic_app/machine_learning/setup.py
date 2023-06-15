@@ -370,7 +370,7 @@ class DeepLearningClassification(ClassificationManager):
     
     def get_data(self, lst: List[int]):
         x = self.get_x(lst, format='torch')
-        y = self.get_y(lst)
+        y = self.Y[np.asarray(lst)]
 
         return self.handler.get_dataloader(
             data=x, 
