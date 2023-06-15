@@ -355,13 +355,13 @@ class DeepLearningClassification(ClassificationManager):
 
         all_set = self.labelled_indices+self.unlabelled_indices
         all_set.sort()
-        self.X = self.handler.get_x(all_set)
+        self.X = self.handler.get_x(self.convert_to_indices(all_set))
         self.Y = self.get_y(all_set)
     
     def get_x(self, lst, format='np'):
         if self.first:
             return []
-        return super().get_x(self.convert_to_indices(lst), format)
+        return super().get_x(lst, format)
     
     def get_y(self, lst, annotated_by_human=None):
         if self.first:
