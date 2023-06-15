@@ -353,9 +353,9 @@ class DeepLearningClassification(ClassificationManager):
         self.indices_to_ids = {k: v for k, v in zip(range(len(self.labelled_indices)+len(self.unlabelled_indices)), range(1,len(self.labelled_indices)+len(self.unlabelled_indices)+1))}
         self.ids_to_indices = {v: k for k, v in self.indices_to_ids.items()}
 
-        all_set = self.labelled_indices+self.unlabelled_indices
+        all_set = self.convert_to_indices(self.labelled_indices+self.unlabelled_indices)
         all_set.sort()
-        self.X = self.handler.get_x(self.convert_to_indices(all_set))
+        self.X = self.handler.get_x(all_set)
         self.Y = self.get_y(all_set)
     
     def get_x(self, lst, format='np'):
