@@ -120,7 +120,7 @@ class DeepLearningTextHandler(PreprocessingHandler):
         if format == 'np':
             x = []
             for value in data:
-                x.append(value['input_ids'])
+                x.append(np.asarray(value['input_ids']))
             if isinstance(x[0], scipy.sparse.csr.csr_matrix):
                 data = vstack(x)
             else:
