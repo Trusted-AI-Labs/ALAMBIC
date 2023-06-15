@@ -350,7 +350,7 @@ class DeepLearningClassification(ClassificationManager):
         self.unlabelled_indices.sort()
 
         # order should be conserved
-        self.indices_to_ids = {k: v for k, v in range(1,len(self.labelled_indices)+len(self.unlabelled_indices)+1)}
+        self.indices_to_ids = {k: v for k, v in zip(range(len(self.labelled_indices)+len(self.unlabelled_indices)), range(1,len(self.labelled_indices)+len(self.unlabelled_indices)+1))}
         self.ids_to_indices = {v: k for k, v in self.indices_to_ids.items()}
 
         self.labelled_indices = self.convert_to_indices(self.convert_to_ids(self.labelled_indices))
