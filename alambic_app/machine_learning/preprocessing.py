@@ -1,3 +1,5 @@
+import logging
+
 from scipy.sparse import vstack
 import scipy.sparse.csr
 
@@ -42,6 +44,7 @@ CUSTOM_FUNCTIONS = {
     'masking'
 }
 
+logger = logging.getLogger(__name__)
 
 class PreprocessingHandler:
     """
@@ -110,8 +113,9 @@ class DeepLearningTextHandler(PreprocessingHandler):
 
     def get_x(self, indices = None, format='np'):
         if indices is None:
-            return self.features.set_format(format)
-        data = self.features.filter(lambda x : x['id'] in indices).sort('id').remove_columns('id')
+            self.features.set_format(format)
+            return self.features
+        data = self.features.select(indices).sort('id').remove_columns('id')
         data.set_format(format)
         if format == 'np':
             x = []

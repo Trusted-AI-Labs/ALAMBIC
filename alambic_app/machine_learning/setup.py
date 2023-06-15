@@ -344,9 +344,18 @@ class DeepLearningClassification(ClassificationManager):
         self.labelled_indices.sort()
         self.unlabelled_indices.sort()
 
+        # order should be conserved
+        self.indices_to_ids = {k: v for k, v in range(1,len(self.labelled_indices)+len(self.unlabelled_indices)+1)}
+        self.ids_to_indices = {v: k for k, v in self.indices_to_ids.items()}
+
+        self.labelled_indices = self.convert_to_indices(self.convert_to_ids(self.labelled_indices))
+        self.unlabelled_indices = self.convert_to_indices(self.convert_to_ids(self.unlabelled_indices))
+        self.test_set = self.convert_to_indices(self.convert_to_ids(self.test_set))
+        all_set = self.labelled_indices+self.unlabelled_indices+self.test_set
+        self.X = self.handler.get_x(sorted(all_set))
     
-    def get_x(self, lst):
-        return self.handler.get_x(self.convert_to_ids(lst))
+    def get_x(self, lst, format='np'):
+        return self.handler.get_x(lst, format)
     
     def get_data(self, lst: List[int]):
         x = self.get_x(lst, format='torch')
