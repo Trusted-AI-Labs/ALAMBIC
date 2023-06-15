@@ -366,7 +366,7 @@ class DeepLearningClassification(ClassificationManager):
     def get_y(self, lst, annotated_by_human=None):
         if self.first:
             return []
-        return super().get_y(self, lst, annotated_by_human)
+        return super().get_y(lst, annotated_by_human)
     
     def get_data(self, lst: List[int]):
         x = self.get_x(lst, format='torch')
