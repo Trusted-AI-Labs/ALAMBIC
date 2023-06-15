@@ -111,7 +111,9 @@ class DeepLearningTextHandler(PreprocessingHandler):
     def get_x(self, indices = None):
         if indices is None:
             return self.features.set_format('torch')
-        return self.features.filter(lambda x : x['id'] in indices).sort('id').remove_columns('id').set_format('torch')
+        data = self.features.filter(lambda x : x['id'] in indices).sort('id').remove_columns('id')
+        data.set_format('torch')
+        return data
 
     def get_dataloader(self, data, labels, batch_size, shuffle=False):
         #collator = DataCollatorWithPadding(tokenizer=self.tokenizer)
