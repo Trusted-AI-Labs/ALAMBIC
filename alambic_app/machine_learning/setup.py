@@ -60,6 +60,7 @@ class MLManager:
     def __init__(self, handler: PreprocessingHandler, model: str, batch_size: int, stopcriterion: str,
                  stopcriterion_param: Any, params: dict):
         self.step = 0
+        self.handler = handler
 
         logger.info("----- Create model -----")
         self.model = self.create_model(model, params)
@@ -76,7 +77,7 @@ class MLManager:
 
         logger.info("----- Get data -----")
 
-        self.X = handler.get_x(self.labelled_indices + self.unlabelled_indices)
+        self.X = self.get_x(self.labelled_indices + self.unlabelled_indices)
         self.Y = np.array(self.get_y(self.convert_to_indices(self.labelled_indices + self.unlabelled_indices)))
 
         logger.info("----- Got data -----")
@@ -211,6 +212,9 @@ class MLManager:
         self.labelled_indices = self.convert_to_indices(self.labelled_indices)
         self.unlabelled_indices = self.convert_to_indices(self.unlabelled_indices)
 
+    def get_x(self, lst: List[int], format=None):
+        return self.handler.get_x(lst, format)
+
     def get_y(self, lst: List[int], annotated_by_human=None) -> QuerySet:
         outputs = filter__in_preserve(Output.objects, 'data_id', self.convert_to_ids(lst))
         if annotated_by_human is not None:
@@ -339,7 +343,6 @@ class DeepLearningClassification(ClassificationManager):
         self.accelerator = OneAccelerator()
         self.model = None
         self.params = params
-        self.handler = handler
         self.first = True
         super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
         self.first = False
@@ -361,7 +364,7 @@ class DeepLearningClassification(ClassificationManager):
     def get_x(self, lst, format='np'):
         if self.first:
             return []
-        return self.handler.get_x(lst, format)
+        return super().get_x(lst, format)
     
     def get_y(self, lst, annotated_by_human=None):
         if self.first:
