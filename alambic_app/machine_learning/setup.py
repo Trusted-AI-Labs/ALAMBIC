@@ -340,7 +340,9 @@ class DeepLearningClassification(ClassificationManager):
         self.model = None
         self.params = params
         self.handler = handler
+        self.first = True
         super().__init__(handler, model, batch_size, stopcriterion, stop_criterion_param, params)
+        self.first = False
         self.labelled_indices.sort()
         self.unlabelled_indices.sort()
 
@@ -351,11 +353,20 @@ class DeepLearningClassification(ClassificationManager):
         self.labelled_indices = self.convert_to_indices(self.convert_to_ids(self.labelled_indices))
         self.unlabelled_indices = self.convert_to_indices(self.convert_to_ids(self.unlabelled_indices))
         self.test_set = self.convert_to_indices(self.convert_to_ids(self.test_set))
-        all_set = self.labelled_indices+self.unlabelled_indices+self.test_set
-        self.X = self.handler.get_x(sorted(all_set))
+        all_set = self.labelled_indices+self.unlabelled_indices
+        all_set.sort()
+        self.X = self.handler.get_x(all_set)
+        self.Y = self.get_y(all_set)
     
     def get_x(self, lst, format='np'):
+        if self.first:
+            return []
         return self.handler.get_x(lst, format)
+    
+    def get_y(self, lst, annotated_by_human=None):
+        if self.first:
+            return []
+        return super().get_y(self, lst, annotated_by_human)
     
     def get_data(self, lst: List[int]):
         x = self.get_x(lst, format='torch')
