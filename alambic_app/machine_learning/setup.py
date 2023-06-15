@@ -349,7 +349,7 @@ class DeepLearningClassification(ClassificationManager):
         return self.handler.get_x(self.convert_to_ids(lst))
     
     def get_data(self, lst: List[int]):
-        x = self.get_x(lst)
+        x = self.get_x(lst, format='torch')
         y = self.get_y(lst)
 
         return self.handler.get_dataloader(

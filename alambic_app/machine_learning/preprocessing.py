@@ -83,7 +83,7 @@ class PreprocessingHandler:
     def __repr__(self):
         return str(self)
 
-    def get_x(self, lst):
+    def get_x(self, lst, format=None):
         x = []
         for data_id in lst:
             x.append(self.features[data_id])
@@ -108,11 +108,19 @@ class DeepLearningTextHandler(PreprocessingHandler):
         )
 
 
-    def get_x(self, indices = None):
+    def get_x(self, indices = None, format='np'):
         if indices is None:
-            return self.features.set_format('torch')
+            return self.features.set_format(format)
         data = self.features.filter(lambda x : x['id'] in indices).sort('id').remove_columns('id')
-        data.set_format('torch')
+        data.set_format(format)
+        if format == 'np':
+            x = []
+            for value in data:
+                x.append(value['input_ids'])
+            if isinstance(x[0], scipy.sparse.csr.csr_matrix):
+                data = vstack(x)
+            else:
+                data = np.concatenate(x)
         return data
 
     def get_dataloader(self, data, labels, batch_size, shuffle=False):
