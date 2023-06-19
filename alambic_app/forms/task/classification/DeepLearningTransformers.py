@@ -25,6 +25,21 @@ class DeepLearningClassification(CrispyWizardStep):
         )
     )
 
+    warmup_proportion = forms.FloatField(
+        min_value=0,
+        max_value=1,
+        initial = 0.5,
+        required=True,
+        help_text='Proportion of training with linear learning rate warmup',
+        widget=forms.NumberInput(
+            attrs={
+                'theme': 'material',
+                'data-minimum-input-length': 0,
+                'step': 0.1
+            }
+        )
+    )
+
     num_epochs = forms.IntegerField(
         min_value=1,
         max_value=1000,
@@ -78,6 +93,7 @@ class DeepLearningClassification(CrispyWizardStep):
                 HTML('<h2>Link for the Transformers model on Hugging Face</h2>'),
                 Field('origin'),
                 Field('learning_rate'),
+                Field('warmup_proportion'),
                 Field('num_epochs'),
                 Field('train_batch_size'),
                 Field('predict_batch_size')
