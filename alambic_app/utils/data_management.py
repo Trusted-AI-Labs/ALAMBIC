@@ -21,7 +21,7 @@ def get_default_form_list():
 
 
 def get_form_data():
-    model = cache.get('model')
+    model = cache.get('data_type')
 
     if model == 'Text':
         return PreprocessingText

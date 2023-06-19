@@ -17,6 +17,7 @@ from alambic_app.utils.production_results import get_performance_chart_formatted
     generate_results_file_analysis
 from alambic_app.utils.exceptions import BadRequestError
 from alambic_app import tasks
+from alambic_app.machine_learning import *
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ def upload(request):
         form = GeneralInfoInputForm(request.POST, request.FILES)
         if form.is_valid():
             result = tasks.upload_form_data.delay(filename=form.cleaned_data['input_file'],
-                                                  model=form.cleaned_data['model'],
+                                                  data_type=form.cleaned_data['data_type'],
                                                   task=form.cleaned_data['task'])
             return HttpResponseRedirect("/pouring?id=" + result.id)
     else:
@@ -188,7 +189,17 @@ def preparing_batch(request):
 
 def tasting(request):
     form, annotation_template = get_form_and_template_annotation()
-    manager = cache.get('manager')
+    
+    task = cache.get('task')
+    model = cache.get('model')
+    if task == 'C':
+        if model == 'DL':
+            manager = DeepLearningClassification()
+        else:
+            manager = ClassificationManager()
+    elif task == 'R':
+        pass
+
     if request.method == 'GET':
         params = request.GET
 

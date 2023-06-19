@@ -30,7 +30,7 @@ class GeneralInfoInputForm(forms.Form):
         path=DATA_PATH,
         match=r"[a-zA-Z0-9_]*\.tsv"
     )
-    model = forms.ChoiceField(
+    data_type = forms.ChoiceField(
         choices=DATA_CHOICES,
         widget=Select2Widget(
             attrs={

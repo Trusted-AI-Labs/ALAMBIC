@@ -23,18 +23,18 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True)
-def upload_form_data(self: Task, filename: str, model: str, task: str):
+def upload_form_data(self: Task, filename: str, data_type: str, task: str):
     """
     Read the file containing all the info for the data instances
-    and creates the model instances corresponding to the model
+    and creates the data_type instances corresponding to the model
     and the task
     :param self: task celery
     :param filename: str, file containing the labels and paths/content
-    :param model: str, type of data input
+    :param data_type: str, type of data input
     :param task: str, type of learning task
     :return: None
     """
-    cache.set('model', model)
+    cache.set('data_type', data_type)
     cache.set('task', task)
     infile = open(filename, encoding='utf-8')
     reader = csv.DictReader(infile, delimiter='\t')
@@ -162,7 +162,7 @@ def create_manager_model(form_data: Dict[str, Any]):
     elif task == 'R':
         pass
 
-    logger.log(0, "Learner created")
+    logger.info("Learner created")
 
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
     manager.set_query_strategy(query_strategy)
