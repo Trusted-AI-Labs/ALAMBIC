@@ -74,7 +74,7 @@ class ActiveLearningParameters(CrispyWizardStep):
                 Field('query_strategy'),
                 Field('ratio_test'),
                 HTML('OR'),
-                Field('absolute_test')
+                Field('absolute_test'),
                 Field('size_seed')
             ),
             Div(
