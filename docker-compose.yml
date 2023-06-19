@@ -27,12 +27,14 @@ services:
     build: .
     volumes:
       - ~/docker_volume:/home/$USER/shared_data
+      - ~/docker_volume/ALAMBIC:/app
       - ~/docker_volume/data_alambic:/app/data_alambic
     command: bash entrypoint.sh
     env_file:
       - ./.env.dev
     ports:
       - "9209:8000"
+    working_dir: /app
 
   celery:
     restart: always
@@ -50,14 +52,16 @@ services:
     tty: true
     stdin_open: true
     volumes:
+      - ~/docker_volume/ALAMBIC:/app
       - ~/docker_volume/data_alambic:/app/data_alambic
+    working_dir: /app
     deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['3','4']
-              capabilities: [gpu]
+            resources:
+                    reservations:
+                            devices:
+                                    - driver: nvidia
+                                      device_ids: ['3','4']
+                                      capabilities: [gpu]
 
 
 volumes:

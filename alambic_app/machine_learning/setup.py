@@ -52,7 +52,14 @@ STOP_CRITERION_MATCH = {
 
 logger = logging.getLogger(__name__)
 
-class MLManager:
+class Singleton (type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+class MLManager(metaclass=Singleton):
     """
     Class to handle the performance
     """
@@ -419,11 +426,16 @@ class DeepLearningClassification(ClassificationManager):
             num_training_steps=num_training_steps,
         )
 
+        logger.info("--- Setup data ---")
+        logger.info(self.accelerator.num_processes)
+
         self.model, optimizer, dataloader, lr_scheduler = self.accelerator.prepare(
             self.model, optimizer, dataloader, lr_scheduler
         )
 
-        for _ in range(self.FLAGS.num_epochs):
+        logger.info("--- Begin training ---")
+
+        for _ in range(self.params['num_epochs']):
             self.model.train()
             for batch in dataloader:
                 self.model.zero_grad(set_to_none=True)
@@ -442,6 +454,7 @@ class DeepLearningClassification(ClassificationManager):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
             data=self.get_x(lst), 
+            labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
         dataloader = self.accelerator.prepare(dataloader)
@@ -485,7 +498,8 @@ class DeepLearningClassification(ClassificationManager):
     def predict_proba(self, lst):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
-            data=self.get_x(lst), 
+            data=self.get_x(lst),
+            labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
         dataloader = self.accelerator.prepare(dataloader)
@@ -518,7 +532,8 @@ class DeepLearningClassification(ClassificationManager):
     def get_embeddings(self, lst):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
-            data=self.get_x(lst), 
+            data=self.get_x(lst),
+            labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
         dataloader = self.accelerator.prepare(dataloader)

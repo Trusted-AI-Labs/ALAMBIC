@@ -107,9 +107,8 @@ def pipeline_ML():
     :return: id of the celery chain with the tasks of the pipeline
     """
     task_id = uuid()
-    manager = cache.get('manager')
 
-    distilling_pipeline = [train.si(manager), predict.si(), register_result.si(), query.si()]
+    distilling_pipeline = [train.si(), predict.si(), register_result.si(), query.si()]
 
     init_pipeline(distilling_pipeline, task_id, run_pipeline_task_refs, run_pipeline_done)
 
@@ -142,6 +141,8 @@ def create_manager_model(form_data: Dict[str, Any]):
     :return: lst, empty or str, containing the ids to label
     """
     model = form_data.get('task')['model_choice']
+    cache.set('model',model)
+
     params_model = form_data.get('model_settings')
     query_strategy = form_data.get('active')['query_strategy']
     stop_criterion = form_data.get('active')['stop_criterion']['algorithm']
@@ -165,7 +166,6 @@ def create_manager_model(form_data: Dict[str, Any]):
 
     ids_to_label = manager.initialize_dataset(ratio, size_seed)
     manager.set_query_strategy(query_strategy)
-    cache.set('manager', manager)
     cache.set('to_label', ids_to_label)
     return True
 
@@ -207,12 +207,21 @@ def create_manager_analysis(form_data: Dict[str, Any]):
 
 
 @shared_task
-def train(manager: MLManager) -> bool:
+def train() -> bool:
     """
     Train the model
     """
+    task = cache.get('task')
+    model = cache.get('model')
+    if task == 'C':
+        if model == 'DL':
+            manager = DeepLearningClassification()
+        else:
+            manager = ClassificationManager()
+    elif task == 'R':
+        pass
+
     manager.train()
-    cache.set('manager', manager)
     return True
 
 
@@ -223,9 +232,18 @@ def predict() -> bool:
     :param manager: MLManager
     :return: MLManager
     """
-    manager = cache.get('manager')
+    task = cache.get('task')
+    model = cache.get('model')
+    if task == 'C':
+        if model == 'DL':
+            manager = DeepLearningClassification()
+        else:
+            manager = ClassificationManager()
+    elif task == 'R':
+        pass
+
+
     manager.performance_predict()
-    cache.set('manager', manager)
     return True
 
 
@@ -236,7 +254,18 @@ def query() -> bool:
     :param manager: MLManager
     :return: MLManager
     """
-    manager = cache.get('manager')
+
+    task = cache.get('task')
+    model = cache.get('model')
+    if task == 'C':
+        if model == 'DL':
+            manager = DeepLearningClassification()
+        else:
+            manager = ClassificationManager()
+    elif task == 'R':
+        pass
+
+
     ids_to_label = manager.query()
     cache.set('to_label', ids_to_label)
     return True
@@ -247,7 +276,16 @@ def register_result():
     """
     Store the result measures in the database
     """
-    manager = cache.get('manager')
+    task = cache.get('task')
+    model = cache.get('model')
+    if task == 'C':
+        if model == 'DL':
+            manager = DeepLearningClassification()
+        else:
+            manager = ClassificationManager()
+    elif task == 'R':
+        pass
+
     if cache.get('type_learning') == "analysis":
         result_id = manager.register_result(repeat=cache.get('current_repeat'), cross_val=cache.get('current_fold'))
     else:

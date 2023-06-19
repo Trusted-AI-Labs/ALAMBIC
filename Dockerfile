@@ -13,7 +13,13 @@ ARG userID=1012
 # Create user in order to avoid running the container as root
 RUN groupadd -g $userGID $userName
 RUN useradd -u $userID -d /home/$userName -ms /bin/bash -g $userGID -G sudo,$userName -p $(openssl passwd -1 abc123) $userName
+
+RUN mkdir /home/$userName/app
+
+RUN chown $userName:$userName -R /home/$userName/app
 USER $userName
+
+WORKDIR /app
 
 # Sets an environmental variable that ensures output from python is sent straight to the terminal without buffering it first
 ENV PYTHONUNBUFFERED 1
@@ -31,13 +37,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 RUN pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ submodlib
 
-RUN mkdir /home/$userName/app
-COPY . /app
-WORKDIR /app
-
 # Add volume to allow data exchange with the host machine
 RUN mkdir /home/$userName/shared_data
 RUN chown $userName:$userName /home/$userName/shared_data
 VOLUME /home/$userName/shared_data
 EXPOSE $userPort
-

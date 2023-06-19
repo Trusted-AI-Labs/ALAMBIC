@@ -49,15 +49,15 @@ class ModelFactory:
 
         logger.info("---- Saving the model created ----")
 
-        #if not os.path.exists(f"{self.save_dir}/pytorch_model.bin"):
-            #torch.save(model.state_dict(), f"{self.save_dir}/pytorch_model.bin")
+        if not os.path.exists(f"{self.save_dir}/pytorch_model.bin"):
+            torch.save(model.state_dict(), f"{self.save_dir}/pytorch_model.bin")
 
-            #return model
+            return model
 
-        #if cv is None:
-            #model.load_state_dict(torch.load(f"{self.save_dir}/pytorch_model.bin", map_location="cpu"))
-        #else :
-            #model.load_state_dict(torch.load(f"{self.save_dir}/pytorch_model_{cv}.bin", map_location="cpu"))
+        if cv is None:
+            model.load_state_dict(torch.load(f"{self.save_dir}/pytorch_model.bin", map_location="cpu"))
+        else :
+            model.load_state_dict(torch.load(f"{self.save_dir}/pytorch_model_{cv}.bin", map_location="cpu"))
         return model
 
     def save_model(self, model):
