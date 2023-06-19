@@ -1,1 +1,1 @@
-from setup import DeepLearningClassification, MLManager, ClassificationManager
+from .setup import DeepLearningClassification, MLManager, ClassificationManager
