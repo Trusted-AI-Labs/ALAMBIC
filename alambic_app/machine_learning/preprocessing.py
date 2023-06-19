@@ -130,7 +130,9 @@ class DeepLearningTextHandler(PreprocessingHandler):
     def get_dataloader(self, data, labels, batch_size, shuffle=False):
         #collator = DataCollatorWithPadding(tokenizer=self.tokenizer)
         if labels is not None:
+            data.set_format(None)
             data = data.add_column(name = 'label', column=labels)
+            data.set_format('torch')
         collator = DefaultDataCollator()
         return DataLoader(
             data,
