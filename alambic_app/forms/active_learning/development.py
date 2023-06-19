@@ -23,7 +23,7 @@ class ActiveLearningParameters(CrispyWizardStep):
     ratio_test = forms.FloatField(
         min_value=0,
         max_value=1,
-        required=True,
+        required=False,
         help_text='Percentage of the dataset for the test set',
         widget=forms.NumberInput(
             attrs={
@@ -32,6 +32,12 @@ class ActiveLearningParameters(CrispyWizardStep):
                 'step': 0.01
             }
         )
+    )
+
+    absolute_test = forms.IntegerField(
+        min_value=1,
+        required=False,
+        help_text='Absolute number of samples for the test set',
     )
 
     size_seed = forms.IntegerField(
@@ -67,6 +73,8 @@ class ActiveLearningParameters(CrispyWizardStep):
                 HTML('<h2>Parameters of the Active learning</h2>'),
                 Field('query_strategy'),
                 Field('ratio_test'),
+                HTML('OR'),
+                Field('absolute_test')
                 Field('size_seed')
             ),
             Div(
@@ -88,15 +96,37 @@ class ActiveLearningParameters(CrispyWizardStep):
     def clean(self):
         cleaned_data = super().clean()
         size_seed = cleaned_data['size_seed']
+        ratio_test = cleaned_data['ratio_test']
+        absolute_test = cleaned_data['absolute_test']
+        data = dict()
 
         if size_seed > cache.get('data'):
             self.add_error('size_seed', 'You are exceeding the size of the dataset')
+        
+        if ratio_test is not None and absolute_test is not None:
+            self.add_error('absolute_test', 'You can choose only the test set by ratio or absolute number, not both')
+            self.add_error('ratio_test', 'You can choose only the test set by ratio or absolute number, not both')
+        else:
+            if ratio_test is not None:
+                data.update(
+                    {
+                        'ratio_test' : ratio_test
+                    }
+                )
+            elif absolute_test is not None:
+                data.update(
+                    {
+                        'ratio_test' : absolute_test
+                    }
+                )
+            else:
+                self.add_error('ratio_test', 'You have to choose a part of the dataset for the test set')
+                self.add_error('absolute_test', 'You have to choose a part of the dataset for the test set')
 
-        data = {
-            'ratio_test': cleaned_data['ratio_test'],
+        data.update({
             'query_strategy': cleaned_data['query_strategy'],
             'size_seed': size_seed
-        }
+        })
 
         if cleaned_data['accuracy_goal'] is not None and cleaned_data['budget'] is not None:
             self.add_error('accuracy_goal', 'You have to choose only one stop criterion')

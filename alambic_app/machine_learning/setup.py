@@ -7,7 +7,7 @@ import sklearn
 import torch
 import gc
 
-from typing import Tuple
+from typing import Tuple, Union
 
 from sklearn.ensemble import RandomForestClassifier
 from joblib import dump, load
@@ -137,26 +137,37 @@ class MLManager:
         labelled = list(Output.objects.exclude(data_id__in=unlabelled).values_list('data_id', flat=True))
         return unlabelled, labelled
 
-    def initialize_dataset(self, ratio: float, size_seed: int) -> List[int]:
+    def initialize_dataset(self, ratio: Union[float,int], size_seed: int) -> List[int]:
         """
         Split into training set and test set, assign them to labelled_indices and test_set
-        :param ratio: percentage of the total dataset dedicated to the test set
+        :param ratio: percentage of the total dataset dedicated to the test set, or total number of sampes for test set
         :param size_seed: number of data points the learner will begin with in the active learning algorithm
         :return: list of ints, ids of data to label
         """
         total_data = Data.objects.all().count()
-        current_ratio = len(self.labelled_indices) / total_data
         ids_to_add = []
+        is_ratio_float = isinstance(ratio, float)
+        if is_ratio_float:
+            current_ratio = len(self.labelled_indices) / total_data
+        else:
+            current_ratio = len(self.labelled_indices)
+        
 
         # missing labelled data
         if current_ratio < ratio:
-            nb_ids_to_add = int((total_data * ratio) - len(self.labelled_indices))
+            if is_ratio_float:
+                nb_ids_to_add = int((total_data * ratio) - len(self.labelled_indices))
+            else:
+                nb_ids_to_add = int(ratio - len(self.labelled_indices))
             ids_to_add = random.sample(self.unlabelled_indices, nb_ids_to_add)
             self.test_set = ids_to_add.copy()
             self.unlabelled_indices = [data_id for data_id in self.unlabelled_indices if data_id not in ids_to_add]
 
-        elif current_ratio > ratio:
-            nb_ids_to_sample = int(total_data * ratio)
+        elif current_ratio >= ratio:
+            if is_ratio_float:
+                nb_ids_to_sample = int(total_data * ratio)
+            else:
+                nb_ids_to_sample = int(ratio)
             self.test_set = random.sample(self.labelled_indices, nb_ids_to_sample)
             self.labelled_indices = [data_id for data_id in self.labelled_indices if data_id not in self.test_set]
 
