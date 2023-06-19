@@ -15,6 +15,7 @@ from alambic_app.constantes import AL_ALGORITHMS_MATCH
 
 def get_performance_chart_formatted_data(data_type: str):
     results = None
+    total_size = 0
 
     if data_type == 'classification':
         results = list(
