@@ -115,7 +115,7 @@ def pipeline_ML():
     return chain(distilling_pipeline).apply_async(task_id=task_id)
 
 
-@shared_task
+@shared_task()
 def run_preprocess(operations: Dict[str, Any]) -> bool:
     """
     Celery task for the extraction of the features and the preprocessing of the data
@@ -206,7 +206,7 @@ def create_manager_analysis(form_data: Dict[str, Any]):
     return True
 
 
-@shared_task
+@shared_task(bind=True)
 def train(self:Task) -> bool:
     """
     Train the model
@@ -226,7 +226,7 @@ def train(self:Task) -> bool:
     return True
 
 
-@shared_task
+@shared_task(bind=True)
 def predict(self:Task) -> bool:
     """
     Predict the test set and store the result

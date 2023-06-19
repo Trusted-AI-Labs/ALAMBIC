@@ -503,7 +503,7 @@ class DeepLearningClassification(ClassificationManager):
 
         return results
 
-    def predict_proba(self, lst, progressbar):
+    def predict_proba(self, lst, progressbar=None):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
             data=self.get_x(lst, 'torch'),
@@ -515,6 +515,7 @@ class DeepLearningClassification(ClassificationManager):
         results = []
         ids_added = set()
         num_steps = len(dataloader)
+        i = 1
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
@@ -532,8 +533,9 @@ class DeepLearningClassification(ClassificationManager):
                         new_indices.append(index)
                 results.extend(zip(new_probabilities,new_indices))
 
-                progressbar.set_progress(i, num_steps)
-                i += 1
+                if progressbar is not None:
+                    progressbar.set_progress(i, num_steps)
+                    i += 1
 
                 del probabilities, outputs, indices, new_indices, new_probabilities
                 gc.collect()
@@ -541,7 +543,7 @@ class DeepLearningClassification(ClassificationManager):
 
         return results
 
-    def get_embeddings(self, lst, progressbar):
+    def get_embeddings(self, lst, progressbar = None):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
             data=self.get_x(lst, 'torch'),
@@ -568,9 +570,9 @@ class DeepLearningClassification(ClassificationManager):
                         ids_added.add(index)
                         new_indices.append(index)
                 embeddings.extend(zip(new_embeddings, new_indices))
-
-                progressbar.set_progress(i, num_steps)
-                i += 1
+                if progressbar is not None:
+                    progressbar.set_progress(i, num_steps)
+                    i += 1
 
                 del embedding, outputs, indices, new_embeddings, new_indices
                 gc.collect()
