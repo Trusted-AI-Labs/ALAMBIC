@@ -463,7 +463,6 @@ class DeepLearningClassification(ClassificationManager):
         dataloader = self.accelerator.prepare(dataloader)
 
         results = []
-        ids_added = set()
         i = 1
         num_steps = len(dataloader)
         for batch in dataloader:
@@ -472,36 +471,23 @@ class DeepLearningClassification(ClassificationManager):
                 probabilities = softmax(outputs.logits, dim=1)
                 predictions = torch.argmax(probabilities, dim=-1)
                 if predictions_only:
-                    predictions, indices = self.accelerator.gather((predictions, indices))
-                    predictions, indices = predictions.tolist(), indices.tolist()
-                    # to avoid adding information about indices already present, due to the loop of indices in the dataloader
-                    new_predictions = []
-                    for i in range(len(predictions)):
-                        if indices[i] not in ids_added:
-                            new_predictions.append(predictions[i])
-                            ids_added.add(indices[i])
-                    results.extend(new_predictions)
+                    predictions = self.accelerator.gather(predictions)
+                    predictions= predictions.tolist()
+                    results.extend(predictions)
                 else:
-                    probabilities, predictions, indices = self.accelerator.gather((probabilities, predictions, indices))
-                    probabilities, predictions, indices = probabilities.tolist(), predictions.tolist(), indices.tolist()
-                    # to avoid adding information about indices already present, due to the loop of indices in the dataloader
-                    new_predictions, new_probabilities = [], []
-                    for i in range(len(predictions)):
-                        if indices[i] not in ids_added:
-                            new_predictions.append(predictions[i])
-                            new_probabilities.append(probabilities[i])
-                            ids_added.add(indices[i])
-                    results.extend(zip(new_probabilities, new_predictions))
+                    probabilities, predictions = self.accelerator.gather((probabilities, predictions))
+                    probabilities, predictions = probabilities.tolist(), predictions.tolist()
+                    results.extend(zip(probabilities, predictions))
 
-                    del new_probabilities
+                    del probabilities
                 
                 progressbar.set_progress(i, num_steps)
                 i += 1
 
-                del probabilities, predictions, outputs, new_predictions
+                del probabilities, predictions, outputs
                 gc.collect()
 
-        return results
+        return results[:len(lst)]
 
     def predict_proba(self, lst, progressbar=None):
         self.model.eval()
@@ -513,35 +499,26 @@ class DeepLearningClassification(ClassificationManager):
         dataloader = self.accelerator.prepare(dataloader)
 
         results = []
-        ids_added = set()
         num_steps = len(dataloader)
         i = 1
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
                 probabilities = softmax(outputs.logits, dim=1)
-                probabilities, indices = self.accelerator.gather((probabilities, indices))
-                probabilities, indices = probabilities.tolist(), indices.tolist()
+                probabilities = self.accelerator.gather(probabilities)
+                probabilities = probabilities.tolist()
 
-                # to avoid duplicates due to dataloader looping
-                new_probabilities, new_indices = [],[]
-                for i in range(len(probabilities)):
-                    index = indices[i]
-                    if index not in ids_added:
-                        new_probabilities.append(probabilities[i])
-                        ids_added.add(index)
-                        new_indices.append(index)
-                results.extend(zip(new_probabilities,new_indices))
+                results.extend(probabilities)
 
                 if progressbar is not None:
                     progressbar.set_progress(i, num_steps)
                     i += 1
 
-                del probabilities, outputs, indices, new_indices, new_probabilities
+                del probabilities, outputs
                 gc.collect()
 
 
-        return results
+        return results[:len(lst)]
 
     def get_embeddings(self, lst, progressbar = None):
         self.model.eval()
@@ -553,31 +530,22 @@ class DeepLearningClassification(ClassificationManager):
         dataloader = self.accelerator.prepare(dataloader)
        
         embeddings = []
-        ids_added = set()
         num_steps = len(dataloader)
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
                 embedding = torch.mean(outputs.hidden_states[-1], dim=1).squeeze()
-                embedding, indices = self.accelerator.gather((embedding, indices))
-                embedding, indices = embedding.tolist(), indices.tolist()
-
-                new_embeddings, new_indices = [], []
-                for i in range(len(embedding)):
-                    index = indices[i]
-                    if index not in ids_added:
-                        new_embeddings.append(embedding[i])
-                        ids_added.add(index)
-                        new_indices.append(index)
-                embeddings.extend(zip(new_embeddings, new_indices))
+                embedding = self.accelerator.gather(embedding)
+                embedding = embedding.tolist()
+                embeddings.extend(embedding)
                 if progressbar is not None:
                     progressbar.set_progress(i, num_steps)
                     i += 1
 
-                del embedding, outputs, indices, new_embeddings, new_indices
+                del embedding, outputs
                 gc.collect()
 
-        embeddings = np.asarray(embeddings)
+        embeddings = np.asarray(embeddings[:len(lst)])
 
         return embeddings
     
