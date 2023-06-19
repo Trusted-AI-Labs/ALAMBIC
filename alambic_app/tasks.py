@@ -207,7 +207,7 @@ def create_manager_analysis(form_data: Dict[str, Any]):
 
 
 @shared_task
-def train() -> bool:
+def train(self:Task) -> bool:
     """
     Train the model
     """
@@ -220,13 +220,14 @@ def train() -> bool:
             manager = ClassificationManager()
     elif task == 'R':
         pass
+    progress_recorder = ProgressRecorder(self)
 
-    manager.train()
+    manager.train(progress_recorder)
     return True
 
 
 @shared_task
-def predict() -> bool:
+def predict(self:Task) -> bool:
     """
     Predict the test set and store the result
     :param manager: MLManager
@@ -241,9 +242,9 @@ def predict() -> bool:
             manager = ClassificationManager()
     elif task == 'R':
         pass
+    progress_recorder = ProgressRecorder(self)
 
-
-    manager.performance_predict()
+    manager.performance_predict(progress_recorder)
     return True
 
 

@@ -282,15 +282,15 @@ class MLManager(metaclass=Singleton):
             result.update({'cross_val': cross_val})
         return result
 
-    def train(self):
+    def train(self, progressbar):
         X_train, Y_train = self.get_data(self.labelled_indices)
         self.model.fit(X_train, Y_train)
 
-    def predict(self, lst):
+    def predict(self, lst, progressbar):
         return self.model.predict(self.X[np.asarray(lst)])
 
-    def performance_predict(self):
-        self.y_predicted = self.predict(self.test_set)
+    def performance_predict(self, progressbar):
+        self.y_predicted = self.predict(self.test_set, progressbar)
 
     def query(self):
         query_index = self.strategy.select(label_index=self.labelled_indices,
@@ -412,7 +412,7 @@ class DeepLearningClassification(ClassificationManager):
         gc.collect()
         torch.cuda.empty_cache()
 
-    def train(self):
+    def train(self, progressbar):
         self.create_model()
 
         dataloader = self.get_data(self.labelled_indices)
@@ -425,16 +425,17 @@ class DeepLearningClassification(ClassificationManager):
             num_warmup_steps=num_warm_steps,
             num_training_steps=num_training_steps,
         )
+        
 
         logger.info("--- Setup data ---")
-        logger.info(self.accelerator.num_processes)
 
         self.model, optimizer, dataloader, lr_scheduler = self.accelerator.prepare(
             self.model, optimizer, dataloader, lr_scheduler
         )
 
         logger.info("--- Begin training ---")
-
+        i = 1
+        num_steps = self.params['num_epochs']*len(dataloader)
         for _ in range(self.params['num_epochs']):
             self.model.train()
             for batch in dataloader:
@@ -445,15 +446,17 @@ class DeepLearningClassification(ClassificationManager):
 
                 optimizer.step()
                 lr_scheduler.step()
+                progressbar.set_progress(i, num_steps)
+                i += 1
 
         del optimizer, dataloader, lr_scheduler
         gc.collect()
         torch.cuda.empty_cache()
 
-    def predict(self, lst, predictions_only=False):
+    def predict(self, lst, progressbar, predictions_only=True):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
-            data=self.get_x(lst), 
+            data=self.get_x(lst, 'torch'), 
             labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
@@ -461,6 +464,8 @@ class DeepLearningClassification(ClassificationManager):
 
         results = []
         ids_added = set()
+        i = 1
+        num_steps = len(dataloader)
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
@@ -489,16 +494,19 @@ class DeepLearningClassification(ClassificationManager):
                     results.extend(zip(new_probabilities, new_predictions))
 
                     del new_probabilities
+                
+                progressbar.set_progress(i, num_steps)
+                i += 1
 
                 del probabilities, predictions, outputs, new_predictions
                 gc.collect()
 
         return results
 
-    def predict_proba(self, lst):
+    def predict_proba(self, lst, progressbar):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
-            data=self.get_x(lst),
+            data=self.get_x(lst, 'torch'),
             labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
@@ -506,6 +514,7 @@ class DeepLearningClassification(ClassificationManager):
 
         results = []
         ids_added = set()
+        num_steps = len(dataloader)
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
@@ -523,16 +532,19 @@ class DeepLearningClassification(ClassificationManager):
                         new_indices.append(index)
                 results.extend(zip(new_probabilities,new_indices))
 
+                progressbar.set_progress(i, num_steps)
+                i += 1
+
                 del probabilities, outputs, indices, new_indices, new_probabilities
                 gc.collect()
 
 
         return results
 
-    def get_embeddings(self, lst):
+    def get_embeddings(self, lst, progressbar):
         self.model.eval()
         dataloader = self.handler.get_dataloader(
-            data=self.get_x(lst),
+            data=self.get_x(lst, 'torch'),
             labels=None,
             batch_size=self.params['predict_batch_size'], 
             shuffle=False)
@@ -540,6 +552,7 @@ class DeepLearningClassification(ClassificationManager):
        
         embeddings = []
         ids_added = set()
+        num_steps = len(dataloader)
         for batch in dataloader:
             with torch.no_grad():
                 outputs = self.model(**batch)
@@ -555,6 +568,9 @@ class DeepLearningClassification(ClassificationManager):
                         ids_added.add(index)
                         new_indices.append(index)
                 embeddings.extend(zip(new_embeddings, new_indices))
+
+                progressbar.set_progress(i, num_steps)
+                i += 1
 
                 del embedding, outputs, indices, new_embeddings, new_indices
                 gc.collect()

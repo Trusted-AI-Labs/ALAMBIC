@@ -57,7 +57,16 @@
             checkJobStatus();
         });
     </script>
-    {% if type_learningg == 'model' %}
+
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    <script>
+        // vanilla JS version
+        document.addEventListener("DOMContentLoaded", function () {
+            var progressUrl = "{% url 'celery_progress:task_status' token %}";
+            CeleryProgressBar.initProgressBar(progressUrl);
+        });
+    </script>
+    {% if type_learning == 'model' %}
         {% if task == 'C' %}
             <script src="{% static "alambic_app/js/classification.js" %}"></script>
         {% endif %}
@@ -89,6 +98,13 @@
                     {% if type_learning == "analysis" %}
                         {% add_stats_analysis %}
                     {% endif %}
+                </div>
+
+                <div class='progress-wrapper'>
+                <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+                </div>
+                <div id="progress-bar-message">
+                    Waiting for the model to do its job...
                 </div>
 
                 <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">
