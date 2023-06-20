@@ -551,3 +551,10 @@ class DeepLearningClassification(ClassificationManager):
     
     def dump(self):
         self.factory.save_model(self.model)
+
+    def query(self):
+        query_index = self.strategy.select(label_index=self.labelled_indices,
+                                           unlabel_index=self.unlabelled_indices,
+                                           model=self,
+                                           batch_size=self.batch_size)
+        return self.convert_to_ids(query_index)
