@@ -62,8 +62,17 @@
     <script>
         // vanilla JS version
         document.addEventListener("DOMContentLoaded", function () {
-            var progressUrl = "{% url 'celery_progress:task_status' token %}";
-            CeleryProgressBar.initProgressBar(progressUrl);
+            const urls = [
+            {% for task_id in task_ids %}"{% url 'celery_progress:task_status' {{ task_id }} %}",
+            {% endfor %}];
+            CeleryProgressBar.initProgressBar(progressUrl[0], 
+            progressBarId: "progress-bar-training",
+            progressBarMessageId: "progress-bar-message-training",
+            );
+            CeleryProgressBar.initProgressBar(progressUrl[1], 
+            progressBarId: "progress-bar-predict",
+            progressBarMessageId: "progress-bar-message-predict",
+            );
         });
     </script>
     {% if type_learning == 'model' %}
@@ -100,11 +109,20 @@
                     {% endif %}
                 </div>
 
-                <div class='progress-wrapper'>
-                <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+                <div class='progress-wrapper-train'>
+                    <div id='progress-bar-train class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;
+                    </div>
+                    <div id="progress-bar-message-training">
+                        Waiting for the model to begin training...
+                        </div>
                 </div>
-                <div id="progress-bar-message">
-                    Waiting for the model to do its job...
+                
+                <div class='progress-bar-wrapper-predict'>
+                    <div id='progress-bar-predict class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+                    </div>
+                    <div id="progress-bar-message-predict">
+                    Waiting for the model to begin inferring the unlabelled samples...
+                    </div>
                 </div>
 
                 <div id="job-failure-message" class="alert alert-danger w-50 pb-0 mt-4 d-none row">

@@ -131,7 +131,10 @@ def distilling(request):
                 return HttpResponseRedirect(f"/tasting")
         else:
             chain_id = tasks.pipeline_ML()
+            task_refs = tasks.get_pipeline_task_refs(chain_id)
+            task_refs = [item[1]['id'] for item in sorted(task_refs.items(), key=lambda kv: kv[1]["step"])]
             return render(request, 'distilling.html', {'token': chain_id,
+                                                       'task_ids' : task_refs,
                                                        'type_learning': cache.get('type_learning'),
                                                        'task': cache.get('task')
                                                        })
